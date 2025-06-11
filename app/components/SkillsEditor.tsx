@@ -3,21 +3,12 @@
 import { Plus, Trash2 } from "lucide-react";
 
 import React from "react";
-import { Skill } from "../types/resume";
+import { useResumeStore } from "../store/resumeStore";
 
-interface SkillsEditorProps {
-  skills: Skill[];
-  onAdd: (category?: "skill" | "certification" | "other") => void;
-  onUpdate: (id: string, updates: Partial<Skill>) => void;
-  onDelete: (id: string) => void;
-}
+export default function SkillsEditor() {
+  const skills = useResumeStore((state) => state.resumeData.skills);
+  const { addSkill, updateSkill, deleteSkill } = useResumeStore();
 
-export default function SkillsEditor({
-  skills,
-  onAdd,
-  onUpdate,
-  onDelete,
-}: SkillsEditorProps) {
   const skillsByCategory = {
     skill: skills.filter((s) => s.category === "skill"),
     certification: skills.filter((s) => s.category === "certification"),
@@ -38,7 +29,7 @@ export default function SkillsEditor({
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-md font-medium text-gray-800">Skills</h3>
             <button
-              onClick={() => onAdd("skill")}
+              onClick={() => addSkill("skill")}
               className="flex items-center gap-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors"
             >
               <Plus size={14} />
@@ -58,7 +49,7 @@ export default function SkillsEditor({
                     type="checkbox"
                     checked={skill.included}
                     onChange={(e) =>
-                      onUpdate(skill.id, { included: e.target.checked })
+                      updateSkill(skill.id, { included: e.target.checked })
                     }
                     className="w-4 h-4 text-blue-600"
                   />
@@ -66,13 +57,13 @@ export default function SkillsEditor({
                     type="text"
                     value={skill.name}
                     onChange={(e) =>
-                      onUpdate(skill.id, { name: e.target.value })
+                      updateSkill(skill.id, { name: e.target.value })
                     }
                     className="flex-1 px-2 py-1 border rounded"
                     placeholder="Enter skill name"
                   />
                   <button
-                    onClick={() => onDelete(skill.id)}
+                    onClick={() => deleteSkill(skill.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     <Trash2 size={14} />
@@ -90,7 +81,7 @@ export default function SkillsEditor({
               Certifications
             </h3>
             <button
-              onClick={() => onAdd("certification")}
+              onClick={() => addSkill("certification")}
               className="flex items-center gap-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors"
             >
               <Plus size={14} />
@@ -112,7 +103,7 @@ export default function SkillsEditor({
                     type="checkbox"
                     checked={cert.included}
                     onChange={(e) =>
-                      onUpdate(cert.id, { included: e.target.checked })
+                      updateSkill(cert.id, { included: e.target.checked })
                     }
                     className="w-4 h-4 text-blue-600"
                   />
@@ -120,13 +111,13 @@ export default function SkillsEditor({
                     type="text"
                     value={cert.name}
                     onChange={(e) =>
-                      onUpdate(cert.id, { name: e.target.value })
+                      updateSkill(cert.id, { name: e.target.value })
                     }
                     className="flex-1 px-2 py-1 border rounded"
                     placeholder="Enter certification name"
                   />
                   <button
-                    onClick={() => onDelete(cert.id)}
+                    onClick={() => deleteSkill(cert.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     <Trash2 size={14} />
@@ -142,7 +133,7 @@ export default function SkillsEditor({
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-md font-medium text-gray-800">Others</h3>
             <button
-              onClick={() => onAdd("other")}
+              onClick={() => addSkill("other")}
               className="flex items-center gap-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors"
             >
               <Plus size={14} />
@@ -164,7 +155,7 @@ export default function SkillsEditor({
                     type="checkbox"
                     checked={other.included}
                     onChange={(e) =>
-                      onUpdate(other.id, { included: e.target.checked })
+                      updateSkill(other.id, { included: e.target.checked })
                     }
                     className="w-4 h-4 text-blue-600"
                   />
@@ -172,13 +163,13 @@ export default function SkillsEditor({
                     type="text"
                     value={other.name}
                     onChange={(e) =>
-                      onUpdate(other.id, { name: e.target.value })
+                      updateSkill(other.id, { name: e.target.value })
                     }
                     className="flex-1 px-2 py-1 border rounded"
                     placeholder="Enter item name"
                   />
                   <button
-                    onClick={() => onDelete(other.id)}
+                    onClick={() => deleteSkill(other.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     <Trash2 size={14} />

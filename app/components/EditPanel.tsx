@@ -1,15 +1,5 @@
 "use client";
 
-import {
-  CustomSection,
-  CustomSectionItem,
-  Education,
-  Experience,
-  PersonalInfo,
-  ResumeData,
-  Skill,
-} from "../types/resume";
-
 import CustomSectionEditor from "./CustomSectionEditor";
 import EducationEditor from "./EducationEditor";
 import ExperienceEditor from "./ExperienceEditor";
@@ -18,50 +8,12 @@ import PersonalInfoEditor from "./PersonalInfoEditor";
 import { Plus } from "lucide-react";
 import React from "react";
 import SkillsEditor from "./SkillsEditor";
+import { useResumeStore } from "../store/resumeStore";
 
-interface EditPanelProps {
-  resumeData: ResumeData;
-  onUpdatePersonalInfo: (personalInfo: PersonalInfo) => void;
-  onAddExperience: () => void;
-  onUpdateExperience: (id: string, updates: Partial<Experience>) => void;
-  onDeleteExperience: (id: string) => void;
-  onAddEducation: () => void;
-  onUpdateEducation: (id: string, updates: Partial<Education>) => void;
-  onDeleteEducation: (id: string) => void;
-  onAddSkill: (category?: "skill" | "certification" | "other") => void;
-  onUpdateSkill: (id: string, updates: Partial<Skill>) => void;
-  onDeleteSkill: (id: string) => void;
-  onAddCustomSection: () => void;
-  onUpdateCustomSection: (id: string, updates: Partial<CustomSection>) => void;
-  onDeleteCustomSection: (id: string) => void;
-  onAddCustomSectionItem: (sectionId: string) => void;
-  onUpdateCustomSectionItem: (
-    sectionId: string,
-    itemId: string,
-    updates: Partial<CustomSectionItem>
-  ) => void;
-  onDeleteCustomSectionItem: (sectionId: string, itemId: string) => void;
-}
+export default function EditPanel() {
+  const resumeData = useResumeStore((state) => state.resumeData);
+  const addCustomSection = useResumeStore((state) => state.addCustomSection);
 
-export default function EditPanel({
-  resumeData,
-  onUpdatePersonalInfo,
-  onAddExperience,
-  onUpdateExperience,
-  onDeleteExperience,
-  onAddEducation,
-  onUpdateEducation,
-  onDeleteEducation,
-  onAddSkill,
-  onUpdateSkill,
-  onDeleteSkill,
-  onAddCustomSection,
-  onUpdateCustomSection,
-  onDeleteCustomSection,
-  onAddCustomSectionItem,
-  onUpdateCustomSectionItem,
-  onDeleteCustomSectionItem,
-}: EditPanelProps) {
   const sortedModules = resumeData.modules.sort((a, b) => a.order - b.order);
 
   return (
@@ -70,10 +22,7 @@ export default function EditPanel({
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Personal Information
         </h2>
-        <PersonalInfoEditor
-          personalInfo={resumeData.personalInfo}
-          onUpdate={onUpdatePersonalInfo}
-        />
+        <PersonalInfoEditor />
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -82,7 +31,7 @@ export default function EditPanel({
             Resume Sections
           </h2>
           <button
-            onClick={onAddCustomSection}
+            onClick={addCustomSection}
             className="flex items-center gap-2 bg-purple-600 text-white px-3 py-2 rounded-md hover:bg-purple-700 transition-colors text-sm"
           >
             <Plus size={16} />
@@ -101,35 +50,11 @@ export default function EditPanel({
 
         switch (module.type) {
           case "experience":
-            return (
-              <ExperienceEditor
-                key={module.id}
-                experiences={resumeData.experiences}
-                onAdd={onAddExperience}
-                onUpdate={onUpdateExperience}
-                onDelete={onDeleteExperience}
-              />
-            );
+            return <ExperienceEditor key={module.id} />;
           case "education":
-            return (
-              <EducationEditor
-                key={module.id}
-                education={resumeData.education}
-                onAdd={onAddEducation}
-                onUpdate={onUpdateEducation}
-                onDelete={onDeleteEducation}
-              />
-            );
+            return <EducationEditor key={module.id} />;
           case "skills":
-            return (
-              <SkillsEditor
-                key={module.id}
-                skills={resumeData.skills}
-                onAdd={onAddSkill}
-                onUpdate={onUpdateSkill}
-                onDelete={onDeleteSkill}
-              />
-            );
+            return <SkillsEditor key={module.id} />;
           case "custom":
             const customSection = resumeData.customSections.find(
               (s) => s.id === module.customSectionId
@@ -138,12 +63,7 @@ export default function EditPanel({
             return (
               <CustomSectionEditor
                 key={module.id}
-                section={customSection}
-                onUpdate={onUpdateCustomSection}
-                onDelete={onDeleteCustomSection}
-                onAddItem={onAddCustomSectionItem}
-                onUpdateItem={onUpdateCustomSectionItem}
-                onDeleteItem={onDeleteCustomSectionItem}
+                sectionId={customSection.id}
               />
             );
           default:

@@ -2,18 +2,19 @@
 
 import { PersonalInfo } from "../types/resume";
 import React from "react";
+import { useResumeStore } from "../store/resumeStore";
 
-interface PersonalInfoEditorProps {
-  personalInfo: PersonalInfo;
-  onUpdate: (personalInfo: PersonalInfo) => void;
-}
+export default function PersonalInfoEditor() {
+  const personalInfo = useResumeStore((state) => state.resumeData.personalInfo);
+  const updatePersonalInfo = useResumeStore(
+    (state) => state.updatePersonalInfo
+  );
 
-export default function PersonalInfoEditor({
-  personalInfo,
-  onUpdate,
-}: PersonalInfoEditorProps) {
   const handleChange = (field: keyof PersonalInfo, value: string) => {
-    onUpdate({ ...personalInfo, [field]: value });
+    updatePersonalInfo({
+      ...personalInfo,
+      [field]: value,
+    });
   };
 
   return (

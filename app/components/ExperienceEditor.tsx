@@ -2,22 +2,14 @@
 
 import { Plus, Trash2 } from "lucide-react";
 
-import { Experience } from "../types/resume";
 import React from "react";
+import { useResumeStore } from "../store/resumeStore";
 
-interface ExperienceEditorProps {
-  experiences: Experience[];
-  onAdd: () => void;
-  onUpdate: (id: string, updates: Partial<Experience>) => void;
-  onDelete: (id: string) => void;
-}
+export default function ExperienceEditor() {
+  const experiences = useResumeStore((state) => state.resumeData.experiences);
+  const { addExperience, updateExperience, deleteExperience } =
+    useResumeStore();
 
-export default function ExperienceEditor({
-  experiences,
-  onAdd,
-  onUpdate,
-  onDelete,
-}: ExperienceEditorProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex justify-between items-center mb-4">
@@ -25,7 +17,7 @@ export default function ExperienceEditor({
           Professional Experience
         </h2>
         <button
-          onClick={onAdd}
+          onClick={addExperience}
           className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
         >
           <Plus size={16} />
@@ -49,7 +41,7 @@ export default function ExperienceEditor({
                     id={`exp-${exp.id}`}
                     checked={exp.included}
                     onChange={(e) =>
-                      onUpdate(exp.id, { included: e.target.checked })
+                      updateExperience(exp.id, { included: e.target.checked })
                     }
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
@@ -61,7 +53,7 @@ export default function ExperienceEditor({
                   </label>
                 </div>
                 <button
-                  onClick={() => onDelete(exp.id)}
+                  onClick={() => deleteExperience(exp.id)}
                   className="text-red-600 hover:text-red-800 transition-colors"
                 >
                   <Trash2 size={16} />
@@ -77,7 +69,7 @@ export default function ExperienceEditor({
                     type="text"
                     value={exp.position}
                     onChange={(e) =>
-                      onUpdate(exp.id, { position: e.target.value })
+                      updateExperience(exp.id, { position: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Software Engineer"
@@ -92,7 +84,7 @@ export default function ExperienceEditor({
                     type="text"
                     value={exp.company}
                     onChange={(e) =>
-                      onUpdate(exp.id, { company: e.target.value })
+                      updateExperience(exp.id, { company: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Tech Company Inc."
@@ -107,7 +99,7 @@ export default function ExperienceEditor({
                     type="text"
                     value={exp.department || ""}
                     onChange={(e) =>
-                      onUpdate(exp.id, { department: e.target.value })
+                      updateExperience(exp.id, { department: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Engineering"
@@ -122,7 +114,7 @@ export default function ExperienceEditor({
                     type="month"
                     value={exp.startDate}
                     onChange={(e) =>
-                      onUpdate(exp.id, { startDate: e.target.value })
+                      updateExperience(exp.id, { startDate: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -137,7 +129,7 @@ export default function ExperienceEditor({
                       type="month"
                       value={exp.endDate === "Present" ? "" : exp.endDate}
                       onChange={(e) =>
-                        onUpdate(exp.id, { endDate: e.target.value })
+                        updateExperience(exp.id, { endDate: e.target.value })
                       }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       disabled={exp.endDate === "Present"}
@@ -145,7 +137,7 @@ export default function ExperienceEditor({
                     <button
                       type="button"
                       onClick={() =>
-                        onUpdate(exp.id, {
+                        updateExperience(exp.id, {
                           endDate: exp.endDate === "Present" ? "" : "Present",
                         })
                       }
@@ -168,7 +160,7 @@ export default function ExperienceEditor({
                 <textarea
                   value={exp.description}
                   onChange={(e) =>
-                    onUpdate(exp.id, { description: e.target.value })
+                    updateExperience(exp.id, { description: e.target.value })
                   }
                   rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

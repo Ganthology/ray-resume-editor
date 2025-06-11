@@ -1,16 +1,7 @@
 "use client";
 
-import {
-  CustomSection,
-  CustomSectionItem,
-  Education,
-  Experience,
-  PersonalInfo,
-  ResumeData,
-  Skill,
-} from "../types/resume";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import { Download, Save } from "lucide-react";
+import { Download, RotateCcw, Save } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import {
   SortableContext,
@@ -22,170 +13,56 @@ import EditPanel from "./EditPanel";
 import PreviewPanel from "./PreviewPanel";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
-const initialData: ResumeData = {
-  personalInfo: {
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    linkedinUrl: "",
-    personalSiteUrl: "",
-  },
-  experiences: [],
-  education: [],
-  skills: [],
-  customSections: [],
-  modules: [
-    {
-      id: "experience",
-      type: "experience",
-      title: "Professional Experience",
-      order: 1,
-      enabled: true,
-    },
-    {
-      id: "education",
-      type: "education",
-      title: "Education",
-      order: 2,
-      enabled: true,
-    },
-    {
-      id: "skills",
-      type: "skills",
-      title: "Skills, Certifications & Others",
-      order: 3,
-      enabled: true,
-    },
-  ],
-  spacing: 50, // Default 50px horizontal spacing
-};
+import { useResumeStore } from "../store/resumeStore";
 
 export default function ResumeBuilder() {
-  const [resumeData, setResumeData] = useState<ResumeData>(initialData);
   const [isExporting, setIsExporting] = useState(false);
 
-  const updatePersonalInfo = useCallback((personalInfo: PersonalInfo) => {
-    setResumeData((prev) => ({ ...prev, personalInfo }));
-  }, []);
+  // Get data and actions from Zustand store
+  const resumeData = useResumeStore((state) => state.resumeData);
+  const { updateModules, updateSpacing, clearAllData } = useResumeStore();
 
-  const addExperience = useCallback(() => {
-    const newExperience: Experience = {
-      id: Date.now().toString(),
-      company: "",
-      position: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-      included: true,
-    };
-    setResumeData((prev) => ({
-      ...prev,
-      experiences: [...prev.experiences, newExperience],
-    }));
-  }, []);
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-  const updateExperience = useCallback(
-    (id: string, updates: Partial<Experience>) => {
-      setResumeData((prev) => ({
-        ...prev,
-        experiences: prev.experiences.map((exp) =>
-          exp.id === id ? { ...exp, ...updates } : exp
-        ),
-      }));
+      if (over && active.id !== over.id) {
+        const newModules = arrayMove(
+          resumeData.modules,
+          resumeData.modules.findIndex((module) => module.id === active.id),
+          resumeData.modules.findIndex((module) => module.id === over.id)
+        ).map((module, index) => ({ ...module, order: index + 1 }));
+
+        updateModules(newModules);
+      }
     },
-    []
+    [resumeData.modules, updateModules]
   );
 
-  const deleteExperience = useCallback((id: string) => {
-    setResumeData((prev) => ({
-      ...prev,
-      experiences: prev.experiences.filter((exp) => exp.id !== id),
-    }));
-  }, []);
+  const saveDraft = useCallback(() => {
+    const dataStr = JSON.stringify(resumeData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `resume-draft-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [resumeData]);
 
-  const addEducation = useCallback(() => {
-    const newEducation: Education = {
-      id: Date.now().toString(),
-      institution: "",
-      degree: "",
-      fieldOfStudy: "",
-      graduationDate: "",
-      gpa: "",
-      included: true,
-    };
-    setResumeData((prev) => ({
-      ...prev,
-      education: [...prev.education, newEducation],
-    }));
-  }, []);
-
-  const updateEducation = useCallback(
-    (id: string, updates: Partial<Education>) => {
-      setResumeData((prev) => ({
-        ...prev,
-        education: prev.education.map((edu) =>
-          edu.id === id ? { ...edu, ...updates } : edu
-        ),
-      }));
-    },
-    []
-  );
-
-  const deleteEducation = useCallback((id: string) => {
-    setResumeData((prev) => ({
-      ...prev,
-      education: prev.education.filter((edu) => edu.id !== id),
-    }));
-  }, []);
-
-  const addSkill = useCallback(
-    (category: "skill" | "certification" | "other" = "skill") => {
-      const newSkill: Skill = {
-        id: Date.now().toString(),
-        name: "",
-        category,
-        included: true,
-      };
-      setResumeData((prev) => ({
-        ...prev,
-        skills: [...prev.skills, newSkill],
-      }));
-    },
-    []
-  );
-
-  const updateSkill = useCallback((id: string, updates: Partial<Skill>) => {
-    setResumeData((prev) => ({
-      ...prev,
-      skills: prev.skills.map((skill) =>
-        skill.id === id ? { ...skill, ...updates } : skill
-      ),
-    }));
-  }, []);
-
-  const deleteSkill = useCallback((id: string) => {
-    setResumeData((prev) => ({
-      ...prev,
-      skills: prev.skills.filter((skill) => skill.id !== id),
-    }));
-  }, []);
-
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      setResumeData((prev) => ({
-        ...prev,
-        modules: arrayMove(
-          prev.modules,
-          prev.modules.findIndex((module) => module.id === active.id),
-          prev.modules.findIndex((module) => module.id === over.id)
-        ).map((module, index) => ({ ...module, order: index + 1 })),
-      }));
+  const clearData = useCallback(() => {
+    if (
+      confirm(
+        "Are you sure you want to clear all data? This action cannot be undone."
+      )
+    ) {
+      clearAllData();
     }
-  }, []);
+  }, [clearAllData]);
 
   const exportToPDF = useCallback(async () => {
     setIsExporting(true);
@@ -250,132 +127,6 @@ export default function ResumeBuilder() {
     }
   }, []);
 
-  const updateSpacing = useCallback((spacing: number) => {
-    setResumeData((prev) => ({ ...prev, spacing }));
-  }, []);
-
-  const addCustomSection = useCallback(() => {
-    const newSection: CustomSection = {
-      id: Date.now().toString(),
-      title: "",
-      items: [],
-    };
-    const newModule = {
-      id: `custom-${newSection.id}`,
-      type: "custom" as const,
-      title: newSection.title || "Custom Section",
-      order: resumeData.modules.length + 1,
-      enabled: true,
-      customSectionId: newSection.id,
-    };
-    setResumeData((prev) => ({
-      ...prev,
-      customSections: [...prev.customSections, newSection],
-      modules: [...prev.modules, newModule],
-    }));
-  }, [resumeData.modules.length]);
-
-  const updateCustomSection = useCallback(
-    (id: string, updates: Partial<CustomSection>) => {
-      setResumeData((prev) => ({
-        ...prev,
-        customSections: prev.customSections.map((section) =>
-          section.id === id ? { ...section, ...updates } : section
-        ),
-        modules: prev.modules.map((module) =>
-          module.customSectionId === id && updates.title
-            ? { ...module, title: updates.title }
-            : module
-        ),
-      }));
-    },
-    []
-  );
-
-  const deleteCustomSection = useCallback((id: string) => {
-    setResumeData((prev) => ({
-      ...prev,
-      customSections: prev.customSections.filter(
-        (section) => section.id !== id
-      ),
-      modules: prev.modules.filter((module) => module.customSectionId !== id),
-    }));
-  }, []);
-
-  const addCustomSectionItem = useCallback((sectionId: string) => {
-    const newItem: CustomSectionItem = {
-      id: Date.now().toString(),
-      title: "",
-      subtitle: "",
-      description: "",
-      date: "",
-      included: true,
-    };
-    setResumeData((prev) => ({
-      ...prev,
-      customSections: prev.customSections.map((section) =>
-        section.id === sectionId
-          ? { ...section, items: [...section.items, newItem] }
-          : section
-      ),
-    }));
-  }, []);
-
-  const updateCustomSectionItem = useCallback(
-    (
-      sectionId: string,
-      itemId: string,
-      updates: Partial<CustomSectionItem>
-    ) => {
-      setResumeData((prev) => ({
-        ...prev,
-        customSections: prev.customSections.map((section) =>
-          section.id === sectionId
-            ? {
-                ...section,
-                items: section.items.map((item) =>
-                  item.id === itemId ? { ...item, ...updates } : item
-                ),
-              }
-            : section
-        ),
-      }));
-    },
-    []
-  );
-
-  const deleteCustomSectionItem = useCallback(
-    (sectionId: string, itemId: string) => {
-      setResumeData((prev) => ({
-        ...prev,
-        customSections: prev.customSections.map((section) =>
-          section.id === sectionId
-            ? {
-                ...section,
-                items: section.items.filter((item) => item.id !== itemId),
-              }
-            : section
-        ),
-      }));
-    },
-    []
-  );
-
-  const saveDraft = useCallback(() => {
-    const dataStr = JSON.stringify(resumeData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `resume-draft-${
-      new Date().toISOString().split("T")[0]
-    }.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }, [resumeData]);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
@@ -412,6 +163,14 @@ export default function ResumeBuilder() {
               </button>
 
               <button
+                onClick={clearData}
+                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+              >
+                <RotateCcw size={20} />
+                Clear All
+              </button>
+
+              <button
                 onClick={exportToPDF}
                 disabled={isExporting}
                 className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -435,25 +194,7 @@ export default function ResumeBuilder() {
                 items={resumeData.modules.map((m) => m.id)}
                 strategy={verticalListSortingStrategy}
               >
-                <EditPanel
-                  resumeData={resumeData}
-                  onUpdatePersonalInfo={updatePersonalInfo}
-                  onAddExperience={addExperience}
-                  onUpdateExperience={updateExperience}
-                  onDeleteExperience={deleteExperience}
-                  onAddEducation={addEducation}
-                  onUpdateEducation={updateEducation}
-                  onDeleteEducation={deleteEducation}
-                  onAddSkill={addSkill}
-                  onUpdateSkill={updateSkill}
-                  onDeleteSkill={deleteSkill}
-                  onAddCustomSection={addCustomSection}
-                  onUpdateCustomSection={updateCustomSection}
-                  onDeleteCustomSection={deleteCustomSection}
-                  onAddCustomSectionItem={addCustomSectionItem}
-                  onUpdateCustomSectionItem={updateCustomSectionItem}
-                  onDeleteCustomSectionItem={deleteCustomSectionItem}
-                />
+                <EditPanel />
               </SortableContext>
             </div>
           </DndContext>

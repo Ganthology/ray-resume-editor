@@ -2,28 +2,19 @@
 
 import { Plus, Trash2 } from "lucide-react";
 
-import { Education } from "../types/resume";
 import React from "react";
+import { useResumeStore } from "../store/resumeStore";
 
-interface EducationEditorProps {
-  education: Education[];
-  onAdd: () => void;
-  onUpdate: (id: string, updates: Partial<Education>) => void;
-  onDelete: (id: string) => void;
-}
+export default function EducationEditor() {
+  const education = useResumeStore((state) => state.resumeData.education);
+  const { addEducation, updateEducation, deleteEducation } = useResumeStore();
 
-export default function EducationEditor({
-  education,
-  onAdd,
-  onUpdate,
-  onDelete,
-}: EducationEditorProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Education</h2>
         <button
-          onClick={onAdd}
+          onClick={addEducation}
           className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
         >
           <Plus size={16} />
@@ -47,7 +38,7 @@ export default function EducationEditor({
                     id={`edu-${edu.id}`}
                     checked={edu.included}
                     onChange={(e) =>
-                      onUpdate(edu.id, { included: e.target.checked })
+                      updateEducation(edu.id, { included: e.target.checked })
                     }
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
@@ -59,7 +50,7 @@ export default function EducationEditor({
                   </label>
                 </div>
                 <button
-                  onClick={() => onDelete(edu.id)}
+                  onClick={() => deleteEducation(edu.id)}
                   className="text-red-600 hover:text-red-800 transition-colors"
                 >
                   <Trash2 size={16} />
@@ -75,7 +66,7 @@ export default function EducationEditor({
                     type="text"
                     value={edu.degree}
                     onChange={(e) =>
-                      onUpdate(edu.id, { degree: e.target.value })
+                      updateEducation(edu.id, { degree: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Bachelor of Science"
@@ -90,7 +81,7 @@ export default function EducationEditor({
                     type="text"
                     value={edu.fieldOfStudy || ""}
                     onChange={(e) =>
-                      onUpdate(edu.id, { fieldOfStudy: e.target.value })
+                      updateEducation(edu.id, { fieldOfStudy: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Computer Science"
@@ -105,7 +96,7 @@ export default function EducationEditor({
                     type="text"
                     value={edu.institution}
                     onChange={(e) =>
-                      onUpdate(edu.id, { institution: e.target.value })
+                      updateEducation(edu.id, { institution: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="University of Technology"
@@ -120,7 +111,9 @@ export default function EducationEditor({
                     type="text"
                     value={edu.graduationDate}
                     onChange={(e) =>
-                      onUpdate(edu.id, { graduationDate: e.target.value })
+                      updateEducation(edu.id, {
+                        graduationDate: e.target.value,
+                      })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="May 2023"
@@ -134,7 +127,9 @@ export default function EducationEditor({
                   <input
                     type="text"
                     value={edu.gpa || ""}
-                    onChange={(e) => onUpdate(edu.id, { gpa: e.target.value })}
+                    onChange={(e) =>
+                      updateEducation(edu.id, { gpa: e.target.value })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="3.8/4.0"
                   />

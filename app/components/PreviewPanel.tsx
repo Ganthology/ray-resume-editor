@@ -1,13 +1,11 @@
 "use client";
 
 import React from "react";
-import { ResumeData } from "../types/resume";
+import { useResumeStore } from "../store/resumeStore";
 
-interface PreviewPanelProps {
-  resumeData: ResumeData;
-}
+export default function PreviewPanel() {
+  const resumeData = useResumeStore((state) => state.resumeData);
 
-export default function PreviewPanel({ resumeData }: PreviewPanelProps) {
   const sortedModules = resumeData.modules
     .filter((module) => module.enabled)
     .sort((a, b) => a.order - b.order);

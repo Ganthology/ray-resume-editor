@@ -1,31 +1,31 @@
 "use client";
 
-import { CustomSection, CustomSectionItem } from "../types/resume";
 import { Edit3, Plus, Trash2 } from "lucide-react";
 
 import React from "react";
+import { useResumeStore } from "../store/resumeStore";
 
 interface CustomSectionEditorProps {
-  section: CustomSection;
-  onUpdate: (id: string, updates: Partial<CustomSection>) => void;
-  onDelete: (id: string) => void;
-  onAddItem: (sectionId: string) => void;
-  onUpdateItem: (
-    sectionId: string,
-    itemId: string,
-    updates: Partial<CustomSectionItem>
-  ) => void;
-  onDeleteItem: (sectionId: string, itemId: string) => void;
+  sectionId: string;
 }
 
 export default function CustomSectionEditor({
-  section,
-  onUpdate,
-  onDelete,
-  onAddItem,
-  onUpdateItem,
-  onDeleteItem,
+  sectionId,
 }: CustomSectionEditorProps) {
+  const section = useResumeStore((state) =>
+    state.resumeData.customSections.find((s) => s.id === sectionId)
+  );
+
+  const {
+    updateCustomSection,
+    deleteCustomSection,
+    addCustomSectionItem,
+    updateCustomSectionItem,
+    deleteCustomSectionItem,
+  } = useResumeStore();
+
+  if (!section) return null;
+
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex justify-between items-center mb-4">
@@ -34,21 +34,23 @@ export default function CustomSectionEditor({
           <input
             type="text"
             value={section.title}
-            onChange={(e) => onUpdate(section.id, { title: e.target.value })}
+            onChange={(e) =>
+              updateCustomSection(section.id, { title: e.target.value })
+            }
             className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none"
             placeholder="Custom Section Title"
           />
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => onAddItem(section.id)}
+            onClick={() => addCustomSectionItem(section.id)}
             className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
           >
             <Plus size={16} />
             Add Item
           </button>
           <button
-            onClick={() => onDelete(section.id)}
+            onClick={() => deleteCustomSection(section.id)}
             className="text-red-600 hover:text-red-800 transition-colors p-2"
           >
             <Trash2 size={16} />
@@ -71,7 +73,7 @@ export default function CustomSectionEditor({
                     id={`custom-${item.id}`}
                     checked={item.included}
                     onChange={(e) =>
-                      onUpdateItem(section.id, item.id, {
+                      updateCustomSectionItem(section.id, item.id, {
                         included: e.target.checked,
                       })
                     }
@@ -85,7 +87,7 @@ export default function CustomSectionEditor({
                   </label>
                 </div>
                 <button
-                  onClick={() => onDeleteItem(section.id, item.id)}
+                  onClick={() => deleteCustomSectionItem(section.id, item.id)}
                   className="text-red-600 hover:text-red-800 transition-colors"
                 >
                   <Trash2 size={14} />
@@ -101,7 +103,7 @@ export default function CustomSectionEditor({
                     type="text"
                     value={item.title}
                     onChange={(e) =>
-                      onUpdateItem(section.id, item.id, {
+                      updateCustomSectionItem(section.id, item.id, {
                         title: e.target.value,
                       })
                     }
@@ -118,7 +120,7 @@ export default function CustomSectionEditor({
                     type="text"
                     value={item.subtitle || ""}
                     onChange={(e) =>
-                      onUpdateItem(section.id, item.id, {
+                      updateCustomSectionItem(section.id, item.id, {
                         subtitle: e.target.value,
                       })
                     }
@@ -135,7 +137,7 @@ export default function CustomSectionEditor({
                     type="text"
                     value={item.date || ""}
                     onChange={(e) =>
-                      onUpdateItem(section.id, item.id, {
+                      updateCustomSectionItem(section.id, item.id, {
                         date: e.target.value,
                       })
                     }
@@ -152,7 +154,7 @@ export default function CustomSectionEditor({
                 <textarea
                   value={item.description || ""}
                   onChange={(e) =>
-                    onUpdateItem(section.id, item.id, {
+                    updateCustomSectionItem(section.id, item.id, {
                       description: e.target.value,
                     })
                   }
