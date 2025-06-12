@@ -4,11 +4,19 @@ import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { Download, RotateCcw, Save } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { Button } from "@/components/ui/button";
 import EditPanel from "./EditPanel";
 import PreviewPanel from "./PreviewPanel";
 import html2canvas from "html2canvas";
@@ -128,62 +136,75 @@ export default function ResumeBuilder() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50/30">
+      <header className="border-b border-gray-200/60 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Resume Builder</h1>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">R</span>
+              </div>
+              <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+                Resume Builder
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <label
-                  htmlFor="spacing"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label className="text-sm font-medium text-gray-700">
                   Spacing:
                 </label>
-                <select
-                  id="spacing"
-                  value={resumeData.spacing}
-                  onChange={(e) => updateSpacing(Number(e.target.value))}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Select
+                  value={resumeData.spacing.toString()}
+                  onValueChange={(value) => updateSpacing(Number(value))}
                 >
-                  <option value={25}>Narrow (25px)</option>
-                  <option value={50}>Normal (50px)</option>
-                  <option value={75}>Wide (75px)</option>
-                  <option value={100}>Extra Wide (100px)</option>
-                </select>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="25">Narrow</SelectItem>
+                    <SelectItem value="50">Normal</SelectItem>
+                    <SelectItem value="75">Wide</SelectItem>
+                    <SelectItem value="100">Extra Wide</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <button
+              <Button
                 onClick={saveDraft}
-                className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                variant="outline"
+                size="sm"
+                className="gap-2"
               >
-                <Save size={20} />
+                <Save className="w-4 h-4" />
                 Save Draft
-              </button>
+              </Button>
 
-              <button
+              <Button
                 onClick={clearData}
-                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                variant="outline"
+                size="sm"
+                className="gap-2 text-red-600 hover:text-red-700"
               >
-                <RotateCcw size={20} />
+                <RotateCcw className="w-4 h-4" />
                 Clear All
-              </button>
+              </Button>
 
-              <button
+              <Button
                 onClick={exportToPDF}
                 disabled={isExporting}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                size="sm"
+                className="gap-2"
               >
-                <Download size={20} />
+                <Download className="w-4 h-4" />
                 {isExporting ? "Exporting..." : "Export PDF"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <DndContext
             collisionDetection={closestCenter}
@@ -199,8 +220,8 @@ export default function ResumeBuilder() {
             </div>
           </DndContext>
 
-          <div className="lg:sticky lg:top-8">
-            <PreviewPanel resumeData={resumeData} />
+          <div className="lg:sticky lg:top-24">
+            <PreviewPanel />
           </div>
         </div>
       </div>

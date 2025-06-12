@@ -1,7 +1,11 @@
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import React from "react";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -15,171 +19,99 @@ export default function SkillsEditor() {
     other: skills.filter((s) => s.category === "other"),
   };
 
-  return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">
-          Skills, Certifications & Others
-        </h2>
+  const SkillSection = ({
+    title,
+    category,
+    items,
+    addLabel,
+  }: {
+    title: string;
+    category: "skill" | "certification" | "other";
+    items: typeof skills;
+    addLabel: string;
+  }) => (
+    <div className="space-y-3">
+      <div className="flex justify-between items-center">
+        <h4 className="font-medium text-gray-800">{title}</h4>
+        <Button
+          onClick={() => addSkill(category)}
+          size="sm"
+          variant="outline"
+          className="gap-1 h-7 text-xs bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300"
+        >
+          <Plus className="w-3 h-3" />
+          {addLabel}
+        </Button>
       </div>
 
-      <div className="space-y-6">
-        {/* Skills Section */}
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-md font-medium text-gray-800">Skills</h3>
-            <button
-              onClick={() => addSkill("skill")}
-              className="flex items-center gap-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors"
+      {items.length === 0 ? (
+        <p className="text-gray-400 text-xs italic py-2">
+          No {title.toLowerCase()} added yet.
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
             >
-              <Plus size={14} />
-              Add Skill
-            </button>
-          </div>
-          {skillsByCategory.skill.length === 0 ? (
-            <p className="text-gray-400 text-sm italic">No skills added yet.</p>
-          ) : (
-            <div className="space-y-2">
-              {skillsByCategory.skill.map((skill) => (
-                <div
-                  key={skill.id}
-                  className="flex items-center gap-3 p-2 bg-gray-50 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={skill.included}
-                    onChange={(e) =>
-                      updateSkill(skill.id, { included: e.target.checked })
-                    }
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <input
-                    type="text"
-                    value={skill.name}
-                    onChange={(e) =>
-                      updateSkill(skill.id, { name: e.target.value })
-                    }
-                    className="flex-1 px-2 py-1 border rounded"
-                    placeholder="Enter skill name"
-                  />
-                  <button
-                    onClick={() => deleteSkill(skill.id)}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ))}
+              <Checkbox
+                checked={item.included}
+                onCheckedChange={(checked) =>
+                  updateSkill(item.id, { included: !!checked })
+                }
+              />
+              <Input
+                value={item.name}
+                onChange={(e) => updateSkill(item.id, { name: e.target.value })}
+                placeholder={`Enter ${category} name`}
+                className="flex-1 border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20 bg-white"
+              />
+              <Button
+                onClick={() => deleteSkill(item.id)}
+                variant="ghost"
+                size="sm"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+              >
+                <Trash2 className="w-3 h-3" />
+              </Button>
             </div>
-          )}
+          ))}
         </div>
-
-        {/* Certifications Section */}
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-md font-medium text-gray-800">
-              Certifications
-            </h3>
-            <button
-              onClick={() => addSkill("certification")}
-              className="flex items-center gap-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors"
-            >
-              <Plus size={14} />
-              Add Certification
-            </button>
-          </div>
-          {skillsByCategory.certification.length === 0 ? (
-            <p className="text-gray-400 text-sm italic">
-              No certifications added yet.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {skillsByCategory.certification.map((cert) => (
-                <div
-                  key={cert.id}
-                  className="flex items-center gap-3 p-2 bg-gray-50 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={cert.included}
-                    onChange={(e) =>
-                      updateSkill(cert.id, { included: e.target.checked })
-                    }
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <input
-                    type="text"
-                    value={cert.name}
-                    onChange={(e) =>
-                      updateSkill(cert.id, { name: e.target.value })
-                    }
-                    className="flex-1 px-2 py-1 border rounded"
-                    placeholder="Enter certification name"
-                  />
-                  <button
-                    onClick={() => deleteSkill(cert.id)}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Others Section */}
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-md font-medium text-gray-800">Others</h3>
-            <button
-              onClick={() => addSkill("other")}
-              className="flex items-center gap-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors"
-            >
-              <Plus size={14} />
-              Add Other
-            </button>
-          </div>
-          {skillsByCategory.other.length === 0 ? (
-            <p className="text-gray-400 text-sm italic">
-              No other items added yet.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {skillsByCategory.other.map((other) => (
-                <div
-                  key={other.id}
-                  className="flex items-center gap-3 p-2 bg-gray-50 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={other.included}
-                    onChange={(e) =>
-                      updateSkill(other.id, { included: e.target.checked })
-                    }
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <input
-                    type="text"
-                    value={other.name}
-                    onChange={(e) =>
-                      updateSkill(other.id, { name: e.target.value })
-                    }
-                    className="flex-1 px-2 py-1 border rounded"
-                    placeholder="Enter item name"
-                  />
-                  <button
-                    onClick={() => deleteSkill(other.id)}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      )}
     </div>
+  );
+
+  return (
+    <Card className="border-gray-200/60 shadow-sm">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg font-semibold text-gray-900">
+          Skills, Certifications & Others
+        </CardTitle>
+      </CardHeader>
+
+      <CardContent className="space-y-6">
+        <SkillSection
+          title="Skills"
+          category="skill"
+          items={skillsByCategory.skill}
+          addLabel="Add Skill"
+        />
+
+        <SkillSection
+          title="Certifications"
+          category="certification"
+          items={skillsByCategory.certification}
+          addLabel="Add Certification"
+        />
+
+        <SkillSection
+          title="Others"
+          category="other"
+          items={skillsByCategory.other}
+          addLabel="Add Other"
+        />
+      </CardContent>
+    </Card>
   );
 }

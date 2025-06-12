@@ -1,5 +1,8 @@
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Badge } from "@/components/ui/badge";
 import React from "react";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -39,15 +42,22 @@ export default function PreviewPanel() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-      <div className="bg-gray-100 px-4 py-2 border-b">
-        <h2 className="text-sm font-medium text-gray-700">Resume Preview</h2>
-        <p className="text-xs text-gray-500">
+    <Card className="border-gray-200/60 shadow-sm">
+      <CardHeader className="pb-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            Resume Preview
+            <Badge variant="secondary" className="text-xs">
+              Live
+            </Badge>
+          </CardTitle>
+        </div>
+        <p className="text-sm text-gray-600">
           This preview matches the PDF output exactly
         </p>
-      </div>
+      </CardHeader>
 
-      <div className="p-8 bg-white">
+      <CardContent className="p-8 bg-white">
         <div
           id="resume-preview"
           style={{
@@ -76,7 +86,7 @@ export default function PreviewPanel() {
                 fontWeight: "bold",
                 margin: "0 0 8px 0",
                 textTransform: "uppercase",
-                letterSpacing: "0.5px", // Reduced from '1px' to '0.5px' for tighter spacing
+                letterSpacing: "0.5px",
               }}
             >
               {resumeData.personalInfo.name || "Your Name"}
@@ -358,7 +368,7 @@ export default function PreviewPanel() {
             }
           })}
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

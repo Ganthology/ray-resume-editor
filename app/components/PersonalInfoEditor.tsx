@@ -1,5 +1,9 @@
 "use client";
 
+import { Card, CardContent } from "@/components/ui/card";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PersonalInfo } from "../types/resume";
 import React from "react";
 import { useResumeStore } from "../store/resumeStore";
@@ -18,110 +22,120 @@ export default function PersonalInfoEditor() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Full Name *
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={personalInfo.name}
-            onChange={(e) => handleChange("name", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="John Doe"
-          />
-        </div>
+    <Card className="border-gray-200/60 shadow-sm">
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Personal Information
+            </h3>
+          </div>
 
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={personalInfo.email}
-            onChange={(e) => handleChange("email", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="john.doe@example.com"
-          />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label
+                htmlFor="name"
+                className="text-sm font-medium text-gray-700"
+              >
+                Full Name *
+              </Label>
+              <Input
+                id="name"
+                value={personalInfo.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                placeholder="John Doe"
+                className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
 
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            value={personalInfo.phone}
-            onChange={(e) => handleChange("phone", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="(555) 123-4567"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
+                Email Address
+              </Label>
+              <Input
+                type="email"
+                id="email"
+                value={personalInfo.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                placeholder="john.doe@example.com"
+                className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
 
-        <div>
-          <label
-            htmlFor="address"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Address
-          </label>
-          <input
-            type="text"
-            id="address"
-            value={personalInfo.address}
-            onChange={(e) => handleChange("address", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="City, State"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="phone"
+                className="text-sm font-medium text-gray-700"
+              >
+                Phone Number
+              </Label>
+              <Input
+                type="tel"
+                id="phone"
+                value={personalInfo.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                placeholder="(555) 123-4567"
+                className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
 
-        <div>
-          <label
-            htmlFor="linkedinUrl"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            LinkedIn URL
-          </label>
-          <input
-            type="url"
-            id="linkedinUrl"
-            value={personalInfo.linkedinUrl || ""}
-            onChange={(e) => handleChange("linkedinUrl", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="https://linkedin.com/in/your-profile"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="address"
+                className="text-sm font-medium text-gray-700"
+              >
+                Address
+              </Label>
+              <Input
+                id="address"
+                value={personalInfo.address}
+                onChange={(e) => handleChange("address", e.target.value)}
+                placeholder="City, State"
+                className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
 
-        <div>
-          <label
-            htmlFor="personalSiteUrl"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Personal Website/Portfolio
-          </label>
-          <input
-            type="url"
-            id="personalSiteUrl"
-            value={personalInfo.personalSiteUrl || ""}
-            onChange={(e) => handleChange("personalSiteUrl", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="https://your-portfolio.com"
-          />
+            <div className="space-y-2">
+              <Label
+                htmlFor="linkedinUrl"
+                className="text-sm font-medium text-gray-700"
+              >
+                LinkedIn URL
+              </Label>
+              <Input
+                type="url"
+                id="linkedinUrl"
+                value={personalInfo.linkedinUrl || ""}
+                onChange={(e) => handleChange("linkedinUrl", e.target.value)}
+                placeholder="https://linkedin.com/in/your-profile"
+                className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="personalSiteUrl"
+                className="text-sm font-medium text-gray-700"
+              >
+                Personal Website/Portfolio
+              </Label>
+              <Input
+                type="url"
+                id="personalSiteUrl"
+                value={personalInfo.personalSiteUrl || ""}
+                onChange={(e) =>
+                  handleChange("personalSiteUrl", e.target.value)
+                }
+                placeholder="https://your-portfolio.com"
+                className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
