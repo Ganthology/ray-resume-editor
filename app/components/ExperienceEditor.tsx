@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { useResumeStore } from "../store/resumeStore";
@@ -114,15 +115,12 @@ export default function ExperienceEditor() {
                       <Label className="text-sm font-medium text-gray-700">
                         Start Date
                       </Label>
-                      <Input
-                        type="month"
+                      <MonthYearPicker
                         value={exp.startDate}
-                        onChange={(e) =>
-                          updateExperience(exp.id, {
-                            startDate: e.target.value,
-                          })
+                        onChange={(value) =>
+                          updateExperience(exp.id, { startDate: value })
                         }
-                        className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                        placeholder="Select start date"
                       />
                     </div>
 
@@ -130,35 +128,14 @@ export default function ExperienceEditor() {
                       <Label className="text-sm font-medium text-gray-700">
                         End Date
                       </Label>
-                      <div className="flex gap-2">
-                        <Input
-                          type="month"
-                          value={exp.endDate === "Present" ? "" : exp.endDate}
-                          onChange={(e) =>
-                            updateExperience(exp.id, {
-                              endDate: e.target.value,
-                            })
-                          }
-                          disabled={exp.endDate === "Present"}
-                          className="flex-1 border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
-                        />
-                        <Button
-                          type="button"
-                          onClick={() =>
-                            updateExperience(exp.id, {
-                              endDate:
-                                exp.endDate === "Present" ? "" : "Present",
-                            })
-                          }
-                          variant={
-                            exp.endDate === "Present" ? "default" : "outline"
-                          }
-                          size="sm"
-                          className="px-4"
-                        >
-                          Present
-                        </Button>
-                      </div>
+                      <MonthYearPicker
+                        value={exp.endDate}
+                        onChange={(value) =>
+                          updateExperience(exp.id, { endDate: value })
+                        }
+                        placeholder="Select end date"
+                        allowPresent={true}
+                      />
                     </div>
                   </div>
 

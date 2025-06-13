@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -112,17 +113,28 @@ export default function EducationEditor() {
 
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-gray-700">
-                        Graduation Date
+                        Start Date
                       </Label>
-                      <Input
-                        value={edu.graduationDate}
-                        onChange={(e) =>
-                          updateEducation(edu.id, {
-                            graduationDate: e.target.value,
-                          })
+                      <MonthYearPicker
+                        value={edu.startDate}
+                        onChange={(value) =>
+                          updateEducation(edu.id, { startDate: value })
                         }
-                        placeholder="May 2023"
-                        className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                        placeholder="Select start date"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-gray-700">
+                        End Date
+                      </Label>
+                      <MonthYearPicker
+                        value={edu.endDate}
+                        onChange={(value) =>
+                          updateEducation(edu.id, { endDate: value })
+                        }
+                        placeholder="Select end date"
+                        allowPresent={true}
                       />
                     </div>
 

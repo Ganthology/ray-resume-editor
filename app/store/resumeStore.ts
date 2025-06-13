@@ -49,7 +49,7 @@ const initialData: ResumeData = {
       enabled: true,
     },
   ],
-  spacing: 50,
+  spacing: 25,
 };
 
 interface ResumeStore {
@@ -87,9 +87,6 @@ interface ResumeStore {
 
   // Module actions
   updateModules: (modules: ResumeData["modules"]) => void;
-
-  // Spacing actions
-  updateSpacing: (spacing: number) => void;
 
   // Data management
   loadFromJSON: (jsonData: ResumeData) => void;
@@ -149,24 +146,25 @@ export const useResumeStore = create<ResumeStore>()(
         })),
 
       // Education actions
-      addEducation: () =>
-        set((state) => {
-          const newEducation: Education = {
-            id: Date.now().toString(),
-            institution: "",
-            degree: "",
-            fieldOfStudy: "",
-            graduationDate: "",
-            gpa: "",
-            included: true,
-          };
-          return {
-            resumeData: {
-              ...state.resumeData,
-              education: [...state.resumeData.education, newEducation],
-            },
-          };
-        }),
+      addEducation: () => {
+        const newEducation: Education = {
+          id: Date.now().toString(),
+          institution: "",
+          degree: "",
+          fieldOfStudy: "",
+          startDate: "",
+          endDate: "",
+          graduationDate: "",
+          gpa: "",
+          included: true,
+        };
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            education: [...state.resumeData.education, newEducation],
+          },
+        }));
+      },
 
       updateEducation: (id, updates) =>
         set((state) => ({
@@ -335,12 +333,6 @@ export const useResumeStore = create<ResumeStore>()(
       updateModules: (modules) =>
         set((state) => ({
           resumeData: { ...state.resumeData, modules },
-        })),
-
-      // Spacing actions
-      updateSpacing: (spacing) =>
-        set((state) => ({
-          resumeData: { ...state.resumeData, spacing },
         })),
 
       // Data management

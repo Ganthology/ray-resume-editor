@@ -23,7 +23,9 @@ export interface Education {
   institution: string;
   degree: string;
   fieldOfStudy?: string;
-  graduationDate: string;
+  startDate: string;
+  endDate: string;
+  graduationDate: string; // Keep for backward compatibility
   gpa?: string;
   included: boolean;
 }

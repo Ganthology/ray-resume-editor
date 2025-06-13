@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Badge } from "@/components/ui/badge";
 import React from "react";
+import { pdfStyles } from "../styles/pdfStyles";
 import { useResumeStore } from "../store/resumeStore";
 
 export default function PreviewPanel() {
@@ -42,8 +43,8 @@ export default function PreviewPanel() {
   };
 
   return (
-    <Card className="border-gray-200/60 shadow-sm">
-      <CardHeader className="pb-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50">
+    <Card className="border-gray-200/60 shadow-sm bg-gray-50">
+      <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             Resume Preview
@@ -57,67 +58,51 @@ export default function PreviewPanel() {
         </p>
       </CardHeader>
 
-      <CardContent className="p-8 bg-white">
-        <div
-          id="resume-preview"
-          style={{
-            fontFamily: "Times New Roman, serif",
-            fontSize: "12px",
-            lineHeight: "1.4",
-            color: "#000000",
-            width: "100%",
-            minHeight: "auto",
-            margin: "0 auto",
-            backgroundColor: "#ffffff",
-            paddingLeft: `${resumeData.spacing}px`,
-            paddingRight: `${resumeData.spacing}px`,
-            paddingTop: "20px",
-            paddingBottom: "20px",
-            boxSizing: "border-box",
-          }}
-        >
+      <CardContent className="p-6 border-t border-gray-200">
+        <div id="resume-preview" className="pdf-content" style={pdfStyles.page}>
           {/* Personal Information */}
-          <div
-            style={{ textAlign: "center", marginBottom: "20px", width: "100%" }}
-          >
-            <h1
-              style={{
-                fontSize: "16px",
-                fontWeight: "bold",
-                margin: "0 0 8px 0",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-              }}
-            >
+          <div className="pdf-section personal-info" style={pdfStyles.header}>
+            <h1 className="pdf-name" style={pdfStyles.name}>
               {resumeData.personalInfo.name || "Your Name"}
             </h1>
-            <div style={{ fontSize: "12px", margin: "4px 0" }}>
+            <div className="pdf-contact" style={pdfStyles.contact}>
               {resumeData.personalInfo.email && (
-                <span>{resumeData.personalInfo.email}</span>
+                <span className="pdf-email">
+                  {resumeData.personalInfo.email}
+                </span>
               )}
               {resumeData.personalInfo.email &&
                 resumeData.personalInfo.phone &&
                 " | "}
               {resumeData.personalInfo.phone && (
-                <span>{resumeData.personalInfo.phone}</span>
+                <span className="pdf-phone">
+                  {resumeData.personalInfo.phone}
+                </span>
               )}
             </div>
             {resumeData.personalInfo.address && (
-              <div style={{ fontSize: "12px", margin: "4px 0" }}>
+              <div className="pdf-address" style={pdfStyles.contact}>
                 {resumeData.personalInfo.address}
               </div>
             )}
             {(resumeData.personalInfo.linkedinUrl ||
               resumeData.personalInfo.personalSiteUrl) && (
-              <div style={{ fontSize: "11px", margin: "4px 0" }}>
+              <div
+                className="pdf-links"
+                style={{ ...pdfStyles.contact, fontSize: 11 }}
+              >
                 {resumeData.personalInfo.linkedinUrl && (
-                  <span>{resumeData.personalInfo.linkedinUrl}</span>
+                  <span className="pdf-linkedin">
+                    {resumeData.personalInfo.linkedinUrl}
+                  </span>
                 )}
                 {resumeData.personalInfo.linkedinUrl &&
                   resumeData.personalInfo.personalSiteUrl &&
                   " | "}
                 {resumeData.personalInfo.personalSiteUrl && (
-                  <span>{resumeData.personalInfo.personalSiteUrl}</span>
+                  <span className="pdf-website">
+                    {resumeData.personalInfo.personalSiteUrl}
+                  </span>
                 )}
               </div>
             )}
@@ -128,45 +113,28 @@ export default function PreviewPanel() {
               case "experience":
                 if (includedExperiences.length === 0) return null;
                 return (
-                  <div key={module.id} style={{ marginBottom: "20px" }}>
-                    <h2
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        borderBottom: "1px solid #000",
-                        paddingBottom: "4px",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      {module.title}
-                    </h2>
+                  <div key={module.id} style={pdfStyles.section}>
+                    <h2 style={pdfStyles.sectionTitle}>{module.title}</h2>
                     {includedExperiences.map((exp, index) => (
                       <div
                         key={exp.id}
                         style={{
+                          ...pdfStyles.experienceItem,
                           marginBottom:
                             index < includedExperiences.length - 1
-                              ? "12px"
-                              : "0",
+                              ? pdfStyles.experienceItem.marginBottom
+                              : 0,
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            marginBottom: "2px",
-                          }}
-                        >
+                        <div style={pdfStyles.experienceHeader}>
                           <div>
-                            <strong>{exp.position}</strong>
+                            <span style={pdfStyles.jobTitle}>
+                              {exp.position}
+                            </span>
                             {exp.company && <span> - {exp.company}</span>}
                             {exp.department && <span>, {exp.department}</span>}
                           </div>
-                          <div
-                            style={{ fontSize: "11px", fontStyle: "italic" }}
-                          >
+                          <div style={pdfStyles.date}>
                             {exp.startDate &&
                               exp.endDate &&
                               (exp.endDate === "Present"
@@ -177,7 +145,7 @@ export default function PreviewPanel() {
                           </div>
                         </div>
                         {exp.description && (
-                          <div style={{ marginTop: "4px", fontSize: "12px" }}>
+                          <div style={pdfStyles.description}>
                             {exp.description.split("\n").map((line, i) => (
                               <div key={i}>{line}</div>
                             ))}
@@ -191,37 +159,22 @@ export default function PreviewPanel() {
               case "education":
                 if (includedEducation.length === 0) return null;
                 return (
-                  <div key={module.id} style={{ marginBottom: "20px" }}>
-                    <h2
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        borderBottom: "1px solid #000",
-                        paddingBottom: "4px",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      {module.title}
-                    </h2>
+                  <div key={module.id} style={pdfStyles.section}>
+                    <h2 style={pdfStyles.sectionTitle}>{module.title}</h2>
                     {includedEducation.map((edu, index) => (
                       <div
                         key={edu.id}
                         style={{
+                          ...pdfStyles.experienceItem,
                           marginBottom:
-                            index < includedEducation.length - 1 ? "12px" : "0",
+                            index < includedEducation.length - 1
+                              ? pdfStyles.experienceItem.marginBottom
+                              : 0,
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            marginBottom: "2px",
-                          }}
-                        >
+                        <div style={pdfStyles.experienceHeader}>
                           <div>
-                            <strong>{edu.degree}</strong>
+                            <span style={pdfStyles.jobTitle}>{edu.degree}</span>
                             {edu.fieldOfStudy && (
                               <span> in {edu.fieldOfStudy}</span>
                             )}
@@ -229,14 +182,14 @@ export default function PreviewPanel() {
                               <span> - {edu.institution}</span>
                             )}
                           </div>
-                          <div
-                            style={{ fontSize: "11px", fontStyle: "italic" }}
-                          >
-                            {edu.graduationDate}
-                          </div>
+                          <div style={pdfStyles.date}>{edu.graduationDate}</div>
                         </div>
                         {edu.gpa && (
-                          <div style={{ fontSize: "11px" }}>GPA: {edu.gpa}</div>
+                          <div
+                            style={{ ...pdfStyles.description, fontSize: 11 }}
+                          >
+                            GPA: {edu.gpa}
+                          </div>
                         )}
                       </div>
                     ))}
@@ -254,44 +207,41 @@ export default function PreviewPanel() {
                 };
 
                 return (
-                  <div key={module.id} style={{ marginBottom: "20px" }}>
-                    <h2
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        borderBottom: "1px solid #000",
-                        paddingBottom: "4px",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      {module.title}
-                    </h2>
+                  <div key={module.id} style={pdfStyles.section}>
+                    <h2 style={pdfStyles.sectionTitle}>{module.title}</h2>
 
                     {skillsByCategory.skill.length > 0 && (
-                      <div style={{ marginBottom: "8px" }}>
-                        <strong>Skills: </strong>
-                        {skillsByCategory.skill
-                          .map((skill) => skill.name)
-                          .join(", ")}
+                      <div style={pdfStyles.skillsContainer}>
+                        <span style={pdfStyles.skillCategory}>Skills: </span>
+                        <span style={pdfStyles.skillList}>
+                          {skillsByCategory.skill
+                            .map((skill) => skill.name)
+                            .join(", ")}
+                        </span>
                       </div>
                     )}
 
                     {skillsByCategory.certification.length > 0 && (
-                      <div style={{ marginBottom: "8px" }}>
-                        <strong>Certifications: </strong>
-                        {skillsByCategory.certification
-                          .map((skill) => skill.name)
-                          .join(", ")}
+                      <div style={pdfStyles.skillsContainer}>
+                        <span style={pdfStyles.skillCategory}>
+                          Certifications:{" "}
+                        </span>
+                        <span style={pdfStyles.skillList}>
+                          {skillsByCategory.certification
+                            .map((skill) => skill.name)
+                            .join(", ")}
+                        </span>
                       </div>
                     )}
 
                     {skillsByCategory.other.length > 0 && (
-                      <div style={{ marginBottom: "8px" }}>
-                        <strong>Others: </strong>
-                        {skillsByCategory.other
-                          .map((skill) => skill.name)
-                          .join(", ")}
+                      <div style={pdfStyles.skillsContainer}>
+                        <span style={pdfStyles.skillCategory}>Others: </span>
+                        <span style={pdfStyles.skillList}>
+                          {skillsByCategory.other
+                            .map((skill) => skill.name)
+                            .join(", ")}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -308,51 +258,30 @@ export default function PreviewPanel() {
                 if (includedCustomItems.length === 0) return null;
 
                 return (
-                  <div key={module.id} style={{ marginBottom: "20px" }}>
-                    <h2
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        borderBottom: "1px solid #000",
-                        paddingBottom: "4px",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      {module.title}
-                    </h2>
+                  <div key={module.id} style={pdfStyles.section}>
+                    <h2 style={pdfStyles.sectionTitle}>{module.title}</h2>
                     {includedCustomItems.map((item, index) => (
                       <div
                         key={item.id}
                         style={{
+                          ...pdfStyles.experienceItem,
                           marginBottom:
                             index < includedCustomItems.length - 1
-                              ? "12px"
-                              : "0",
+                              ? pdfStyles.experienceItem.marginBottom
+                              : 0,
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            marginBottom: "2px",
-                          }}
-                        >
+                        <div style={pdfStyles.experienceHeader}>
                           <div>
-                            <strong>{item.title}</strong>
+                            <span style={pdfStyles.jobTitle}>{item.title}</span>
                             {item.subtitle && <span> - {item.subtitle}</span>}
                           </div>
                           {item.date && (
-                            <div
-                              style={{ fontSize: "11px", fontStyle: "italic" }}
-                            >
-                              {item.date}
-                            </div>
+                            <div style={pdfStyles.date}>{item.date}</div>
                           )}
                         </div>
                         {item.description && (
-                          <div style={{ marginTop: "4px", fontSize: "12px" }}>
+                          <div style={pdfStyles.description}>
                             {item.description.split("\n").map((line, i) => (
                               <div key={i}>{line}</div>
                             ))}

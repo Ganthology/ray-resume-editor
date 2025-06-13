@@ -4,13 +4,6 @@ import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { Download, RotateCcw, Save } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
@@ -19,8 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import EditPanel from "./EditPanel";
 import PreviewPanel from "./PreviewPanel";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { useResumeStore } from "../store/resumeStore";
 
 export default function ResumeBuilder() {
@@ -28,7 +19,7 @@ export default function ResumeBuilder() {
 
   // Get data and actions from Zustand store
   const resumeData = useResumeStore((state) => state.resumeData);
-  const { updateModules, updateSpacing, clearAllData } = useResumeStore();
+  const { updateModules, clearAllData } = useResumeStore();
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -75,65 +66,29 @@ export default function ResumeBuilder() {
   const exportToPDF = useCallback(async () => {
     setIsExporting(true);
     try {
-      const element = document.getElementById("resume-preview");
-      if (!element) return;
+      // Dynamically import react-pdf components to avoid SSR issues
+      const { pdf } = await import("@react-pdf/renderer");
+      const { default: ResumePDF } = await import("./ResumePDF");
 
-      // Wait for any fonts to load
-      await document.fonts.ready;
+      // Generate PDF with actual text elements
+      const blob = await pdf(<ResumePDF resumeData={resumeData} />).toBlob();
 
-      // Get the actual content dimensions
-      const originalWidth = element.offsetWidth;
-      const originalHeight = element.offsetHeight;
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        allowTaint: false,
-        removeContainer: true,
-        logging: false,
-        width: originalWidth,
-        height: originalHeight,
-        scrollX: 0,
-        scrollY: 0,
-      });
-
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      const pdf = new jsPDF("p", "mm", "a4");
-
-      // A4 dimensions in mm
-      const pdfWidth = 210;
-      const pdfHeight = 297;
-      const margin = 10; // 10mm margin on all sides
-      const contentWidth = pdfWidth - margin * 2;
-
-      // Calculate image dimensions to fit within margins
-      const imgAspectRatio = canvas.height / canvas.width;
-      const imgWidth = contentWidth;
-      const imgHeight = contentWidth * imgAspectRatio;
-
-      let currentY = margin;
-      let remainingHeight = imgHeight;
-
-      // Add first page with margins
-      pdf.addImage(imgData, "PNG", margin, currentY, imgWidth, imgHeight);
-
-      // Only add more pages if content exceeds one page
-      while (remainingHeight > pdfHeight - margin * 2) {
-        remainingHeight -= pdfHeight - margin * 2;
-        currentY = margin - (imgHeight - remainingHeight);
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", margin, currentY, imgWidth, imgHeight);
-      }
-
-      pdf.save("resume.pdf");
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "resume.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Error generating PDF. Please try again.");
     } finally {
       setIsExporting(false);
     }
-  }, []);
+  }, [resumeData]);
 
   return (
     <div className="min-h-screen bg-gray-50/30">
@@ -141,35 +96,17 @@ export default function ResumeBuilder() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">R</span>
+              <div className="flex flex-col md:flex-row items-center gap-x-2 justify-start">
+                <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+                  Resume Builder
+                </h1>
+                <span className="text-sm text-gray-500">
+                  that just works, vibe-coded by Ray
+                </span>
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
-                Resume Builder
-              </h1>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Spacing:
-                </label>
-                <Select
-                  value={resumeData.spacing.toString()}
-                  onValueChange={(value) => updateSpacing(Number(value))}
-                >
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="25">Narrow</SelectItem>
-                    <SelectItem value="50">Normal</SelectItem>
-                    <SelectItem value="75">Wide</SelectItem>
-                    <SelectItem value="100">Extra Wide</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               <Button
                 onClick={saveDraft}
                 variant="outline"
