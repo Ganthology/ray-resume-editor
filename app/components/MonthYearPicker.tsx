@@ -26,12 +26,15 @@ export default function MonthYearPicker({
   disabled = false,
 }: MonthYearPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"months" | "years">("months");
   const [selectedYear, setSelectedYear] = useState<number>(() => {
     if (value && value !== "Present") {
       return parseInt(value.split("-")[0]) || new Date().getFullYear();
     }
     return new Date().getFullYear();
   });
+
+  const currentYear = new Date().getFullYear();
 
   const months = [
     { value: "01", label: "Jan", fullLabel: "January" },
@@ -47,6 +50,16 @@ export default function MonthYearPicker({
     { value: "11", label: "Nov", fullLabel: "November" },
     { value: "12", label: "Dec", fullLabel: "December" },
   ];
+
+  // Get decade range for year view
+  const getDecadeRange = (year: number) => {
+    const decadeStart = Math.floor(year / 10) * 10;
+    return {
+      start: decadeStart,
+      end: decadeStart + 9,
+      years: Array.from({ length: 10 }, (_, i) => decadeStart + i),
+    };
+  };
 
   const formatDisplayValue = (val: string) => {
     if (val === "Present") return "Present";
@@ -65,6 +78,11 @@ export default function MonthYearPicker({
     setIsOpen(false);
   };
 
+  const handleYearSelect = (year: number) => {
+    setSelectedYear(year);
+    setViewMode("months");
+  };
+
   const handlePresentSelect = () => {
     onChange("Present");
     setIsOpen(false);
@@ -77,15 +95,41 @@ export default function MonthYearPicker({
     return null;
   };
 
-  const goToPreviousYear = () => {
-    setSelectedYear((prev) => Math.max(prev - 1, 1950));
+  const goToPrevious = () => {
+    if (viewMode === "months") {
+      setSelectedYear((prev) => Math.max(prev - 1, 1950));
+    } else {
+      // Navigate to previous decade
+      setSelectedYear((prev) => Math.max(prev - 10, 1950));
+    }
   };
 
-  const goToNextYear = () => {
-    setSelectedYear((prev) =>
-      Math.min(prev + 1, new Date().getFullYear() + 10)
-    );
+  const goToNext = () => {
+    if (viewMode === "months") {
+      setSelectedYear((prev) => Math.min(prev + 1, currentYear));
+    } else {
+      // Navigate to next decade, but don't go beyond current year's decade
+      const nextDecadeStart = Math.floor(selectedYear / 10) * 10 + 10;
+      if (nextDecadeStart <= currentYear) {
+        setSelectedYear((prev) => prev + 10);
+      }
+    }
   };
+
+  const canGoNext = () => {
+    if (viewMode === "months") {
+      return selectedYear < currentYear;
+    } else {
+      const nextDecadeStart = Math.floor(selectedYear / 10) * 10 + 10;
+      return nextDecadeStart <= currentYear;
+    }
+  };
+
+  const toggleYearView = () => {
+    setViewMode(viewMode === "months" ? "years" : "months");
+  };
+
+  const decade = getDecadeRange(selectedYear);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -101,55 +145,92 @@ export default function MonthYearPicker({
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="start">
         <div className="bg-white rounded-lg shadow-lg border border-gray-200">
-          {/* Year Navigation Header */}
+          {/* Navigation Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-100">
             <Button
               variant="ghost"
               size="sm"
-              onClick={goToPreviousYear}
+              onClick={goToPrevious}
               className="h-8 w-8 p-0"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <div className="text-lg font-semibold text-gray-900">
-              {selectedYear}
-            </div>
+            <Button
+              variant="ghost"
+              onClick={toggleYearView}
+              className="text-lg font-semibold text-gray-900 hover:bg-gray-100"
+            >
+              {viewMode === "months"
+                ? selectedYear
+                : `${decade.start} - ${decade.end}`}
+            </Button>
 
             <Button
               variant="ghost"
               size="sm"
-              onClick={goToNextYear}
-              className="h-8 w-8 p-0"
+              onClick={goToNext}
+              disabled={!canGoNext()}
+              className="h-8 w-8 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Months Grid */}
+          {/* Content Area */}
           <div className="p-4">
-            <div className="grid grid-cols-4 gap-2">
-              {months.map((month) => {
-                const isSelected =
-                  getCurrentMonth() === month.value &&
-                  parseInt(value?.split("-")[0] || "0") === selectedYear;
+            {viewMode === "months" ? (
+              /* Months Grid */
+              <div className="grid grid-cols-4 gap-2">
+                {months.map((month) => {
+                  const isSelected =
+                    getCurrentMonth() === month.value &&
+                    parseInt(value?.split("-")[0] || "0") === selectedYear;
 
-                return (
-                  <Button
-                    key={month.value}
-                    variant={isSelected ? "default" : "ghost"}
-                    className={`h-12 text-sm font-medium ${
-                      isSelected
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                    onClick={() => handleMonthSelect(month.value)}
-                  >
-                    {month.label}
-                  </Button>
-                );
-              })}
-            </div>
+                  return (
+                    <Button
+                      key={month.value}
+                      variant={isSelected ? "default" : "ghost"}
+                      className={`h-12 text-sm font-medium ${
+                        isSelected
+                          ? "bg-blue-600 text-white hover:bg-blue-700"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => handleMonthSelect(month.value)}
+                    >
+                      {month.label}
+                    </Button>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Years Grid */
+              <div className="grid grid-cols-4 gap-2">
+                {decade.years.map((year) => {
+                  const isSelected =
+                    parseInt(value?.split("-")[0] || "0") === year;
+                  const isDisabled = year > currentYear;
+
+                  return (
+                    <Button
+                      key={year}
+                      variant={isSelected ? "default" : "ghost"}
+                      disabled={isDisabled}
+                      className={`h-12 text-sm font-medium ${
+                        isSelected
+                          ? "bg-blue-600 text-white hover:bg-blue-700"
+                          : isDisabled
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => !isDisabled && handleYearSelect(year)}
+                    >
+                      {year}
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Present Option Footer */}
