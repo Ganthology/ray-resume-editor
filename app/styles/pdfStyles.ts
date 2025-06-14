@@ -21,10 +21,12 @@ export const pdfStyles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: parseFloat(styleValues.letterSpacing),
     marginBottom: parseInt(styleValues.spacing.nameBottom),
+    lineHeight: 1,
   },
-  contact: {
+  headerItem: {
     fontSize: parseInt(styleValues.fontSize.contact),
     marginBottom: parseInt(styleValues.spacing.contactBottom),
+    lineHeight: 1,
   },
   section: {
     marginBottom: parseInt(styleValues.spacing.sectionBottom),

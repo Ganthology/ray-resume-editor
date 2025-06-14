@@ -59,13 +59,17 @@ export default function PreviewPanel() {
       </CardHeader>
 
       <CardContent className="p-6 border-t border-gray-200">
-        <div id="resume-preview" className="pdf-content" style={pdfStyles.page}>
+        <div
+          id="resume-preview"
+          className="pdf-content border-2 border-gray-100"
+          style={pdfStyles.page}
+        >
           {/* Personal Information */}
           <div className="pdf-section personal-info" style={pdfStyles.header}>
             <h1 className="pdf-name" style={pdfStyles.name}>
               {resumeData.personalInfo.name || "Your Name"}
             </h1>
-            <div className="pdf-contact" style={pdfStyles.contact}>
+            <div className="pdf-contact" style={pdfStyles.headerItem}>
               {resumeData.personalInfo.email && (
                 <span className="pdf-email">
                   {resumeData.personalInfo.email}
@@ -81,16 +85,13 @@ export default function PreviewPanel() {
               )}
             </div>
             {resumeData.personalInfo.address && (
-              <div className="pdf-address" style={pdfStyles.contact}>
+              <div className="pdf-address" style={pdfStyles.headerItem}>
                 {resumeData.personalInfo.address}
               </div>
             )}
             {(resumeData.personalInfo.linkedinUrl ||
               resumeData.personalInfo.personalSiteUrl) && (
-              <div
-                className="pdf-links"
-                style={{ ...pdfStyles.contact, fontSize: 11 }}
-              >
+              <div className="pdf-links" style={pdfStyles.headerItem}>
                 {resumeData.personalInfo.linkedinUrl && (
                   <span className="pdf-linkedin">
                     {resumeData.personalInfo.linkedinUrl}

@@ -59,7 +59,7 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
             {resumeData.personalInfo.name || "Your Name"}
           </Text>
           {(resumeData.personalInfo.email || resumeData.personalInfo.phone) && (
-            <Text style={pdfStyles.contact}>
+            <Text style={pdfStyles.headerItem}>
               {resumeData.personalInfo.email}
               {resumeData.personalInfo.email &&
                 resumeData.personalInfo.phone &&
@@ -68,13 +68,13 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
             </Text>
           )}
           {resumeData.personalInfo.address && (
-            <Text style={pdfStyles.contact}>
+            <Text style={pdfStyles.headerItem}>
               {resumeData.personalInfo.address}
             </Text>
           )}
           {(resumeData.personalInfo.linkedinUrl ||
             resumeData.personalInfo.personalSiteUrl) && (
-            <Text style={[pdfStyles.contact, { fontSize: 11 }]}>
+            <Text style={pdfStyles.headerItem}>
               {resumeData.personalInfo.linkedinUrl}
               {resumeData.personalInfo.linkedinUrl &&
                 resumeData.personalInfo.personalSiteUrl &&
