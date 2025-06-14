@@ -1,19 +1,12 @@
 "use client";
 
-import { Calendar, Check } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import React, { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
 
@@ -33,39 +26,27 @@ export default function MonthYearPicker({
   disabled = false,
 }: MonthYearPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedYear, setSelectedYear] = useState<string>(() => {
+  const [selectedYear, setSelectedYear] = useState<number>(() => {
     if (value && value !== "Present") {
-      return value.split("-")[0] || new Date().getFullYear().toString();
+      return parseInt(value.split("-")[0]) || new Date().getFullYear();
     }
-    return new Date().getFullYear().toString();
-  });
-  const [selectedMonth, setSelectedMonth] = useState<string>(() => {
-    if (value && value !== "Present") {
-      return value.split("-")[1] || "01";
-    }
-    return "01";
+    return new Date().getFullYear();
   });
 
   const months = [
-    { value: "01", label: "January" },
-    { value: "02", label: "February" },
-    { value: "03", label: "March" },
-    { value: "04", label: "April" },
-    { value: "05", label: "May" },
-    { value: "06", label: "June" },
-    { value: "07", label: "July" },
-    { value: "08", label: "August" },
-    { value: "09", label: "September" },
-    { value: "10", label: "October" },
-    { value: "11", label: "November" },
-    { value: "12", label: "December" },
+    { value: "01", label: "Jan", fullLabel: "January" },
+    { value: "02", label: "Feb", fullLabel: "February" },
+    { value: "03", label: "Mar", fullLabel: "March" },
+    { value: "04", label: "Apr", fullLabel: "April" },
+    { value: "05", label: "May", fullLabel: "May" },
+    { value: "06", label: "Jun", fullLabel: "June" },
+    { value: "07", label: "Jul", fullLabel: "July" },
+    { value: "08", label: "Aug", fullLabel: "August" },
+    { value: "09", label: "Sep", fullLabel: "September" },
+    { value: "10", label: "Oct", fullLabel: "October" },
+    { value: "11", label: "Nov", fullLabel: "November" },
+    { value: "12", label: "Dec", fullLabel: "December" },
   ];
-
-  // Generate years from 1950 to current year + 10
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1950 + 11 }, (_, i) =>
-    (currentYear + 10 - i).toString()
-  );
 
   const formatDisplayValue = (val: string) => {
     if (val === "Present") return "Present";
@@ -74,12 +55,12 @@ export default function MonthYearPicker({
     const [year, month] = val.split("-");
     if (!year || !month) return placeholder;
 
-    const monthName = months.find((m) => m.value === month)?.label;
+    const monthName = months.find((m) => m.value === month)?.fullLabel;
     return `${monthName} ${year}`;
   };
 
-  const handleSelect = () => {
-    const newValue = `${selectedYear}-${selectedMonth}`;
+  const handleMonthSelect = (monthValue: string) => {
+    const newValue = `${selectedYear}-${monthValue}`;
     onChange(newValue);
     setIsOpen(false);
   };
@@ -87,6 +68,23 @@ export default function MonthYearPicker({
   const handlePresentSelect = () => {
     onChange("Present");
     setIsOpen(false);
+  };
+
+  const getCurrentMonth = () => {
+    if (value && value !== "Present") {
+      return value.split("-")[1];
+    }
+    return null;
+  };
+
+  const goToPreviousYear = () => {
+    setSelectedYear((prev) => Math.max(prev - 1, 1950));
+  };
+
+  const goToNextYear = () => {
+    setSelectedYear((prev) =>
+      Math.min(prev + 1, new Date().getFullYear() + 10)
+    );
   };
 
   return (
@@ -101,59 +99,75 @@ export default function MonthYearPicker({
           {formatDisplayValue(value)}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-4" align="start">
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Month</label>
-              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {months.map((month) => (
-                    <SelectItem key={month.value} value={month.value}>
-                      {month.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      <PopoverContent className="w-80 p-0" align="start">
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200">
+          {/* Year Navigation Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={goToPreviousYear}
+              className="h-8 w-8 p-0"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+
+            <div className="text-lg font-semibold text-gray-900">
+              {selectedYear}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Year</label>
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={goToNextYear}
+              className="h-8 w-8 p-0"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Months Grid */}
+          <div className="p-4">
+            <div className="grid grid-cols-4 gap-2">
+              {months.map((month) => {
+                const isSelected =
+                  getCurrentMonth() === month.value &&
+                  parseInt(value?.split("-")[0] || "0") === selectedYear;
+
+                return (
+                  <Button
+                    key={month.value}
+                    variant={isSelected ? "default" : "ghost"}
+                    className={`h-12 text-sm font-medium ${
+                      isSelected
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                    onClick={() => handleMonthSelect(month.value)}
+                  >
+                    {month.label}
+                  </Button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2">
-            <Button onClick={handleSelect} size="sm" className="flex-1 gap-2">
-              <Check className="w-3 h-3" />
-              Select Date
-            </Button>
-
-            {allowPresent && (
+          {/* Present Option Footer */}
+          {allowPresent && (
+            <div className="border-t border-gray-100 p-4">
               <Button
-                onClick={handlePresentSelect}
                 variant={value === "Present" ? "default" : "outline"}
-                size="sm"
-                className="flex-1"
+                className={`w-full ${
+                  value === "Present"
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "text-gray-700 border-gray-200 hover:bg-gray-50"
+                }`}
+                onClick={handlePresentSelect}
               >
                 Present
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </PopoverContent>
     </Popover>
