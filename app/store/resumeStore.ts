@@ -2,7 +2,6 @@
 
 import {
   CustomSection,
-  CustomSectionItem,
   Education,
   Experience,
   PersonalInfo,
@@ -77,13 +76,6 @@ interface ResumeStore {
   addCustomSection: () => void;
   updateCustomSection: (id: string, updates: Partial<CustomSection>) => void;
   deleteCustomSection: (id: string) => void;
-  addCustomSectionItem: (sectionId: string) => void;
-  updateCustomSectionItem: (
-    sectionId: string,
-    itemId: string,
-    updates: Partial<CustomSectionItem>
-  ) => void;
-  deleteCustomSectionItem: (sectionId: string, itemId: string) => void;
 
   // Module actions
   updateModules: (modules: ResumeData["modules"]) => void;
@@ -109,9 +101,10 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => {
           const newExperience: Experience = {
             id: Date.now().toString(),
-            company: "",
             position: "",
+            company: "",
             department: "",
+            location: "",
             startDate: "",
             endDate: "",
             description: "",
@@ -146,25 +139,26 @@ export const useResumeStore = create<ResumeStore>()(
         })),
 
       // Education actions
-      addEducation: () => {
-        const newEducation: Education = {
-          id: Date.now().toString(),
-          institution: "",
-          degree: "",
-          fieldOfStudy: "",
-          startDate: "",
-          endDate: "",
-          graduationDate: "",
-          gpa: "",
-          included: true,
-        };
-        set((state) => ({
-          resumeData: {
-            ...state.resumeData,
-            education: [...state.resumeData.education, newEducation],
-          },
-        }));
-      },
+      addEducation: () =>
+        set((state) => {
+          const newEducation: Education = {
+            id: Date.now().toString(),
+            degree: "",
+            fieldOfStudy: "",
+            institution: "",
+            graduationDate: "",
+            startDate: "",
+            endDate: "",
+            gpa: "",
+            included: true,
+          };
+          return {
+            resumeData: {
+              ...state.resumeData,
+              education: [...state.resumeData.education, newEducation],
+            },
+          };
+        }),
 
       updateEducation: (id, updates) =>
         set((state) => ({
@@ -228,7 +222,7 @@ export const useResumeStore = create<ResumeStore>()(
           const newSection: CustomSection = {
             id: timestamp,
             title: "New Section",
-            items: [],
+            content: "",
           };
           const newModule = {
             id: `custom-${timestamp}`,
@@ -275,60 +269,6 @@ export const useResumeStore = create<ResumeStore>()(
           },
         })),
 
-      addCustomSectionItem: (sectionId) =>
-        set((state) => {
-          const newItem: CustomSectionItem = {
-            id: Date.now().toString(),
-            title: "",
-            subtitle: "",
-            description: "",
-            date: "",
-            included: true,
-          };
-          return {
-            resumeData: {
-              ...state.resumeData,
-              customSections: state.resumeData.customSections.map((section) =>
-                section.id === sectionId
-                  ? { ...section, items: [...section.items, newItem] }
-                  : section
-              ),
-            },
-          };
-        }),
-
-      updateCustomSectionItem: (sectionId, itemId, updates) =>
-        set((state) => ({
-          resumeData: {
-            ...state.resumeData,
-            customSections: state.resumeData.customSections.map((section) =>
-              section.id === sectionId
-                ? {
-                    ...section,
-                    items: section.items.map((item) =>
-                      item.id === itemId ? { ...item, ...updates } : item
-                    ),
-                  }
-                : section
-            ),
-          },
-        })),
-
-      deleteCustomSectionItem: (sectionId, itemId) =>
-        set((state) => ({
-          resumeData: {
-            ...state.resumeData,
-            customSections: state.resumeData.customSections.map((section) =>
-              section.id === sectionId
-                ? {
-                    ...section,
-                    items: section.items.filter((item) => item.id !== itemId),
-                  }
-                : section
-            ),
-          },
-        })),
-
       // Module actions
       updateModules: (modules) =>
         set((state) => ({
@@ -349,7 +289,6 @@ export const useResumeStore = create<ResumeStore>()(
     {
       name: "resume-storage",
       storage: createJSONStorage(() => localStorage),
-      version: 1,
     }
   )
 );

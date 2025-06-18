@@ -96,12 +96,8 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                     <View key={exp.id} style={pdfStyles.experienceItem}>
                       <View style={pdfStyles.experienceHeader}>
                         <Text>
-                          <Text style={pdfStyles.jobTitle}>{exp.position}</Text>
                           {exp.company && (
-                            <Text style={pdfStyles.company}>
-                              {" "}
-                              - {exp.company}
-                            </Text>
+                            <Text style={pdfStyles.company}>{exp.company}</Text>
                           )}
                           {exp.department && (
                             <Text style={pdfStyles.company}>
@@ -118,6 +114,12 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                                 )}`}
                           </Text>
                         )}
+                      </View>
+                      <View style={pdfStyles.experienceSubheader}>
+                        <Text style={pdfStyles.jobTitle}>{exp.position}</Text>
+                        <Text style={pdfStyles.jobLocation}>
+                          {exp.location && `${exp.location}`}
+                        </Text>
                       </View>
                       {exp.description && (
                         <View style={pdfStyles.description}>
@@ -233,40 +235,16 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
               const customSection = resumeData.customSections.find(
                 (s) => s.id === module.customSectionId
               );
-              if (!customSection) return null;
-              const includedCustomItems = customSection.items.filter(
-                (item) => item.included
-              );
-              if (includedCustomItems.length === 0) return null;
+              if (!customSection || !customSection.content.trim()) return null;
 
               return (
                 <View key={module.id} style={pdfStyles.section}>
                   <Text style={pdfStyles.sectionTitle}>{module.title}</Text>
-                  {includedCustomItems.map((item) => (
-                    <View key={item.id} style={pdfStyles.experienceItem}>
-                      <View style={pdfStyles.experienceHeader}>
-                        <Text>
-                          <Text style={pdfStyles.jobTitle}>{item.title}</Text>
-                          {item.subtitle && (
-                            <Text style={pdfStyles.company}>
-                              {" "}
-                              - {item.subtitle}
-                            </Text>
-                          )}
-                        </Text>
-                        {item.date && (
-                          <Text style={pdfStyles.date}>{item.date}</Text>
-                        )}
-                      </View>
-                      {item.description && (
-                        <View style={pdfStyles.description}>
-                          {item.description.split("\n").map((line, i) => (
-                            <Text key={i}>{line}</Text>
-                          ))}
-                        </View>
-                      )}
-                    </View>
-                  ))}
+                  <View style={pdfStyles.description}>
+                    {customSection.content.split("\n").map((line, i) => (
+                      <Text key={i}>{line}</Text>
+                    ))}
+                  </View>
                 </View>
               );
 

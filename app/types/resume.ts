@@ -3,15 +3,16 @@ export interface PersonalInfo {
   email: string;
   phone: string;
   address: string;
-  linkedinUrl?: string;
-  personalSiteUrl?: string;
+  linkedinUrl: string;
+  personalSiteUrl: string;
 }
 
 export interface Experience {
   id: string;
-  company: string;
   position: string;
+  company: string;
   department?: string;
+  location?: string;
   startDate: string;
   endDate: string;
   description: string;
@@ -20,12 +21,12 @@ export interface Experience {
 
 export interface Education {
   id: string;
-  institution: string;
   degree: string;
-  fieldOfStudy?: string;
+  fieldOfStudy: string;
+  institution: string;
+  graduationDate: string;
   startDate: string;
   endDate: string;
-  graduationDate: string; // Keep for backward compatibility
   gpa?: string;
   included: boolean;
 }
@@ -40,16 +41,7 @@ export interface Skill {
 export interface CustomSection {
   id: string;
   title: string;
-  items: CustomSectionItem[];
-}
-
-export interface CustomSectionItem {
-  id: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  date?: string;
-  included: boolean;
+  content: string;
 }
 
 export interface ResumeModule {

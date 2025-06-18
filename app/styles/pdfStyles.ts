@@ -49,11 +49,20 @@ export const pdfStyles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: parseInt(styleValues.spacing.headerSpacing),
   },
+  experienceSubheader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: parseInt(styleValues.spacing.headerSpacing),
+  },
+  jobLocation: {
+    alignSelf: "flex-end",
+  },
   jobTitle: {
-    fontWeight: "bold",
+    fontWeight: "normal",
   },
   company: {
-    fontWeight: "normal",
+    fontWeight: "bold",
   },
   date: {
     fontSize: parseInt(styleValues.fontSize.date),

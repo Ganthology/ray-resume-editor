@@ -113,6 +113,20 @@ export default function ExperienceEditor() {
 
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-gray-700">
+                        Location (Optional)
+                      </Label>
+                      <Input
+                        value={exp.location || ""}
+                        onChange={(e) =>
+                          updateExperience(exp.id, { location: e.target.value })
+                        }
+                        placeholder="San Francisco, CA"
+                        className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-gray-700">
                         Start Date
                       </Label>
                       <MonthYearPicker
