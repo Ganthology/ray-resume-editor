@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
-import { Textarea } from "@/components/ui/textarea";
+import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
 export default function ExperienceEditor() {
@@ -157,16 +157,14 @@ export default function ExperienceEditor() {
                     <Label className="text-sm font-medium text-gray-700">
                       Description
                     </Label>
-                    <Textarea
+                    <TiptapEditor
                       value={exp.description}
-                      onChange={(e) =>
+                      onChange={(html) =>
                         updateExperience(exp.id, {
-                          description: e.target.value,
+                          description: html,
                         })
                       }
-                      rows={4}
                       placeholder="• Developed and maintained web applications using React and Node.js&#10;• Collaborated with cross-functional teams to deliver high-quality software&#10;• Implemented automated testing strategies, improving code reliability by 30%"
-                      className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
                     />
                   </div>
                 </CardContent>

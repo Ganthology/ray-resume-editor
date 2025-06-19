@@ -68,10 +68,7 @@ export const pdfStyles = StyleSheet.create({
     fontSize: parseInt(styleValues.fontSize.date),
     fontStyle: "italic",
   },
-  description: {
-    marginTop: parseInt(styleValues.spacing.descriptionTop),
-    fontSize: parseInt(styleValues.fontSize.description),
-  },
+  description: {},
   skillsContainer: {
     marginBottom: parseInt(styleValues.spacing.skillsBottom),
   },

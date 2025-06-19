@@ -4,6 +4,7 @@ import { Document, Font, Page, Text, View } from "@react-pdf/renderer";
 
 import React from "react";
 import { ResumeData } from "../types/resume";
+import { parseHtmlToPdf } from "../../lib/htmlToPdf";
 import { pdfStyles } from "../styles/pdfStyles";
 
 // Register fonts for better text rendering
@@ -52,7 +53,7 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
   return (
     <Document>
-      <Page size="A4" style={pdfStyles.page}>
+      <Page size={{ width: 720, height: 1017.9 }} style={pdfStyles.page}>
         {/* Personal Information */}
         <View style={pdfStyles.header}>
           <Text style={pdfStyles.name}>
@@ -123,9 +124,7 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                       </View>
                       {exp.description && (
                         <View style={pdfStyles.description}>
-                          {exp.description.split("\n").map((line, i) => (
-                            <Text key={i}>{line}</Text>
-                          ))}
+                          {parseHtmlToPdf(exp.description)}
                         </View>
                       )}
                     </View>
