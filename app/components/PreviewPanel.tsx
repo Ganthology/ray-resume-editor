@@ -30,7 +30,7 @@ export default function PreviewPanel() {
         URL.revokeObjectURL(pdfUrl);
       }
 
-      // Create new blob URL
+      // Create new blob URL with parameters for optimal viewing
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
     } catch (err) {
@@ -98,7 +98,7 @@ export default function PreviewPanel() {
 
           {pdfUrl && !isLoading && !error && (
             <iframe
-              src={pdfUrl}
+              src={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`}
               width="100%"
               height="100%"
               style={{ border: "none" }}

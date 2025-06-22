@@ -1,6 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AccordionContent, AccordionTrigger } from "@/components/ui/accordion";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -83,35 +84,37 @@ export default function SkillsEditor() {
   );
 
   return (
-    <Card className="border-gray-200/60 shadow-sm">
-      <CardHeader className="pb-4">
+    <Card className="border-0">
+      <AccordionTrigger className="px-6 py-4 hover:no-underline">
         <CardTitle className="text-lg font-semibold text-gray-900">
           Skills, Certifications & Others
         </CardTitle>
-      </CardHeader>
+      </AccordionTrigger>
 
-      <CardContent className="space-y-6">
-        <SkillSection
-          title="Skills"
-          category="skill"
-          items={skillsByCategory.skill}
-          addLabel="Add Skill"
-        />
+      <AccordionContent className="px-0 pb-0">
+        <CardContent className="space-y-6 p-6 pt-0">
+          <SkillSection
+            title="Skills"
+            category="skill"
+            items={skillsByCategory.skill}
+            addLabel="Add Skill"
+          />
 
-        <SkillSection
-          title="Certifications"
-          category="certification"
-          items={skillsByCategory.certification}
-          addLabel="Add Certification"
-        />
+          <SkillSection
+            title="Certifications"
+            category="certification"
+            items={skillsByCategory.certification}
+            addLabel="Add Certification"
+          />
 
-        <SkillSection
-          title="Others"
-          category="other"
-          items={skillsByCategory.other}
-          addLabel="Add Other"
-        />
-      </CardContent>
+          <SkillSection
+            title="Others"
+            category="other"
+            items={skillsByCategory.other}
+            addLabel="Add Other"
+          />
+        </CardContent>
+      </AccordionContent>
     </Card>
   );
 }

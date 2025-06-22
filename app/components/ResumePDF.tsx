@@ -238,11 +238,11 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
               return (
                 <View key={module.id} style={pdfStyles.section}>
-                  <Text style={pdfStyles.sectionTitle}>{module.title}</Text>
+                  <Text style={pdfStyles.sectionTitle}>
+                    {customSection.title}
+                  </Text>
                   <View style={pdfStyles.description}>
-                    {customSection.content.split("\n").map((line, i) => (
-                      <Text key={i}>{line}</Text>
-                    ))}
+                    {parseHtmlToPdf(customSection.content)}
                   </View>
                 </View>
               );
