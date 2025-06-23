@@ -1,6 +1,6 @@
 "use client";
 
-import { Document, Font, Page, Text, View } from "@react-pdf/renderer";
+import { Document, Font, Image, Page, Text, View } from "@react-pdf/renderer";
 import {
   Experience,
   LeadershipExperience,
@@ -369,16 +369,34 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                   {includedPortfolio.map((item) => (
                     <View key={item.id} style={pdfStyles.experienceItem}>
                       <View style={pdfStyles.experienceHeader}>
-                        <Text style={pdfStyles.jobTitle}>{item.name}</Text>
-                        <Text style={pdfStyles.date}>{item.url}</Text>
-                      </View>
-                      {item.qrCode && (
-                        <View style={pdfStyles.description}>
-                          <Text style={[pdfStyles.skillList, { fontSize: 10 }]}>
-                            Scan QR code to visit project
-                          </Text>
+                        <View style={{ flex: 1 }}>
+                          <Text style={pdfStyles.jobTitle}>{item.name}</Text>
+                          <Text style={pdfStyles.date}>{item.url}</Text>
                         </View>
-                      )}
+                        {item.qrCode && (
+                          <View
+                            style={{ alignItems: "center", marginLeft: 10 }}
+                          >
+                            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                            <Image
+                              src={item.qrCode}
+                              style={{
+                                width: 50,
+                                height: 50,
+                                marginBottom: 4,
+                              }}
+                            />
+                            <Text
+                              style={[
+                                pdfStyles.skillList,
+                                { fontSize: 8, textAlign: "center" },
+                              ]}
+                            >
+                              Scan to visit
+                            </Text>
+                          </View>
+                        )}
+                      </View>
                     </View>
                   ))}
                 </View>
