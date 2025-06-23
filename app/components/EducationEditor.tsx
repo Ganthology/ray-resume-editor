@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
+import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
 export default function EducationEditor() {
@@ -19,26 +20,21 @@ export default function EducationEditor() {
   return (
     <Card className="border-0">
       <AccordionTrigger className="px-6 py-4 hover:no-underline">
-        <div className="flex justify-between items-center w-full mr-4">
-          <CardTitle className="text-lg font-semibold text-gray-900">
-            Education
-          </CardTitle>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              addEducation();
-            }}
-            size="sm"
-            className="gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Education
-          </Button>
-        </div>
+        <CardTitle className="text-lg font-semibold text-gray-900">
+          Education
+        </CardTitle>
       </AccordionTrigger>
 
       <AccordionContent className="px-0 pb-0">
         <CardContent className="p-6 pt-0">
+          <div className="flex justify-between items-center mb-4">
+            <div></div>
+            <Button onClick={addEducation} size="sm" className="gap-2">
+              <Plus className="w-4 h-4" />
+              Add Education
+            </Button>
+          </div>
+
           {education.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <p className="text-sm">No education entries added yet.</p>
@@ -158,6 +154,21 @@ export default function EducationEditor() {
                           }
                           placeholder="3.8/4.0"
                           className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                        />
+                      </div>
+
+                      <div className="space-y-2 md:col-span-2">
+                        <Label className="text-sm font-medium text-gray-700">
+                          Description (optional)
+                        </Label>
+                        <TiptapEditor
+                          value={edu.description || ""}
+                          onChange={(html) =>
+                            updateEducation(edu.id, {
+                              description: html,
+                            })
+                          }
+                          placeholder="• Relevant coursework: Computer Science, Data Structures, Algorithms&#10;• Activities: Dean's List, Computer Science Club President&#10;• Thesis: Machine Learning Applications in Healthcare"
                         />
                       </div>
                     </div>

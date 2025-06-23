@@ -27,6 +27,7 @@ export default function TiptapEditor({
       }),
     ],
     content: value,
+    immediatelyRender: false, // Prevents SSR hydration mismatch warnings
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },

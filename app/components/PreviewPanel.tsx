@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { useResumeStore } from "../store/resumeStore";
@@ -11,6 +11,7 @@ export default function PreviewPanel() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const pdfUrlRef = useRef<string | null>(null);
 
   // Generate PDF blob from resume data
   const generatePDF = useCallback(async () => {
@@ -25,13 +26,16 @@ export default function PreviewPanel() {
       // Generate PDF blob
       const blob = await pdf(<ResumePDF resumeData={resumeData} />).toBlob();
 
-      // Clean up previous URL
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl);
-      }
-
       // Create new blob URL with parameters for optimal viewing
       const url = URL.createObjectURL(blob);
+
+      // Clean up previous URL
+      if (pdfUrlRef.current) {
+        URL.revokeObjectURL(pdfUrlRef.current);
+      }
+
+      // Set new URL
+      pdfUrlRef.current = url;
       setPdfUrl(url);
     } catch (err) {
       console.error("Error generating PDF:", err);
@@ -39,19 +43,21 @@ export default function PreviewPanel() {
     } finally {
       setIsLoading(false);
     }
-  }, [resumeData, pdfUrl]);
+  }, [resumeData]);
 
   // Generate PDF when resume data changes
   useEffect(() => {
     generatePDF();
+  }, [generatePDF]);
 
-    // Cleanup function
+  // Cleanup effect when component unmounts
+  useEffect(() => {
     return () => {
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl);
+      if (pdfUrlRef.current) {
+        URL.revokeObjectURL(pdfUrlRef.current);
       }
     };
-  }, [resumeData]); // Remove generatePDF from deps to avoid infinite loop
+  }, []);
 
   return (
     <Card className="border-gray-200/60 shadow-sm bg-gray-50">

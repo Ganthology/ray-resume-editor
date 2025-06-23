@@ -17,6 +17,9 @@ export default function SkillsEditor() {
   const skillsByCategory = {
     skill: skills.filter((s) => s.category === "skill"),
     certification: skills.filter((s) => s.category === "certification"),
+    language: skills.filter((s) => s.category === "language"),
+    interest: skills.filter((s) => s.category === "interest"),
+    activity: skills.filter((s) => s.category === "activity"),
     other: skills.filter((s) => s.category === "other"),
   };
 
@@ -27,7 +30,13 @@ export default function SkillsEditor() {
     addLabel,
   }: {
     title: string;
-    category: "skill" | "certification" | "other";
+    category:
+      | "skill"
+      | "certification"
+      | "other"
+      | "language"
+      | "interest"
+      | "activity";
     items: typeof skills;
     addLabel: string;
   }) => (
@@ -105,6 +114,27 @@ export default function SkillsEditor() {
             category="certification"
             items={skillsByCategory.certification}
             addLabel="Add Certification"
+          />
+
+          <SkillSection
+            title="Languages"
+            category="language"
+            items={skillsByCategory.language}
+            addLabel="Add Language"
+          />
+
+          <SkillSection
+            title="Interests"
+            category="interest"
+            items={skillsByCategory.interest}
+            addLabel="Add Interest"
+          />
+
+          <SkillSection
+            title="Activities"
+            category="activity"
+            items={skillsByCategory.activity}
+            addLabel="Add Activity"
           />
 
           <SkillSection

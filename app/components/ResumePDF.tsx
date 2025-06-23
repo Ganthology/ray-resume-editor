@@ -1,9 +1,16 @@
 "use client";
 
 import { Document, Font, Page, Text, View } from "@react-pdf/renderer";
+import {
+  Experience,
+  LeadershipExperience,
+  ProjectExperience,
+  ResearchExperience,
+  ResumeData,
+  ResumeModule,
+} from "../types/resume";
 
 import React from "react";
-import { ResumeData } from "../types/resume";
 import { parseHtmlToPdf } from "../../lib/htmlToPdf";
 import { pdfStyles } from "../styles/pdfStyles";
 
@@ -17,6 +24,13 @@ interface ResumePDFProps {
   resumeData: ResumeData;
 }
 
+// Union type for experience-like objects
+type ExperienceType =
+  | Experience
+  | LeadershipExperience
+  | ProjectExperience
+  | ResearchExperience;
+
 export default function ResumePDF({ resumeData }: ResumePDFProps) {
   const sortedModules = resumeData.modules
     .filter((module) => module.enabled)
@@ -27,6 +41,18 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
   );
   const includedEducation = resumeData.education.filter((edu) => edu.included);
   const includedSkills = resumeData.skills.filter((skill) => skill.included);
+  const includedLeadershipExperiences = resumeData.leadershipExperiences.filter(
+    (exp) => exp.included
+  );
+  const includedProjectExperiences = resumeData.projectExperiences.filter(
+    (exp) => exp.included
+  );
+  const includedResearchExperiences = resumeData.researchExperiences.filter(
+    (exp) => exp.included
+  );
+  const includedPortfolio = resumeData.portfolio.filter(
+    (item) => item.included
+  );
 
   // Format date from YYYY-MM to readable format
   const formatDate = (date: string): string => {
@@ -49,6 +75,64 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
       "Dec",
     ];
     return `${monthNames[parseInt(month) - 1]} ${year}`;
+  };
+
+  // Helper function to render experience-like sections
+  const renderExperienceSection = (
+    experiences: ExperienceType[],
+    module: ResumeModule
+  ) => {
+    if (experiences.length === 0) return null;
+
+    return (
+      <View key={module.id} style={pdfStyles.section}>
+        <Text style={pdfStyles.sectionTitle}>{module.title}</Text>
+        {experiences.map((exp: ExperienceType) => {
+          // Type guard to check if experience has company property
+          const getOrganizationName = (experience: ExperienceType): string => {
+            if ("company" in experience) {
+              return experience.company;
+            }
+            return experience.organization;
+          };
+
+          return (
+            <View key={exp.id} style={pdfStyles.experienceItem}>
+              <View style={pdfStyles.experienceHeader}>
+                <Text>
+                  <Text style={pdfStyles.company}>
+                    {getOrganizationName(exp)}
+                  </Text>
+                  {exp.department && (
+                    <Text style={pdfStyles.company}>, {exp.department}</Text>
+                  )}
+                </Text>
+                {exp.startDate && exp.endDate && (
+                  <Text style={pdfStyles.date}>
+                    {exp.endDate === "Present"
+                      ? `${formatDate(exp.startDate)} - Present`
+                      : `${formatDate(exp.startDate)} - ${formatDate(
+                          exp.endDate
+                        )}`}
+                  </Text>
+                )}
+              </View>
+              <View style={pdfStyles.experienceSubheader}>
+                <Text style={pdfStyles.jobTitle}>{exp.position}</Text>
+                <Text style={pdfStyles.jobLocation}>
+                  {exp.location && `${exp.location}`}
+                </Text>
+              </View>
+              {exp.description && (
+                <View style={pdfStyles.description}>
+                  {parseHtmlToPdf(exp.description)}
+                </View>
+              )}
+            </View>
+          );
+        })}
+      </View>
+    );
   };
 
   return (
@@ -88,48 +172,40 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
         {/* Dynamic Sections */}
         {sortedModules.map((module) => {
           switch (module.type) {
-            case "experience":
-              if (includedExperiences.length === 0) return null;
+            case "summary":
+              if (
+                !resumeData.summary.included ||
+                !resumeData.summary.content.trim()
+              )
+                return null;
               return (
                 <View key={module.id} style={pdfStyles.section}>
                   <Text style={pdfStyles.sectionTitle}>{module.title}</Text>
-                  {includedExperiences.map((exp) => (
-                    <View key={exp.id} style={pdfStyles.experienceItem}>
-                      <View style={pdfStyles.experienceHeader}>
-                        <Text>
-                          {exp.company && (
-                            <Text style={pdfStyles.company}>{exp.company}</Text>
-                          )}
-                          {exp.department && (
-                            <Text style={pdfStyles.company}>
-                              , {exp.department}
-                            </Text>
-                          )}
-                        </Text>
-                        {exp.startDate && exp.endDate && (
-                          <Text style={pdfStyles.date}>
-                            {exp.endDate === "Present"
-                              ? `${formatDate(exp.startDate)} - Present`
-                              : `${formatDate(exp.startDate)} - ${formatDate(
-                                  exp.endDate
-                                )}`}
-                          </Text>
-                        )}
-                      </View>
-                      <View style={pdfStyles.experienceSubheader}>
-                        <Text style={pdfStyles.jobTitle}>{exp.position}</Text>
-                        <Text style={pdfStyles.jobLocation}>
-                          {exp.location && `${exp.location}`}
-                        </Text>
-                      </View>
-                      {exp.description && (
-                        <View style={pdfStyles.description}>
-                          {parseHtmlToPdf(exp.description)}
-                        </View>
-                      )}
-                    </View>
-                  ))}
+                  <View style={pdfStyles.description}>
+                    {parseHtmlToPdf(resumeData.summary.content)}
+                  </View>
                 </View>
+              );
+
+            case "experience":
+              return renderExperienceSection(includedExperiences, module);
+
+            case "leadership":
+              return renderExperienceSection(
+                includedLeadershipExperiences,
+                module
+              );
+
+            case "project":
+              return renderExperienceSection(
+                includedProjectExperiences,
+                module
+              );
+
+            case "research":
+              return renderExperienceSection(
+                includedResearchExperiences,
+                module
               );
 
             case "education":
@@ -168,6 +244,11 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                           GPA: {edu.gpa}
                         </Text>
                       )}
+                      {edu.description && edu.description.trim() && (
+                        <View style={pdfStyles.description}>
+                          {parseHtmlToPdf(edu.description)}
+                        </View>
+                      )}
                     </View>
                   ))}
                 </View>
@@ -179,6 +260,15 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                 skill: includedSkills.filter((s) => s.category === "skill"),
                 certification: includedSkills.filter(
                   (s) => s.category === "certification"
+                ),
+                language: includedSkills.filter(
+                  (s) => s.category === "language"
+                ),
+                interest: includedSkills.filter(
+                  (s) => s.category === "interest"
+                ),
+                activity: includedSkills.filter(
+                  (s) => s.category === "activity"
                 ),
                 other: includedSkills.filter((s) => s.category === "other"),
               };
@@ -215,6 +305,47 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                     </View>
                   )}
 
+                  {skillsByCategory.language.length > 0 && (
+                    <View style={pdfStyles.skillsContainer}>
+                      <Text>
+                        <Text style={pdfStyles.skillCategory}>Languages: </Text>
+                        <Text style={pdfStyles.skillList}>
+                          {skillsByCategory.language
+                            .map((skill) => skill.name)
+                            .join(", ")}
+                        </Text>
+                      </Text>
+                    </View>
+                  )}
+
+                  {skillsByCategory.interest.length > 0 && (
+                    <View style={pdfStyles.skillsContainer}>
+                      <Text>
+                        <Text style={pdfStyles.skillCategory}>Interests: </Text>
+                        <Text style={pdfStyles.skillList}>
+                          {skillsByCategory.interest
+                            .map((skill) => skill.name)
+                            .join(", ")}
+                        </Text>
+                      </Text>
+                    </View>
+                  )}
+
+                  {skillsByCategory.activity.length > 0 && (
+                    <View style={pdfStyles.skillsContainer}>
+                      <Text>
+                        <Text style={pdfStyles.skillCategory}>
+                          Activities:{" "}
+                        </Text>
+                        <Text style={pdfStyles.skillList}>
+                          {skillsByCategory.activity
+                            .map((skill) => skill.name)
+                            .join(", ")}
+                        </Text>
+                      </Text>
+                    </View>
+                  )}
+
                   {skillsByCategory.other.length > 0 && (
                     <View style={pdfStyles.skillsContainer}>
                       <Text>
@@ -227,6 +358,29 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                       </Text>
                     </View>
                   )}
+                </View>
+              );
+
+            case "portfolio":
+              if (includedPortfolio.length === 0) return null;
+              return (
+                <View key={module.id} style={pdfStyles.section}>
+                  <Text style={pdfStyles.sectionTitle}>{module.title}</Text>
+                  {includedPortfolio.map((item) => (
+                    <View key={item.id} style={pdfStyles.experienceItem}>
+                      <View style={pdfStyles.experienceHeader}>
+                        <Text style={pdfStyles.jobTitle}>{item.name}</Text>
+                        <Text style={pdfStyles.date}>{item.url}</Text>
+                      </View>
+                      {item.qrCode && (
+                        <View style={pdfStyles.description}>
+                          <Text style={[pdfStyles.skillList, { fontSize: 10 }]}>
+                            Scan QR code to visit project
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                  ))}
                 </View>
               );
 
