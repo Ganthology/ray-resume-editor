@@ -1,17 +1,34 @@
 "use client";
 
-import { AccordionContent, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Experience } from "../types/resume";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
+
+// Utility function to create summary text for experience items
+const getExperienceSummary = (exp: Experience): string => {
+  const title = exp.position || "Untitled Position";
+  const company = exp.company || "No Company";
+  const startDate = exp.startDate || "No Start";
+  const endDate =
+    exp.endDate === "Present" ? "Present" : exp.endDate || "No End";
+
+  return `${title} - ${company} | ${startDate} - ${endDate}`;
+};
 
 export default function ExperienceEditor() {
   const experiences = useResumeStore((state) => state.resumeData.experiences);
@@ -44,142 +61,163 @@ export default function ExperienceEditor() {
               </p>
             </div>
           ) : (
-            <div className="space-y-6">
-              {experiences.map((exp) => (
-                <Card key={exp.id} className="border-gray-200/40 shadow-sm">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <Checkbox
-                          checked={exp.included}
-                          onCheckedChange={(checked) =>
-                            updateExperience(exp.id, { included: !!checked })
-                          }
-                        />
-                        <Label className="text-sm font-medium text-gray-700 cursor-pointer">
-                          Include in resume
-                        </Label>
+            <div className="space-y-4">
+              <Accordion type="multiple" className="space-y-4">
+                {experiences.map((exp) => (
+                  <AccordionItem
+                    key={exp.id}
+                    value={exp.id}
+                    className="border border-gray-200/40 rounded-lg shadow-sm"
+                  >
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50/50">
+                      <div className="flex items-center justify-between w-full mr-4">
+                        <div className="flex items-center gap-3">
+                          <Checkbox
+                            checked={exp.included}
+                            onCheckedChange={(checked) =>
+                              updateExperience(exp.id, { included: !!checked })
+                            }
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <div className="text-left">
+                            <div className="font-medium text-gray-900 text-sm">
+                              {getExperienceSummary(exp)}
+                            </div>
+                            {exp.location && (
+                              <div className="text-xs text-gray-500 mt-1">
+                                {exp.location}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteExperience(exp.id);
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 shrink-0"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </div>
-                      <Button
-                        onClick={() => deleteExperience(exp.id)}
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+                    </AccordionTrigger>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Position Title *
-                        </Label>
-                        <Input
-                          value={exp.position}
-                          onChange={(e) =>
-                            updateExperience(exp.id, {
-                              position: e.target.value,
-                            })
-                          }
-                          placeholder="Software Engineer"
-                          className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
-                        />
+                    <AccordionContent className="px-4 pb-4">
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Position Title *
+                            </Label>
+                            <Input
+                              value={exp.position}
+                              onChange={(e) =>
+                                updateExperience(exp.id, {
+                                  position: e.target.value,
+                                })
+                              }
+                              placeholder="Software Engineer"
+                              className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Company *
+                            </Label>
+                            <Input
+                              value={exp.company}
+                              onChange={(e) =>
+                                updateExperience(exp.id, {
+                                  company: e.target.value,
+                                })
+                              }
+                              placeholder="Tech Company Inc."
+                              className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Department (Optional)
+                            </Label>
+                            <Input
+                              value={exp.department || ""}
+                              onChange={(e) =>
+                                updateExperience(exp.id, {
+                                  department: e.target.value,
+                                })
+                              }
+                              placeholder="Engineering"
+                              className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Location (Optional)
+                            </Label>
+                            <Input
+                              value={exp.location || ""}
+                              onChange={(e) =>
+                                updateExperience(exp.id, {
+                                  location: e.target.value,
+                                })
+                              }
+                              placeholder="San Francisco, CA"
+                              className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Start Date
+                            </Label>
+                            <MonthYearPicker
+                              value={exp.startDate}
+                              onChange={(value) =>
+                                updateExperience(exp.id, { startDate: value })
+                              }
+                              placeholder="Select start date"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              End Date
+                            </Label>
+                            <MonthYearPicker
+                              value={exp.endDate}
+                              onChange={(value) =>
+                                updateExperience(exp.id, { endDate: value })
+                              }
+                              placeholder="Select end date"
+                              allowPresent={true}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">
+                            Description
+                          </Label>
+                          <TiptapEditor
+                            value={exp.description}
+                            onChange={(html) =>
+                              updateExperience(exp.id, {
+                                description: html,
+                              })
+                            }
+                            placeholder="• Developed and maintained web applications using React and Node.js&#10;• Collaborated with cross-functional teams to deliver high-quality software&#10;• Implemented automated testing strategies, improving code reliability by 30%"
+                          />
+                        </div>
                       </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Company *
-                        </Label>
-                        <Input
-                          value={exp.company}
-                          onChange={(e) =>
-                            updateExperience(exp.id, {
-                              company: e.target.value,
-                            })
-                          }
-                          placeholder="Tech Company Inc."
-                          className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Department (Optional)
-                        </Label>
-                        <Input
-                          value={exp.department || ""}
-                          onChange={(e) =>
-                            updateExperience(exp.id, {
-                              department: e.target.value,
-                            })
-                          }
-                          placeholder="Engineering"
-                          className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Location (Optional)
-                        </Label>
-                        <Input
-                          value={exp.location || ""}
-                          onChange={(e) =>
-                            updateExperience(exp.id, {
-                              location: e.target.value,
-                            })
-                          }
-                          placeholder="San Francisco, CA"
-                          className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Start Date
-                        </Label>
-                        <MonthYearPicker
-                          value={exp.startDate}
-                          onChange={(value) =>
-                            updateExperience(exp.id, { startDate: value })
-                          }
-                          placeholder="Select start date"
-                        />
-                      </div>
-
-                      <div className="space-y-2 md:col-span-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          End Date
-                        </Label>
-                        <MonthYearPicker
-                          value={exp.endDate}
-                          onChange={(value) =>
-                            updateExperience(exp.id, { endDate: value })
-                          }
-                          placeholder="Select end date"
-                          allowPresent={true}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-gray-700">
-                        Description
-                      </Label>
-                      <TiptapEditor
-                        value={exp.description}
-                        onChange={(html) =>
-                          updateExperience(exp.id, {
-                            description: html,
-                          })
-                        }
-                        placeholder="• Developed and maintained web applications using React and Node.js&#10;• Collaborated with cross-functional teams to deliver high-quality software&#10;• Implemented automated testing strategies, improving code reliability by 30%"
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           )}
         </CardContent>

@@ -1,6 +1,11 @@
 "use client";
 
-import { AccordionContent, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Plus, QrCode, Trash2 } from "lucide-react";
 
@@ -9,8 +14,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Portfolio } from "../types/resume";
 import React from "react";
 import { useResumeStore } from "../store/resumeStore";
+
+// Utility function to create summary text for portfolio items
+const getPortfolioSummary = (item: Portfolio): string => {
+  const name = item.name || "Portfolio Item";
+  const url = item.url || "No URL";
+  const hasQR = item.qrCode ? " (QR Generated)" : "";
+
+  return `${name} | ${url}${hasQR}`;
+};
 
 export default function PortfolioEditor() {
   const portfolio = useResumeStore((state) => state.resumeData.portfolio);
@@ -54,104 +69,129 @@ export default function PortfolioEditor() {
               </p>
             </div>
           ) : (
-            <div className="space-y-6">
-              {portfolio.map((item) => (
-                <Card key={item.id} className="border-gray-200/40 shadow-sm">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <Checkbox
-                          checked={item.included}
-                          onCheckedChange={(checked) =>
-                            updatePortfolio(item.id, { included: !!checked })
-                          }
-                        />
-                        <Label className="text-sm font-medium text-gray-700 cursor-pointer">
-                          Include in resume
-                        </Label>
-                      </div>
-                      <Button
-                        onClick={() => deletePortfolio(item.id)}
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          Project Name *
-                        </Label>
-                        <Input
-                          value={item.name}
-                          onChange={(e) =>
-                            updatePortfolio(item.id, { name: e.target.value })
-                          }
-                          placeholder="My Awesome Project"
-                          className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">
-                          URL Link *
-                        </Label>
-                        <div className="flex gap-2">
-                          <Input
-                            value={item.url}
-                            onChange={(e) =>
-                              updatePortfolio(item.id, { url: e.target.value })
+            <div className="space-y-4">
+              <Accordion type="multiple" className="space-y-4">
+                {portfolio.map((item) => (
+                  <AccordionItem
+                    key={item.id}
+                    value={item.id}
+                    className="border border-gray-200/40 rounded-lg shadow-sm"
+                  >
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50/50">
+                      <div className="flex items-center justify-between w-full mr-4">
+                        <div className="flex items-center gap-3">
+                          <Checkbox
+                            checked={item.included}
+                            onCheckedChange={(checked) =>
+                              updatePortfolio(item.id, { included: !!checked })
                             }
-                            placeholder="https://myproject.com"
-                            className="flex-1 border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                            onClick={(e) => e.stopPropagation()}
                           />
-                          <Button
-                            onClick={() =>
-                              handleGenerateQRCode(item.id, item.url)
-                            }
-                            size="sm"
-                            variant="outline"
-                            className="gap-2 shrink-0"
-                          >
-                            <QrCode className="w-4 h-4" />
-                            Generate QR
-                          </Button>
+                          <div className="text-left">
+                            <div className="font-medium text-gray-900 text-sm">
+                              {getPortfolioSummary(item)}
+                            </div>
+                            {item.qrCode && (
+                              <div className="text-xs text-green-600 mt-1">
+                                ✓ QR Code generated
+                              </div>
+                            )}
+                          </div>
                         </div>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deletePortfolio(item.id);
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 shrink-0"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </div>
+                    </AccordionTrigger>
 
-                      {item.qrCode && (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label className="text-sm font-medium text-gray-700">
-                            QR Code Preview
-                          </Label>
-                          <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border">
-                            <Image
-                              src={item.qrCode}
-                              alt={`QR Code for ${item.name}`}
-                              className="w-16 h-16 border border-gray-200 rounded"
-                              width={64}
-                              height={64}
+                    <AccordionContent className="px-4 pb-4">
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Project Name *
+                            </Label>
+                            <Input
+                              value={item.name}
+                              onChange={(e) =>
+                                updatePortfolio(item.id, {
+                                  name: e.target.value,
+                                })
+                              }
+                              placeholder="My Awesome Project"
+                              className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
                             />
-                            <div className="flex-1">
-                              <p className="text-sm text-gray-600">
-                                QR Code generated successfully! This will appear
-                                on your resume.
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                Scanning this code will take viewers to:{" "}
-                                {item.url}
-                              </p>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              URL Link *
+                            </Label>
+                            <div className="flex gap-2">
+                              <Input
+                                value={item.url}
+                                onChange={(e) =>
+                                  updatePortfolio(item.id, {
+                                    url: e.target.value,
+                                  })
+                                }
+                                placeholder="https://myproject.com"
+                                className="flex-1 border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                              />
+                              <Button
+                                onClick={() =>
+                                  handleGenerateQRCode(item.id, item.url)
+                                }
+                                size="sm"
+                                variant="outline"
+                                className="gap-2 shrink-0"
+                              >
+                                <QrCode className="w-4 h-4" />
+                                Generate QR
+                              </Button>
                             </div>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+
+                        {item.qrCode && (
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              QR Code Preview
+                            </Label>
+                            <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border">
+                              <Image
+                                src={item.qrCode}
+                                alt={`QR Code for ${item.name}`}
+                                className="w-16 h-16 border border-gray-200 rounded"
+                                width={64}
+                                height={64}
+                              />
+                              <div className="flex-1">
+                                <p className="text-sm text-gray-600">
+                                  QR Code generated successfully! This will
+                                  appear on your resume.
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Scanning this code will take viewers to:{" "}
+                                  {item.url}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           )}
         </CardContent>
