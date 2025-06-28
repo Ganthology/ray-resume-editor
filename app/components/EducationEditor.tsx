@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
+import SortOrderPopover from "./SortOrderPopover";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -31,7 +32,8 @@ const getEducationSummary = (edu: Education): string => {
 
 export default function EducationEditor() {
   const education = useResumeStore((state) => state.resumeData.education);
-  const { addEducation, updateEducation, deleteEducation } = useResumeStore();
+  const { addEducation, updateEducation, deleteEducation, reorderEducation } =
+    useResumeStore();
 
   return (
     <Card className="border-0">
@@ -45,10 +47,19 @@ export default function EducationEditor() {
         <CardContent className="p-6 pt-0">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <Button onClick={addEducation} size="sm" className="gap-2">
-              <Plus className="w-4 h-4" />
-              Add Education
-            </Button>
+            <div className="flex gap-2">
+              <SortOrderPopover
+                items={education}
+                getSummary={getEducationSummary}
+                onReorder={reorderEducation}
+                title="Education"
+                disabled={education.length < 2}
+              />
+              <Button onClick={addEducation} size="sm" className="gap-2">
+                <Plus className="w-4 h-4" />
+                Add Education
+              </Button>
+            </div>
           </div>
 
           {education.length === 0 ? (

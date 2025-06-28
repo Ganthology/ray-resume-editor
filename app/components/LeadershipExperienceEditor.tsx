@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { LeadershipExperience } from "../types/resume";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
+import SortOrderPopover from "./SortOrderPopover";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -38,6 +39,7 @@ export default function LeadershipExperienceEditor() {
     addLeadershipExperience,
     updateLeadershipExperience,
     deleteLeadershipExperience,
+    reorderLeadershipExperiences,
   } = useResumeStore();
 
   return (
@@ -52,14 +54,23 @@ export default function LeadershipExperienceEditor() {
         <CardContent className="p-6 pt-0">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <Button
-              onClick={addLeadershipExperience}
-              size="sm"
-              className="gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Add Leadership Experience
-            </Button>
+            <div className="flex gap-2">
+              <SortOrderPopover
+                items={leadershipExperiences}
+                getSummary={getLeadershipSummary}
+                onReorder={reorderLeadershipExperiences}
+                title="Leadership Experience"
+                disabled={leadershipExperiences.length < 2}
+              />
+              <Button
+                onClick={addLeadershipExperience}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Leadership Experience
+              </Button>
+            </div>
           </div>
 
           {leadershipExperiences.length === 0 ? (

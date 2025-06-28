@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import { ProjectExperience } from "../types/resume";
 import React from "react";
+import SortOrderPopover from "./SortOrderPopover";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -38,6 +39,7 @@ export default function ProjectExperienceEditor() {
     addProjectExperience,
     updateProjectExperience,
     deleteProjectExperience,
+    reorderProjectExperiences,
   } = useResumeStore();
 
   return (
@@ -52,10 +54,23 @@ export default function ProjectExperienceEditor() {
         <CardContent className="p-6 pt-0">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <Button onClick={addProjectExperience} size="sm" className="gap-2">
-              <Plus className="w-4 h-4" />
-              Add Project Experience
-            </Button>
+            <div className="flex gap-2">
+              <SortOrderPopover
+                items={projectExperiences}
+                getSummary={getProjectSummary}
+                onReorder={reorderProjectExperiences}
+                title="Project Experience"
+                disabled={projectExperiences.length < 2}
+              />
+              <Button
+                onClick={addProjectExperience}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Project Experience
+              </Button>
+            </div>
           </div>
 
           {projectExperiences.length === 0 ? (

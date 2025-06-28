@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
 import { ResearchExperience } from "../types/resume";
+import SortOrderPopover from "./SortOrderPopover";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -38,6 +39,7 @@ export default function ResearchExperienceEditor() {
     addResearchExperience,
     updateResearchExperience,
     deleteResearchExperience,
+    reorderResearchExperiences,
   } = useResumeStore();
 
   return (
@@ -52,10 +54,23 @@ export default function ResearchExperienceEditor() {
         <CardContent className="p-6 pt-0">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <Button onClick={addResearchExperience} size="sm" className="gap-2">
-              <Plus className="w-4 h-4" />
-              Add Research Experience
-            </Button>
+            <div className="flex gap-2">
+              <SortOrderPopover
+                items={researchExperiences}
+                getSummary={getResearchSummary}
+                onReorder={reorderResearchExperiences}
+                title="Research Experience"
+                disabled={researchExperiences.length < 2}
+              />
+              <Button
+                onClick={addResearchExperience}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Research Experience
+              </Button>
+            </div>
           </div>
 
           {researchExperiences.length === 0 ? (

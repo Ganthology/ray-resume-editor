@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MonthYearPicker from "./MonthYearPicker";
 import React from "react";
+import SortOrderPopover from "./SortOrderPopover";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 import { useResumeStore } from "../store/resumeStore";
 
@@ -32,8 +33,12 @@ const getExperienceSummary = (exp: Experience): string => {
 
 export default function ExperienceEditor() {
   const experiences = useResumeStore((state) => state.resumeData.experiences);
-  const { addExperience, updateExperience, deleteExperience } =
-    useResumeStore();
+  const {
+    addExperience,
+    updateExperience,
+    deleteExperience,
+    reorderExperiences,
+  } = useResumeStore();
 
   return (
     <Card className="border-0">
@@ -47,10 +52,19 @@ export default function ExperienceEditor() {
         <CardContent className="p-6 pt-0">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <Button onClick={addExperience} size="sm" className="gap-2">
-              <Plus className="w-4 h-4" />
-              Add Experience
-            </Button>
+            <div className="flex gap-2">
+              <SortOrderPopover
+                items={experiences}
+                getSummary={getExperienceSummary}
+                onReorder={reorderExperiences}
+                title="Professional Experience"
+                disabled={experiences.length < 2}
+              />
+              <Button onClick={addExperience} size="sm" className="gap-2">
+                <Plus className="w-4 h-4" />
+                Add Experience
+              </Button>
+            </div>
           </div>
 
           {experiences.length === 0 ? (

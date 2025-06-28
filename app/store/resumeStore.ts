@@ -109,11 +109,13 @@ interface ResumeStore {
   addExperience: () => void;
   updateExperience: (id: string, updates: Partial<Experience>) => void;
   deleteExperience: (id: string) => void;
+  reorderExperiences: (newOrder: Experience[]) => void;
 
   // Education actions
   addEducation: () => void;
   updateEducation: (id: string, updates: Partial<Education>) => void;
   deleteEducation: (id: string) => void;
+  reorderEducation: (newOrder: Education[]) => void;
 
   // Skills actions
   addSkill: (
@@ -140,6 +142,7 @@ interface ResumeStore {
     updates: Partial<LeadershipExperience>
   ) => void;
   deleteLeadershipExperience: (id: string) => void;
+  reorderLeadershipExperiences: (newOrder: LeadershipExperience[]) => void;
 
   // Project Experience actions
   addProjectExperience: () => void;
@@ -148,6 +151,7 @@ interface ResumeStore {
     updates: Partial<ProjectExperience>
   ) => void;
   deleteProjectExperience: (id: string) => void;
+  reorderProjectExperiences: (newOrder: ProjectExperience[]) => void;
 
   // Research Experience actions
   addResearchExperience: () => void;
@@ -156,6 +160,7 @@ interface ResumeStore {
     updates: Partial<ResearchExperience>
   ) => void;
   deleteResearchExperience: (id: string) => void;
+  reorderResearchExperiences: (newOrder: ResearchExperience[]) => void;
 
   // Summary actions
   updateSummary: (updates: Partial<Summary>) => void;
@@ -165,6 +170,7 @@ interface ResumeStore {
   updatePortfolio: (id: string, updates: Partial<Portfolio>) => void;
   deletePortfolio: (id: string) => void;
   generateQRCode: (id: string, url: string) => Promise<void>;
+  reorderPortfolio: (newOrder: Portfolio[]) => void;
 
   // Module actions
   updateModules: (modules: ResumeData["modules"]) => void;
@@ -568,6 +574,55 @@ export const useResumeStore = create<ResumeStore>()(
       updateModules: (modules) =>
         set((state) => ({
           resumeData: { ...state.resumeData, modules },
+        })),
+
+      // Reorder actions
+      reorderExperiences: (newOrder) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            experiences: newOrder,
+          },
+        })),
+
+      reorderEducation: (newOrder) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            education: newOrder,
+          },
+        })),
+
+      reorderLeadershipExperiences: (newOrder) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            leadershipExperiences: newOrder,
+          },
+        })),
+
+      reorderProjectExperiences: (newOrder) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            projectExperiences: newOrder,
+          },
+        })),
+
+      reorderResearchExperiences: (newOrder) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            researchExperiences: newOrder,
+          },
+        })),
+
+      reorderPortfolio: (newOrder) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            portfolio: newOrder,
+          },
         })),
 
       // Data management

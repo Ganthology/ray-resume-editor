@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Portfolio } from "../types/resume";
 import React from "react";
+import SortOrderPopover from "./SortOrderPopover";
 import { useResumeStore } from "../store/resumeStore";
 
 // Utility function to create summary text for portfolio items
@@ -29,8 +30,13 @@ const getPortfolioSummary = (item: Portfolio): string => {
 
 export default function PortfolioEditor() {
   const portfolio = useResumeStore((state) => state.resumeData.portfolio);
-  const { addPortfolio, updatePortfolio, deletePortfolio, generateQRCode } =
-    useResumeStore();
+  const {
+    addPortfolio,
+    updatePortfolio,
+    deletePortfolio,
+    generateQRCode,
+    reorderPortfolio,
+  } = useResumeStore();
 
   const handleGenerateQRCode = async (id: string, url: string) => {
     if (!url.trim()) {
@@ -55,10 +61,19 @@ export default function PortfolioEditor() {
         <CardContent className="p-6 pt-0">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <Button onClick={addPortfolio} size="sm" className="gap-2">
-              <Plus className="w-4 h-4" />
-              Add Portfolio Item
-            </Button>
+            <div className="flex gap-2">
+              <SortOrderPopover
+                items={portfolio}
+                getSummary={getPortfolioSummary}
+                onReorder={reorderPortfolio}
+                title="Portfolio"
+                disabled={portfolio.length < 2}
+              />
+              <Button onClick={addPortfolio} size="sm" className="gap-2">
+                <Plus className="w-4 h-4" />
+                Add Portfolio Item
+              </Button>
+            </div>
           </div>
 
           {portfolio.length === 0 ? (
