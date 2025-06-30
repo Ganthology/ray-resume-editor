@@ -31,6 +31,18 @@ type ExperienceType =
   | ProjectExperience
   | ResearchExperience;
 
+const A4_SIZE = {
+  "72_PPI": {
+    width: 595,
+    height: 842,
+  },
+  "87_PPI": { width: 720, height: 1017.9 },
+  "96_PPI": {
+    width: 794,
+    height: 1123,
+  },
+} as const;
+
 export default function ResumePDF({ resumeData }: ResumePDFProps) {
   const sortedModules = resumeData.modules
     .filter((module) => module.enabled)
@@ -137,7 +149,7 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
   return (
     <Document>
-      <Page size={{ width: 720, height: 1017.9 }} style={pdfStyles.page}>
+      <Page size={A4_SIZE["96_PPI"]} style={pdfStyles.page}>
         {/* Personal Information */}
         <View style={pdfStyles.header}>
           <Text style={pdfStyles.name}>
@@ -399,23 +411,6 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                       </View>
                     </View>
                   ))}
-                </View>
-              );
-
-            case "custom":
-              const customSection = resumeData.customSections.find(
-                (s) => s.id === module.customSectionId
-              );
-              if (!customSection || !customSection.content.trim()) return null;
-
-              return (
-                <View key={module.id} style={pdfStyles.section}>
-                  <Text style={pdfStyles.sectionTitle}>
-                    {customSection.title}
-                  </Text>
-                  <View style={pdfStyles.description}>
-                    {parseHtmlToPdf(customSection.content)}
-                  </View>
                 </View>
               );
 

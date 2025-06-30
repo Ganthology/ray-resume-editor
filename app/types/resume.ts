@@ -45,12 +45,6 @@ export interface Skill {
   included: boolean;
 }
 
-export interface CustomSection {
-  id: string;
-  title: string;
-  content: string;
-}
-
 // New experience types similar to professional experience
 export interface LeadershipExperience {
   id: string;
@@ -109,7 +103,6 @@ export interface ResumeModule {
     | "experience"
     | "education"
     | "skills"
-    | "custom"
     | "summary"
     | "portfolio"
     | "leadership"
@@ -118,7 +111,6 @@ export interface ResumeModule {
   title: string;
   order: number;
   enabled: boolean;
-  customSectionId?: string; // For custom modules
 }
 
 export interface ResumeData {
@@ -126,7 +118,6 @@ export interface ResumeData {
   experiences: Experience[];
   education: Education[];
   skills: Skill[];
-  customSections: CustomSection[];
   leadershipExperiences: LeadershipExperience[];
   projectExperiences: ProjectExperience[];
   researchExperiences: ResearchExperience[];
@@ -140,7 +131,6 @@ export type ModuleType =
   | "experience"
   | "education"
   | "skills"
-  | "custom"
   | "summary"
   | "portfolio"
   | "leadership"

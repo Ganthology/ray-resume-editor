@@ -8,14 +8,11 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
-import CustomSectionEditor from "./CustomSectionEditor";
 import EducationEditor from "./EducationEditor";
 import ExperienceEditor from "./ExperienceEditor";
 import LeadershipExperienceEditor from "./LeadershipExperienceEditor";
 import ModuleManager from "./ModuleManager";
 import PersonalInfoEditor from "./PersonalInfoEditor";
-import { Plus } from "lucide-react";
 import PortfolioEditor from "./PortfolioEditor";
 import ProjectExperienceEditor from "./ProjectExperienceEditor";
 import React from "react";
@@ -26,7 +23,6 @@ import { useResumeStore } from "../store/resumeStore";
 
 export default function EditPanel() {
   const resumeData = useResumeStore((state) => state.resumeData);
-  const addCustomSection = useResumeStore((state) => state.addCustomSection);
 
   const sortedModules = resumeData.modules.sort((a, b) => a.order - b.order);
 
@@ -66,14 +62,6 @@ export default function EditPanel() {
                     Drag and drop to reorder sections. Use checkboxes to
                     include/exclude individual items.
                   </p>
-                  <Button
-                    onClick={addCustomSection}
-                    size="sm"
-                    className="gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Custom Section
-                  </Button>
                 </div>
                 <ModuleManager modules={sortedModules} />
               </CardContent>
@@ -182,22 +170,6 @@ export default function EditPanel() {
               >
                 <AccordionItem value={sectionKey}>
                   <PortfolioEditor />
-                </AccordionItem>
-              </Accordion>
-            );
-          case "custom":
-            const customSection = resumeData.customSections.find(
-              (s) => s.id === module.customSectionId
-            );
-            if (!customSection) return null;
-            return (
-              <Accordion
-                key={module.id}
-                type="multiple"
-                defaultValue={[sectionKey]}
-              >
-                <AccordionItem value={sectionKey}>
-                  <CustomSectionEditor sectionId={customSection.id} />
                 </AccordionItem>
               </Accordion>
             );

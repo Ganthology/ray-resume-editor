@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  CustomSection,
   Education,
   Experience,
   LeadershipExperience,
@@ -29,7 +28,6 @@ const initialData: ResumeData = {
   experiences: [],
   education: [],
   skills: [],
-  customSections: [],
   leadershipExperiences: [],
   projectExperiences: [],
   researchExperiences: [],
@@ -129,11 +127,6 @@ interface ResumeStore {
   ) => void;
   updateSkill: (id: string, updates: Partial<Skill>) => void;
   deleteSkill: (id: string) => void;
-
-  // Custom section actions
-  addCustomSection: () => void;
-  updateCustomSection: (id: string, updates: Partial<CustomSection>) => void;
-  deleteCustomSection: (id: string) => void;
 
   // Leadership Experience actions
   addLeadershipExperience: () => void;
@@ -308,57 +301,6 @@ export const useResumeStore = create<ResumeStore>()(
           resumeData: {
             ...state.resumeData,
             skills: state.resumeData.skills.filter((skill) => skill.id !== id),
-          },
-        })),
-
-      // Custom section actions
-      addCustomSection: () =>
-        set((state) => {
-          const newCustomSection: CustomSection = {
-            id: Date.now().toString(),
-            title: "Custom Section",
-            content: "",
-          };
-          const newModule = {
-            id: `custom-${Date.now()}`,
-            type: "custom" as const,
-            title: newCustomSection.title,
-            order: state.resumeData.modules.length + 1,
-            enabled: true,
-            customSectionId: newCustomSection.id,
-          };
-          return {
-            resumeData: {
-              ...state.resumeData,
-              customSections: [
-                ...state.resumeData.customSections,
-                newCustomSection,
-              ],
-              modules: [...state.resumeData.modules, newModule],
-            },
-          };
-        }),
-
-      updateCustomSection: (id, updates) =>
-        set((state) => ({
-          resumeData: {
-            ...state.resumeData,
-            customSections: state.resumeData.customSections.map((section) =>
-              section.id === id ? { ...section, ...updates } : section
-            ),
-          },
-        })),
-
-      deleteCustomSection: (id) =>
-        set((state) => ({
-          resumeData: {
-            ...state.resumeData,
-            customSections: state.resumeData.customSections.filter(
-              (section) => section.id !== id
-            ),
-            modules: state.resumeData.modules.filter(
-              (module) => module.customSectionId !== id
-            ),
           },
         })),
 
