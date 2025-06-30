@@ -78,32 +78,16 @@ export default function EducationEditor() {
                     value={edu.id}
                     className="border border-gray-200/40 rounded-lg shadow-sm"
                   >
-                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50/50">
-                      <div className="flex items-center justify-between w-full mr-4">
-                        <div className="flex items-center gap-3">
-                          <Checkbox
-                            checked={edu.included}
-                            onCheckedChange={(checked) =>
-                              updateEducation(edu.id, { included: !!checked })
-                            }
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <div className="text-left">
-                            <div className="font-medium text-gray-900 text-sm">
-                              {getEducationSummary(edu)}
-                            </div>
-                            {edu.gpa && (
-                              <div className="text-xs text-gray-500 mt-1">
-                                GPA: {edu.gpa}
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                    <div className="flex items-center">
+                      <div className="flex items-center gap-3 px-4 py-3">
+                        <Checkbox
+                          checked={edu.included}
+                          onCheckedChange={(checked) =>
+                            updateEducation(edu.id, { included: !!checked })
+                          }
+                        />
                         <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteEducation(edu.id);
-                          }}
+                          onClick={() => deleteEducation(edu.id)}
                           variant="ghost"
                           size="sm"
                           className="text-red-600 hover:text-red-700 hover:bg-red-50 shrink-0"
@@ -111,7 +95,19 @@ export default function EducationEditor() {
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
-                    </AccordionTrigger>
+                      <AccordionTrigger className="flex-1 px-4 py-3 hover:no-underline hover:bg-gray-50/50">
+                        <div className="text-left">
+                          <div className="font-medium text-gray-900 text-sm">
+                            {getEducationSummary(edu)}
+                          </div>
+                          {edu.gpa && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              GPA: {edu.gpa}
+                            </div>
+                          )}
+                        </div>
+                      </AccordionTrigger>
+                    </div>
 
                     <AccordionContent className="px-4 pb-4">
                       <div className="space-y-4">
