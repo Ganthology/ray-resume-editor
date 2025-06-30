@@ -237,6 +237,7 @@ export const useResumeStore = create<ResumeStore>()(
             graduationDate: "",
             startDate: "",
             endDate: "",
+            location: "",
             gpa: "",
             description: "",
             included: true,

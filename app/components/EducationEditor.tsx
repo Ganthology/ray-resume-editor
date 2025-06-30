@@ -162,6 +162,22 @@ export default function EducationEditor() {
 
                           <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">
+                              Location (optional)
+                            </Label>
+                            <Input
+                              value={edu.location || ""}
+                              onChange={(e) =>
+                                updateEducation(edu.id, {
+                                  location: e.target.value,
+                                })
+                              }
+                              placeholder="Serdang, Malaysia"
+                              className="border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
                               Start Date
                             </Label>
                             <MonthYearPicker

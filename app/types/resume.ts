@@ -27,6 +27,7 @@ export interface Education {
   graduationDate: string;
   startDate: string;
   endDate: string;
+  location?: string; // Location of the institution
   gpa?: string;
   description?: string; // Optional description field
   included: boolean;

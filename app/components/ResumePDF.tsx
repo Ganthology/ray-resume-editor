@@ -227,35 +227,50 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
                   <Text style={pdfStyles.sectionTitle}>{module.title}</Text>
                   {includedEducation.map((edu) => (
                     <View key={edu.id} style={pdfStyles.experienceItem}>
+                      {/* Institution Name | Date Range */}
                       <View style={pdfStyles.experienceHeader}>
-                        <Text>
-                          <Text style={pdfStyles.jobTitle}>{edu.degree}</Text>
-                          {edu.fieldOfStudy && (
-                            <Text style={pdfStyles.company}>
-                              {" "}
-                              in {edu.fieldOfStudy}
-                            </Text>
-                          )}
-                          {edu.institution && (
-                            <Text style={pdfStyles.company}>
-                              {" "}
-                              - {edu.institution}
-                            </Text>
-                          )}
+                        <Text style={pdfStyles.company}>
+                          {edu.institution || "Institution"}
                         </Text>
-                        {(edu.endDate || edu.graduationDate) && (
-                          <Text style={pdfStyles.date}>
-                            {edu.endDate === "Present"
+                        <Text style={pdfStyles.date}>
+                          {edu.startDate && edu.endDate
+                            ? edu.endDate === "Present"
                               ? `${formatDate(edu.startDate)} - Present`
-                              : formatDate(edu.endDate) || edu.graduationDate}
-                          </Text>
+                              : `${formatDate(edu.startDate)} - ${formatDate(
+                                  edu.endDate
+                                )}`
+                            : edu.endDate === "Present"
+                            ? `${formatDate(edu.startDate)} - Present`
+                            : formatDate(edu.endDate) ||
+                              edu.graduationDate ||
+                              ""}
+                        </Text>
+                      </View>
+
+                      {/* Degree/Program | Location */}
+                      <View style={pdfStyles.experienceHeader}>
+                        <Text style={pdfStyles.jobTitle}>
+                          {edu.degree}
+                          {edu.fieldOfStudy && ` in ${edu.fieldOfStudy}`}
+                        </Text>
+                        {edu.location && (
+                          <Text style={pdfStyles.jobTitle}>{edu.location}</Text>
                         )}
                       </View>
+
+                      {/* GPA Information */}
                       {edu.gpa && (
-                        <Text style={[pdfStyles.description, { fontSize: 11 }]}>
-                          GPA: {edu.gpa}
+                        <Text
+                          style={[
+                            pdfStyles.description,
+                            { fontSize: 11, marginTop: 2 },
+                          ]}
+                        >
+                          CGPA: {edu.gpa}
                         </Text>
                       )}
+
+                      {/* Description if provided */}
                       {edu.description && edu.description.trim() && (
                         <View style={pdfStyles.description}>
                           {parseHtmlToPdf(edu.description)}
