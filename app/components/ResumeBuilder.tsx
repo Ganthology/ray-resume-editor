@@ -8,6 +8,11 @@ import {
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import {
+  sendExportPDFEvent,
+  sendLoadDraftEvent,
+  sendSaveDraftEvent,
+} from "@/analytics/analytics";
 
 import { Button } from "@/components/ui/button";
 import EditPanel from "./EditPanel";
@@ -55,6 +60,8 @@ export default function ResumeBuilder() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+
+      sendSaveDraftEvent();
 
       toast.success("Draft saved successfully!");
     } catch (error) {
@@ -152,6 +159,8 @@ export default function ResumeBuilder() {
 
   const loadDraft = useCallback(() => {
     fileInputRef.current?.click();
+
+    sendLoadDraftEvent();
   }, []);
 
   const handleFileLoad = useCallback(
@@ -273,6 +282,8 @@ export default function ResumeBuilder() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+
+      sendExportPDFEvent();
 
       toast.success("PDF exported successfully!");
     } catch (error) {
