@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ray-resume-editor.vercel.app/sitemap.xml
+
+# Block unnecessary crawling of static assets
+Disallow: /_next/static/
+Disallow: /api/
+Disallow: /*.json$
+
+# Allow crawling of main pages
+Allow: /
+Allow: /sitemap.xml 
