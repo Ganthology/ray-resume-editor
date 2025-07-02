@@ -1,7 +1,18 @@
 "use client";
 
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import { Download, RotateCcw, Save, Upload } from "lucide-react";
+import {
+  Download,
+  MoreHorizontal,
+  RotateCcw,
+  Save,
+  Upload,
+} from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import React, { useCallback, useRef, useState } from "react";
 import {
   SortableContext,
@@ -300,7 +311,7 @@ export default function ResumeBuilder() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="flex flex-col md:flex-row items-center gap-x-2 justify-start">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-x-2 justify-start">
                 <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
                   Resume Builder
                 </h1>
@@ -311,36 +322,85 @@ export default function ResumeBuilder() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button
-                onClick={saveDraft}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
-                <Save className="w-4 h-4" />
-                Save Draft
-              </Button>
+              {/* Desktop buttons - visible on md and larger screens */}
+              <div className="hidden md:flex items-center gap-3">
+                <Button
+                  onClick={saveDraft}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Save Draft
+                </Button>
 
-              <Button
-                onClick={loadDraft}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
-                <Upload className="w-4 h-4" />
-                Load Draft
-              </Button>
+                <Button
+                  onClick={loadDraft}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  Load Draft
+                </Button>
 
-              <Button
-                onClick={clearData}
-                variant="outline"
-                size="sm"
-                className="gap-2 text-red-600 hover:text-red-700"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Clear All
-              </Button>
+                <Button
+                  onClick={clearData}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-red-600 hover:text-red-700"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  Clear All
+                </Button>
+              </div>
 
+              {/* Mobile dropdown - visible only on smaller than md screens */}
+              <div className="md:hidden">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <MoreHorizontal className="w-4 h-4" />
+                      More
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-1" align="end">
+                    <div className="space-y-1">
+                      <Button
+                        onClick={saveDraft}
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        Save Draft
+                      </Button>
+
+                      <Button
+                        onClick={loadDraft}
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start gap-2"
+                      >
+                        <Upload className="w-4 h-4" />
+                        Load Draft
+                      </Button>
+
+                      <Button
+                        onClick={clearData}
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        Clear All
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Export PDF button - always visible */}
               <Button
                 onClick={exportToPDF}
                 disabled={isExporting}
