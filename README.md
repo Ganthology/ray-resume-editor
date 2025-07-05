@@ -70,7 +70,7 @@ Visit [ray-resume-editor.vercel.app](https://ray-resume-editor.vercel.app) to st
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/ray-resume-editor.git
+git clone https://github.com/ganthology/ray-resume-editor.git
 
 # Install dependencies
 npm install
