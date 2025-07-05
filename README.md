@@ -4,9 +4,11 @@
 
 A modern, feature-rich resume builder that prioritizes your privacy. Build beautiful resumes with drag-and-drop functionality, multiple sections, and PDF export - all without sending your personal information anywhere.
 
+Disclaimer: AI Assisted coding (Vibe Code) with [Cursor](https://cursor.com/)
+
 ## 📸 App Preview
 
-![Ray Resume Editor Interface](https://github.com/Ganthology/ray-resume-editor/refs/heads/main/screenshot.png)
+![Ray Resume Editor Interface](https://raw.githubusercontent.com/Ganthology/ray-resume-editor/refs/heads/main/screenshot.png)
 
 _Complete resume builder with real-time PDF preview - all your data stays local_
 
