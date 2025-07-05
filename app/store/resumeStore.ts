@@ -1,19 +1,17 @@
 "use client";
 
-import {
-  Education,
-  Experience,
-  LeadershipExperience,
-  PersonalInfo,
-  Portfolio,
-  ProjectExperience,
-  ResearchExperience,
-  ResumeData,
-  Skill,
-  Summary,
-} from "../types/resume";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { Education } from "@/modules/resume/data/entity/Education";
+import { Experience } from "@/modules/resume/data/entity/Experience";
+import { LeadershipExperience } from "@/modules/resume/data/entity/LeadershipExperience";
+import { PersonalInfo } from "@/modules/resume/data/entity/PersonalInfo";
+import { Portfolio } from "@/modules/resume/data/entity/Portfolio";
+import { ProjectExperience } from "@/modules/resume/data/entity/ProjectExperience";
+import { ResearchExperience } from "@/modules/resume/data/entity/ResearchExperience";
+import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
+import { Skill } from "@/modules/resume/data/entity/Skill";
+import { Summary } from "@/modules/resume/data/entity/Summary";
 import { create } from "zustand";
 
 const initialData: ResumeData = {
