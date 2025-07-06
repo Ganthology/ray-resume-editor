@@ -1,0 +1,5 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["next.config.ts", "app/layout.tsx", "app/page.tsx", "app/**/*.tsx"],
+  "project": ["**/*.ts", "**/*.tsx"]
+} 
