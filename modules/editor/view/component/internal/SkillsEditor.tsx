@@ -10,8 +10,117 @@ import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/platform/component/ui/button";
 import { Checkbox } from "@/platform/component/ui/checkbox";
 import { Input } from "@/platform/component/ui/input";
-import React from "react";
+import React, { useCallback, memo } from "react";
 import { useResumeStore } from "../../../../../app/store/resumeStore";
+import { Skill } from "@/modules/resume/data/entity/Skill";
+
+interface SkillSectionProps {
+  title: string;
+  category:
+    | "skill"
+    | "certification"
+    | "other"
+    | "language"
+    | "interest"
+    | "activity";
+  items: Skill[];
+  addLabel: string;
+  onAddSkill: (category: SkillSectionProps["category"]) => void;
+  onUpdateSkill: (id: string, updates: Partial<Skill>) => void;
+  onDeleteSkill: (id: string) => void;
+}
+
+const SkillSection = memo(
+  ({
+    title,
+    category,
+    items,
+    addLabel,
+    onAddSkill,
+    onUpdateSkill,
+    onDeleteSkill,
+  }: SkillSectionProps) => {
+    const handleNameChange = useCallback(
+      (id: string, value: string) => {
+        onUpdateSkill(id, { name: value });
+      },
+      [onUpdateSkill]
+    );
+
+    const handleIncludedChange = useCallback(
+      (id: string, checked: boolean) => {
+        onUpdateSkill(id, { included: checked });
+      },
+      [onUpdateSkill]
+    );
+
+    const handleDelete = useCallback(
+      (id: string) => {
+        onDeleteSkill(id);
+      },
+      [onDeleteSkill]
+    );
+
+    const handleAddSkill = useCallback(() => {
+      onAddSkill(category);
+    }, [onAddSkill, category]);
+
+    return (
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <h4 className="font-medium text-gray-800">{title}</h4>
+          <Button
+            onClick={handleAddSkill}
+            size="sm"
+            variant="outline"
+            className="gap-1 h-7 text-xs bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300"
+          >
+            <Plus className="w-3 h-3" />
+            {addLabel}
+          </Button>
+        </div>
+
+        {items.length === 0 ? (
+          <p className="text-gray-400 text-xs italic py-2">
+            No {title.toLowerCase()} added yet.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <Checkbox
+                  checked={item.included}
+                  onCheckedChange={(checked) =>
+                    handleIncludedChange(item.id, !!checked)
+                  }
+                />
+                <Input
+                  value={item.name}
+                  onChange={(e) => handleNameChange(item.id, e.target.value)}
+                  placeholder={`Enter ${category} name`}
+                  className="flex-1 border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20 bg-white"
+                />
+                <Button
+                  onClick={() => handleDelete(item.id)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+SkillSection.displayName = "SkillSection";
 
 export default function SkillsEditor() {
   const skills = useResumeStore((state) => state.resumeData.skills);
@@ -25,75 +134,6 @@ export default function SkillsEditor() {
     activity: skills.filter((s) => s.category === "activity"),
     other: skills.filter((s) => s.category === "other"),
   };
-
-  const SkillSection = ({
-    title,
-    category,
-    items,
-    addLabel,
-  }: {
-    title: string;
-    category:
-      | "skill"
-      | "certification"
-      | "other"
-      | "language"
-      | "interest"
-      | "activity";
-    items: typeof skills;
-    addLabel: string;
-  }) => (
-    <div className="space-y-3">
-      <div className="flex justify-between items-center">
-        <h4 className="font-medium text-gray-800">{title}</h4>
-        <Button
-          onClick={() => addSkill(category)}
-          size="sm"
-          variant="outline"
-          className="gap-1 h-7 text-xs bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300"
-        >
-          <Plus className="w-3 h-3" />
-          {addLabel}
-        </Button>
-      </div>
-
-      {items.length === 0 ? (
-        <p className="text-gray-400 text-xs italic py-2">
-          No {title.toLowerCase()} added yet.
-        </p>
-      ) : (
-        <div className="space-y-2">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
-            >
-              <Checkbox
-                checked={item.included}
-                onCheckedChange={(checked) =>
-                  updateSkill(item.id, { included: !!checked })
-                }
-              />
-              <Input
-                value={item.name}
-                onChange={(e) => updateSkill(item.id, { name: e.target.value })}
-                placeholder={`Enter ${category} name`}
-                className="flex-1 border-gray-200/60 focus:border-blue-500 focus:ring-blue-500/20 bg-white"
-              />
-              <Button
-                onClick={() => deleteSkill(item.id)}
-                variant="ghost"
-                size="sm"
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
-              >
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 
   return (
     <Card className="border-0">
@@ -110,6 +150,9 @@ export default function SkillsEditor() {
             category="skill"
             items={skillsByCategory.skill}
             addLabel="Add Skill"
+            onAddSkill={addSkill}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
           />
 
           <SkillSection
@@ -117,6 +160,9 @@ export default function SkillsEditor() {
             category="certification"
             items={skillsByCategory.certification}
             addLabel="Add Certification"
+            onAddSkill={addSkill}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
           />
 
           <SkillSection
@@ -124,6 +170,9 @@ export default function SkillsEditor() {
             category="language"
             items={skillsByCategory.language}
             addLabel="Add Language"
+            onAddSkill={addSkill}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
           />
 
           <SkillSection
@@ -131,6 +180,9 @@ export default function SkillsEditor() {
             category="interest"
             items={skillsByCategory.interest}
             addLabel="Add Interest"
+            onAddSkill={addSkill}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
           />
 
           <SkillSection
@@ -138,6 +190,9 @@ export default function SkillsEditor() {
             category="activity"
             items={skillsByCategory.activity}
             addLabel="Add Activity"
+            onAddSkill={addSkill}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
           />
 
           <SkillSection
@@ -145,6 +200,9 @@ export default function SkillsEditor() {
             category="other"
             items={skillsByCategory.other}
             addLabel="Add Other"
+            onAddSkill={addSkill}
+            onUpdateSkill={updateSkill}
+            onDeleteSkill={deleteSkill}
           />
         </CardContent>
       </AccordionContent>
