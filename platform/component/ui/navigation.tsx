@@ -4,11 +4,21 @@ import { Button } from "./button";
 import Link from "next/link";
 import { cn } from "@/platform/style/utils";
 
-interface ComponentProps {
+interface NavigationProps {
   className?: string;
+  children?: React.ReactNode;
+  title?: string;
+  subtitle?: string;
+  showDefaultActions?: boolean;
 }
 
-export default function Navigation({ className }: ComponentProps) {
+export default function Navigation({
+  className,
+  children,
+  title = "Ray Resume Editor",
+  subtitle,
+  showDefaultActions = true,
+}: NavigationProps) {
   return (
     <nav
       className={cn(
@@ -21,34 +31,47 @@ export default function Navigation({ className }: ComponentProps) {
           {/* Left side - Logo/Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
-                Ray Resume Editor
-              </h1>
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-x-2 justify-start">
+                <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+                  {title}
+                </h1>
+                {subtitle && (
+                  <span className="text-sm text-gray-500">{subtitle}</span>
+                )}
+              </div>
             </Link>
           </div>
 
           {/* Right side - Navigation items */}
           <div className="flex items-center space-x-4">
-            <Link
-              href="https://github.com/Ganthology/ray-resume-editor"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <Github className="w-4 h-4" />
-              <span className="hidden sm:inline">GitHub</span>
-            </Link>
+            {/* Custom children actions */}
+            {children}
 
-            <Link href="/chat">
-              <Button
-                variant="default"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>Chat to Build</span>
-              </Button>
-            </Link>
+            {/* Default actions */}
+            {showDefaultActions && (
+              <>
+                <Link
+                  href="https://github.com/Ganthology/ray-resume-editor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <Github className="w-4 h-4" />
+                  <span className="hidden sm:inline">GitHub</span>
+                </Link>
+
+                <Link href="/chat">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Chat to Build</span>
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

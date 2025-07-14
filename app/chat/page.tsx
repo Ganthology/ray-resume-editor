@@ -1,6 +1,14 @@
 "use client";
 
-import { BarChart3, Eye, FileText, MessageCircle } from "lucide-react";
+import {
+  BarChart3,
+  Eye,
+  FileText,
+  Github,
+  Home,
+  MessageCircle,
+  RefreshCw,
+} from "lucide-react";
 import {
   ChatMessage,
   ConversationContext,
@@ -11,6 +19,7 @@ import { Button } from "@/platform/component/ui/button";
 import ChatInterface from "@/modules/chat/view/component/ChatInterface";
 import ContextDisplay from "@/modules/chat/view/component/ContextDisplay";
 import Footer from "@/platform/component/ui/footer";
+import Link from "next/link";
 import Navigation from "@/platform/component/ui/navigation";
 import PreviewPanel from "@/modules/editor/view/component/PreviewPanel";
 import ResumeDataDisplay from "@/modules/chat/view/component/ResumeDataDisplay";
@@ -18,6 +27,7 @@ import { useResumeStore } from "../store/resumeStore";
 
 export default function ChatPage() {
   const resumeData = useResumeStore((state) => state.resumeData);
+  const { clearAllData } = useResumeStore();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [context, setContext] = useState<ConversationContext | null>(null);
@@ -120,12 +130,59 @@ export default function ChatPage() {
     }, 1000);
   }, []);
 
+  const handleClearChat = () => {
+    if (
+      confirm(
+        "Are you sure you want to clear the chat and resume data? This action cannot be undone."
+      )
+    ) {
+      setMessages([]);
+      setContext(null);
+      clearAllData();
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navigation />
+      <Navigation
+        title="AI Resume Builder Chat"
+        subtitle="Build your resume through conversation"
+        showDefaultActions={false}
+      >
+        {/* Chat-specific actions */}
+        <Button
+          onClick={handleClearChat}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-red-600 hover:text-red-700"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Clear Chat
+        </Button>
+
+        <Link
+          href="https://github.com/Ganthology/ray-resume-editor"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          <Github className="w-4 h-4" />
+          <span className="hidden sm:inline">GitHub</span>
+        </Link>
+
+        <Link href="/">
+          <Button
+            variant="default"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Home className="w-4 h-4" />
+            <span>Resume Editor</span>
+          </Button>
+        </Link>
+      </Navigation>
 
       <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
-        å
         <div className="grid grid-cols-2 gap-8 h-[calc(100vh-200px)]">
           {/* Left Panel - Chat Interface / Context */}
           <div className="flex flex-col">
