@@ -31,7 +31,7 @@ export default function EditPanel() {
       {/* Personal Information */}
       <Accordion type="multiple" defaultValue={["personal-info"]}>
         <AccordionItem value="personal-info">
-          <Card className="border-0">
+          <Card className="border-0 py-0">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <CardTitle className="text-lg font-semibold text-gray-900">
                 Personal Information
@@ -49,7 +49,7 @@ export default function EditPanel() {
       {/* Resume Sections */}
       <Accordion type="multiple" defaultValue={["resume-sections"]}>
         <AccordionItem value="resume-sections">
-          <Card className="border-0">
+          <Card className="border-0 py-0">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <CardTitle className="text-lg font-semibold text-gray-900">
                 Resume Sections

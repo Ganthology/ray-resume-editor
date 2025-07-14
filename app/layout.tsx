@@ -55,16 +55,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://ray-resume-editor.vercel.app",
-    siteName: "Ray Resume Editor",
     title: "Ray Resume Editor - Free Professional Resume Builder",
     description:
-      "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, and clean formatting.",
+      "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, drag-and-drop functionality, and clean formatting. Build your perfect resume in minutes.",
+    siteName: "Ray Resume Editor",
     images: [
       {
         url: "https://ray-resume-editor.vercel.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Ray Resume Editor - Professional Resume Builder",
+        alt: "Ray Resume Editor - Free Professional Resume Builder",
       },
     ],
   },
@@ -72,31 +72,40 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ray Resume Editor - Free Professional Resume Builder",
     description:
-      "Create professional resumes effortlessly. Free online resume builder with PDF export and clean formatting.",
+      "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, drag-and-drop functionality, and clean formatting. Build your perfect resume in minutes.",
     images: ["https://ray-resume-editor.vercel.app/og-image.png"],
-    creator: "@ray", // Update with actual Twitter handle if available
+    creator: "@ray",
   },
   alternates: {
     canonical: "https://ray-resume-editor.vercel.app",
   },
-  verification: {
-    google: "", // Add Google Search Console verification code when available
-  },
   category: "productivity",
   classification: "Resume Builder",
-  referrer: "origin-when-cross-origin",
+  verification: {
+    google: "your-google-site-verification-code",
+    yandex: "your-yandex-verification-code",
+    yahoo: "your-yahoo-verification-code",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Ray Resume Editor",
+  },
   formatDetection: {
-    email: false,
-    address: false,
     telephone: false,
   },
   metadataBase: new URL("https://ray-resume-editor.vercel.app"),
   other: {
-    "application-name": "Ray Resume Editor",
-    "mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-status-bar-style": "default",
-    "apple-mobile-web-app-title": "Ray Resume Editor",
+    "google-site-verification": "your-google-site-verification-code",
+    "msvalidate.01": "your-bing-site-verification-code",
     "theme-color": "#ffffff",
     "msapplication-TileColor": "#ffffff",
   },

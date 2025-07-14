@@ -43,7 +43,7 @@ export default function LeadershipExperienceEditor() {
   } = useResumeStore();
 
   return (
-    <Card className="border-0">
+    <Card className="border-0 py-0">
       <AccordionTrigger className="px-6 py-4 hover:no-underline">
         <CardTitle className="text-lg font-semibold text-gray-900">
           Leadership Experience
