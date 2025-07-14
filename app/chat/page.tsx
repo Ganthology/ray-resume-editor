@@ -25,6 +25,11 @@ import PreviewPanel from "@/modules/editor/view/component/PreviewPanel";
 import ResumeDataDisplay from "@/modules/chat/view/component/ResumeDataDisplay";
 import { useResumeStore } from "../store/resumeStore";
 
+/**
+ * TODOS:
+ * - Clean up this component
+ * - consume ai sdk useChat instead of using states
+ */
 export default function ChatPage() {
   const resumeData = useResumeStore((state) => state.resumeData);
   const { clearAllData } = useResumeStore();
@@ -79,34 +84,36 @@ export default function ChatPage() {
 
 **Education:**
 • Degree: Bachelor of Science in Computer Science
-• Institution: University of California, Berkeley
+• University: University of California, Berkeley
 • Graduation: May 2018
 • GPA: 3.8/4.0
+• Relevant Coursework: Data Structures, Algorithms, Software Engineering, Database Systems
 
-**Technical Skills:**
+**Skills:**
 • Programming Languages: JavaScript, TypeScript, Python, Java
-• Frontend: React, Vue.js, HTML5, CSS3, Tailwind CSS
+• Frontend: React, Vue.js, HTML5, CSS3, Sass
 • Backend: Node.js, Express, Django, Spring Boot
 • Databases: PostgreSQL, MongoDB, Redis
-• Cloud & DevOps: AWS, Docker, Kubernetes, CI/CD
-• Tools: Git, Jest, Webpack, Figma
+• Tools: Git, Docker, AWS, Jenkins, Jira
 
 **Projects:**
-• E-commerce Platform: Led development of scalable microservices architecture
-• Task Management App: Built full-stack application with real-time collaboration
-• Open Source Contributions: Active contributor to React ecosystem
+• E-commerce Platform: Built scalable microservices architecture serving 100k+ users
+• Task Management App: Developed full-stack application with real-time collaboration
+• Data Visualization Dashboard: Created interactive analytics dashboard using D3.js
 
 **Certifications:**
 • AWS Certified Solutions Architect
-• Google Cloud Professional Developer
-• Certified Scrum Master (CSM)`,
+• Google Cloud Professional Developer`,
         lastUpdated: new Date(),
       };
       setContext(mockContext);
     }
-  }, [messages.length]);
+  }, []);
 
   const handleSendMessage = useCallback(async (content: string) => {
+    setIsLoading(true);
+
+    // Add user message
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       type: "user",
@@ -115,17 +122,17 @@ export default function ChatPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
 
     // Simulate AI response
     setTimeout(() => {
-      const aiResponse: ChatMessage = {
+      const aiMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: "assistant",
-        content: `I understand you mentioned: "${content}". Let me help you organize this information into your resume. Based on what you've shared, I can help you structure this into the appropriate sections like experience, skills, or education. Would you like me to add this to a specific section of your resume?`,
+        content: `I understand you mentioned: "${content}". I'll help you incorporate this information into your resume. This is a mock response - in the real implementation, this would process your input and update the resume data accordingly.`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, aiResponse]);
+
+      setMessages((prev) => [...prev, aiMessage]);
       setIsLoading(false);
     }, 1000);
   }, []);
@@ -142,141 +149,127 @@ export default function ChatPage() {
     }
   };
 
+  const navigationActions = [
+    {
+      icon: RefreshCw,
+      label: "Clear Chat",
+      onClick: handleClearChat,
+      variant: "destructive" as const,
+    },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navigation
-        title="AI Resume Builder Chat"
-        subtitle="Build your resume through conversation"
-        showDefaultActions={false}
-      >
-        {/* Chat-specific actions */}
-        <Button
-          onClick={handleClearChat}
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-2 text-red-600 hover:text-red-700"
+    <>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Navigation
+          title="AI Resume Builder Chat"
+          subtitle="Build your resume through conversation"
+          showDefaultActions={false}
+          actions={navigationActions}
         >
-          <RefreshCw className="w-4 h-4" />
-          Clear Chat
-        </Button>
-
-        <Link
-          href="https://github.com/Ganthology/ray-resume-editor"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          <Github className="w-4 h-4" />
-          <span className="hidden sm:inline">GitHub</span>
-        </Link>
-
-        <Link href="/">
-          <Button
-            variant="default"
-            size="sm"
-            className="flex items-center gap-2"
+          <Link
+            href="https://github.com/Ganthology/ray-resume-editor"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
           >
-            <Home className="w-4 h-4" />
-            <span>Resume Editor</span>
-          </Button>
-        </Link>
-      </Navigation>
+            <Github className="w-4 h-4" />
+            <span className="hidden sm:inline">GitHub</span>
+          </Link>
 
-      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-2 gap-8 h-[calc(100vh-200px)]">
-          {/* Left Panel - Chat Interface / Context */}
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {leftPanelView === "chat" ? "Chat Interface" : "Context"}
-              </h2>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant={leftPanelView === "chat" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setLeftPanelView("chat")}
-                  className="flex items-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Chat
-                </Button>
-                <Button
-                  variant={leftPanelView === "context" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setLeftPanelView("context")}
-                  className="flex items-center gap-2"
-                >
-                  <FileText className="w-4 h-4" />
-                  Context
-                </Button>
-              </div>
-            </div>
+          <Link href="/">
+            <Button
+              variant="default"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Home className="w-4 h-4" />
+              <span>Resume Editor</span>
+            </Button>
+          </Link>
+        </Navigation>
 
-            <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              {leftPanelView === "chat" ? (
-                <ChatInterface
-                  messages={messages}
-                  isLoading={isLoading}
-                  onMessageSent={handleSendMessage}
-                />
-              ) : (
-                <div className="p-6 h-full overflow-y-auto">
-                  {context ? (
-                    <ContextDisplay context={context} />
-                  ) : (
-                    <p className="text-gray-500 text-center">
-                      No context available yet.
-                    </p>
-                  )}
+        <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {/* Left Panel - Chat Interface / Context */}
+            <div className="flex flex-col">
+              <div className="flex items-center justify-end mb-4">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={leftPanelView === "chat" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setLeftPanelView("chat")}
+                    className="flex items-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    Chat
+                  </Button>
+                  <Button
+                    variant={
+                      leftPanelView === "context" ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setLeftPanelView("context")}
+                    className="flex items-center gap-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Context
+                  </Button>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          {/* Right Panel - Preview / Resume Data */}
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {rightPanelView === "preview"
-                  ? "Resume Preview"
-                  : "Resume Data"}
-              </h2>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant={rightPanelView === "preview" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setRightPanelView("preview")}
-                  className="flex items-center gap-2"
-                >
-                  <Eye className="w-4 h-4" />
-                  Preview
-                </Button>
-                <Button
-                  variant={rightPanelView === "data" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setRightPanelView("data")}
-                  className="flex items-center gap-2"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  Data
-                </Button>
+              <div className="flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                {leftPanelView === "chat" ? (
+                  <ChatInterface
+                    messages={messages}
+                    onMessageSent={handleSendMessage}
+                    isLoading={isLoading}
+                  />
+                ) : (
+                  <ContextDisplay context={context} />
+                )}
               </div>
             </div>
 
-            <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              {rightPanelView === "preview" ? (
-                <PreviewPanel />
-              ) : (
-                <div className="p-6 h-full overflow-y-auto">
+            {/* Right Panel - Resume Preview / Data */}
+            <div className="flex flex-col">
+              <div className="flex items-center justify-end mb-4">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={
+                      rightPanelView === "preview" ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setRightPanelView("preview")}
+                    className="flex items-center gap-2"
+                  >
+                    <Eye className="w-4 h-4" />
+                    Preview
+                  </Button>
+                  <Button
+                    variant={rightPanelView === "data" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setRightPanelView("data")}
+                    className="flex items-center gap-2"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    Data
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                {rightPanelView === "preview" ? (
+                  <PreviewPanel />
+                ) : (
                   <ResumeDataDisplay resumeData={resumeData} />
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-
       <Footer />
-    </div>
+    </>
   );
 }

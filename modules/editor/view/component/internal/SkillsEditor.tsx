@@ -6,13 +6,13 @@ import {
 } from "@/platform/component/ui/accordion";
 import { Card, CardContent, CardTitle } from "@/platform/component/ui/card";
 import { Plus, Trash2 } from "lucide-react";
+import React, { memo, useCallback } from "react";
 
 import { Button } from "@/platform/component/ui/button";
 import { Checkbox } from "@/platform/component/ui/checkbox";
 import { Input } from "@/platform/component/ui/input";
-import React, { useCallback, memo } from "react";
-import { useResumeStore } from "../../../../../app/store/resumeStore";
 import { Skill } from "@/modules/resume/data/entity/Skill";
+import { useResumeStore } from "../../../../../app/store/resumeStore";
 
 interface SkillSectionProps {
   title: string;
@@ -136,7 +136,7 @@ export default function SkillsEditor() {
   };
 
   return (
-    <Card className="border-0">
+    <Card className="border-0 py-0">
       <AccordionTrigger className="px-6 py-4 hover:no-underline">
         <CardTitle className="text-lg font-semibold text-gray-900">
           Skills, Certifications & Others

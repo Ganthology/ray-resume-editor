@@ -4,16 +4,10 @@ import {
   Download,
   Github,
   MessageCircle,
-  MoreHorizontal,
   RotateCcw,
   Save,
   Upload,
 } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/platform/component/ui/popover";
 
 import { Button } from "@/platform/component/ui/button";
 import Footer from "@/platform/component/ui/footer";
@@ -78,103 +72,38 @@ export default function ResumeEditorScreen() {
     setIsExporting(false);
   };
 
+  const navigationActions = [
+    {
+      icon: Save,
+      label: "Save Draft",
+      onClick: onSaveDraft,
+    },
+    {
+      icon: Upload,
+      label: "Load Draft",
+      onClick: loadDraft,
+    },
+    {
+      icon: RotateCcw,
+      label: "Clear All",
+      onClick: clearData,
+      variant: "destructive" as const,
+    },
+    {
+      icon: Download,
+      label: isExporting ? "Exporting..." : "Export PDF",
+      onClick: exportToPDF,
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation
         title="Resume Builder"
         subtitle="that just works, vibe-coded by Ray"
         showDefaultActions={false}
+        actions={navigationActions}
       >
-        {/* Desktop buttons - visible on md and larger screens */}
-        <div className="hidden md:flex items-center gap-3">
-          <Button
-            onClick={onSaveDraft}
-            variant="outline"
-            size="sm"
-            className="gap-2"
-          >
-            <Save className="w-4 h-4" />
-            Save Draft
-          </Button>
-
-          <Button
-            onClick={loadDraft}
-            variant="outline"
-            size="sm"
-            className="gap-2"
-          >
-            <Upload className="w-4 h-4" />
-            Load Draft
-          </Button>
-
-          <Button
-            onClick={clearData}
-            variant="outline"
-            size="sm"
-            className="gap-2 text-red-600 hover:text-red-700"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Clear All
-          </Button>
-        </div>
-
-        {/* Mobile dropdown - visible only on smaller than md screens */}
-        <div className="md:hidden">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
-                <MoreHorizontal className="w-4 h-4" />
-                More
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-48 p-1" align="end">
-              <div className="space-y-1">
-                <Button
-                  onClick={onSaveDraft}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Save Draft
-                </Button>
-
-                <Button
-                  onClick={loadDraft}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start gap-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  Load Draft
-                </Button>
-
-                <Button
-                  onClick={clearData}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Clear All
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {/* Export PDF button - always visible */}
-        <Button
-          onClick={exportToPDF}
-          disabled={isExporting}
-          size="sm"
-          className="gap-2"
-        >
-          <Download className="w-4 h-4" />
-          {isExporting ? "Exporting..." : "Export PDF"}
-        </Button>
-
-        {/* Default navigation items */}
         <Link
           href="https://github.com/Ganthology/ray-resume-editor"
           target="_blank"
@@ -198,45 +127,6 @@ export default function ResumeEditorScreen() {
       </Navigation>
 
       <main className="flex-1">
-        {/* Hidden SEO content for search engines */}
-        <div className="sr-only">
-          <h1>Ray Resume Editor - Free Professional Resume Builder</h1>
-          <p>
-            Create professional resumes effortlessly with our free online resume
-            builder. Ray Resume Editor offers PDF export, multiple resume
-            sections including experience, education, skills, projects,
-            leadership, research, and portfolio. Build your perfect resume in
-            minutes with drag-and-drop functionality and clean formatting.
-          </p>
-          <h2>Features</h2>
-          <ul>
-            <li>Free professional resume builder</li>
-            <li>PDF export functionality</li>
-            <li>Multiple resume sections</li>
-            <li>Experience and education management</li>
-            <li>Skills and projects tracking</li>
-            <li>Leadership and research experience</li>
-            <li>Portfolio showcase</li>
-            <li>Drag-and-drop interface</li>
-            <li>Clean professional formatting</li>
-            <li>Save and load drafts</li>
-          </ul>
-          <h2>Benefits</h2>
-          <p>
-            Build your resume quickly and professionally. Perfect for job
-            seekers, students, and professionals looking to create polished CVs.
-            No registration required - start building your resume immediately.
-          </p>
-          <h2>AI-Powered Chat Feature</h2>
-          <p>
-            Try our new AI-powered chat feature to build your resume through
-            conversation. Simply tell us about your experience, skills, and
-            achievements, and we&apos;ll help you create a professional resume
-            automatically.
-          </p>
-        </div>
-
-        {/* Main application */}
         <ResumeBuilder />
       </main>
 
