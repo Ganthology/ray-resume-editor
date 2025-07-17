@@ -7,25 +7,28 @@ import {
   CardTitle,
 } from "@/platform/component/ui/card";
 import { MessageCircleIcon, SendIcon } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
-import { ChatMessage } from "../../types/ChatTypes";
 import { Input } from "@/platform/component/ui/input";
+import { Message } from "ai";
 
 interface ChatInterfaceProps {
-  onMessageSent: (message: string) => void;
-  messages: ChatMessage[];
+  messages: Message[];
+  input: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
 }
 
 export default function ChatInterface({
-  onMessageSent,
   messages,
+  input,
+  handleInputChange,
+  handleSubmit,
   isLoading,
 }: ChatInterfaceProps) {
-  const [currentInput, setCurrentInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -35,21 +38,6 @@ export default function ChatInterface({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (currentInput.trim() && !isLoading) {
-      onMessageSent(currentInput.trim());
-      setCurrentInput("");
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
 
   return (
     <Card className="h-full flex flex-col border-gray-200/60 shadow-sm">
@@ -81,14 +69,14 @@ export default function ChatInterface({
               <div
                 key={message.id}
                 className={`flex ${
-                  message.type === "user" ? "justify-end" : "justify-start"
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
                   className={`max-w-[80%] p-3 rounded-lg ${
-                    message.type === "user"
+                    message.role === "user"
                       ? "bg-blue-500 text-white rounded-br-sm"
-                      : message.type === "assistant"
+                      : message.role === "assistant"
                       ? "bg-gray-100 text-gray-900 rounded-bl-sm"
                       : "bg-yellow-50 text-yellow-800 text-sm border border-yellow-200"
                   }`}
@@ -97,7 +85,7 @@ export default function ChatInterface({
                     {message.content}
                   </p>
                   <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString()}
+                    {message.createdAt ? new Date(message.createdAt).toLocaleTimeString() : ''}
                   </p>
                 </div>
               </div>
@@ -123,9 +111,8 @@ export default function ChatInterface({
           <form onSubmit={handleSubmit} className="flex gap-2">
             <div className="flex-1 relative">
               <Input
-                value={currentInput}
-                onChange={(e) => setCurrentInput(e.target.value)}
-                onKeyPress={handleKeyPress}
+                value={input}
+                onChange={handleInputChange}
                 placeholder="Tell me about your experience..."
                 disabled={isLoading}
                 className="pr-12"
@@ -133,7 +120,7 @@ export default function ChatInterface({
             </div>
             <Button
               type="submit"
-              disabled={!currentInput.trim() || isLoading}
+              disabled={!input.trim() || isLoading}
               size="icon"
               className="shrink-0"
             >

@@ -9,32 +9,24 @@ import {
   MessageCircle,
   RefreshCw,
 } from "lucide-react";
-import {
-  ChatMessage,
-  ConversationContext,
-} from "@/modules/chat/types/ChatTypes";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/platform/component/ui/button";
 import ChatInterface from "@/modules/chat/view/component/ChatInterface";
 import ContextDisplay from "@/modules/chat/view/component/ContextDisplay";
+import { ConversationContext } from "@/modules/chat/types/ChatTypes";
 import Footer from "@/platform/component/ui/footer";
 import Link from "next/link";
 import Navigation from "@/platform/component/ui/navigation";
 import PreviewPanel from "@/modules/editor/view/component/PreviewPanel";
+import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
 import ResumeDataDisplay from "@/modules/chat/view/component/ResumeDataDisplay";
+import { useChat } from "ai/react";
 import { useResumeStore } from "../store/resumeStore";
 
-/**
- * TODOS:
- * - Clean up this component
- * - consume ai sdk useChat instead of using states
- */
 export default function ChatPage() {
   const resumeData = useResumeStore((state) => state.resumeData);
-  const { clearAllData } = useResumeStore();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { clearAllData, loadFromJSON } = useResumeStore();
   const [context, setContext] = useState<ConversationContext | null>(null);
   const [leftPanelView, setLeftPanelView] = useState<"chat" | "context">(
     "chat"
@@ -43,99 +35,83 @@ export default function ChatPage() {
     "preview"
   );
 
-  // Initialize with a welcome message and mock context
-  React.useEffect(() => {
-    if (messages.length === 0) {
-      const welcomeMessage: ChatMessage = {
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    setMessages,
+  } = useChat({
+    api: "/api/chat",
+    initialMessages: [
+      {
         id: "welcome",
-        type: "assistant",
+        role: "assistant",
         content:
           "Welcome to the Resume Builder! I'm here to help you create your professional resume. Tell me about your work experience, education, skills, and any other relevant information, and I'll help organize it into a polished resume.",
-        timestamp: new Date(),
-      };
-      setMessages([welcomeMessage]);
+      },
+    ],
+    onFinish: async (message) => {
+      // Generate context summary after each assistant message
+      if (message.role === "assistant") {
+        await generateContextSummary();
+      }
+    },
+  });
 
-      // Initialize with mock context to demonstrate the feature
-      const mockContext: ConversationContext = {
-        id: "mock-context",
-        content: `**Personal Information:**
-• Name: Sarah Johnson
-• Location: San Francisco, CA
-• Phone: (555) 123-4567
-• Email: sarah.johnson@email.com
-• LinkedIn: linkedin.com/in/sarah-johnson
+  const generateContextSummary = async () => {
+    try {
+      const response = await fetch("/api/generate-context", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+        }),
+      });
 
-**Current Role:**
-• Position: Senior Software Engineer at TechCorp Inc.
-• Duration: 3 years and 2 months (January 2021 - Present)
-• Responsibilities:
-  - Lead development of microservices architecture for e-commerce platform
-  - Mentor junior developers and conduct technical interviews
-  - Collaborate with product managers to define technical requirements
-  - Optimize application performance resulting in 40% faster load times
+      if (response.ok) {
+        const { contextSummary } = await response.json();
+        const contextData: ConversationContext = {
+          id: `context-${Date.now()}`,
+          content: contextSummary,
+          lastUpdated: new Date(),
+        };
+        setContext(contextData);
 
-**Previous Experience:**
-• Position: Full Stack Developer at StartupXYZ
-• Duration: 2 years (June 2018 - December 2020)
-• Achievements:
-  - Built responsive web applications using React and Node.js
-  - Implemented automated testing reducing bugs by 60%
-  - Participated in agile development process
-
-**Education:**
-• Degree: Bachelor of Science in Computer Science
-• University: University of California, Berkeley
-• Graduation: May 2018
-• GPA: 3.8/4.0
-• Relevant Coursework: Data Structures, Algorithms, Software Engineering, Database Systems
-
-**Skills:**
-• Programming Languages: JavaScript, TypeScript, Python, Java
-• Frontend: React, Vue.js, HTML5, CSS3, Sass
-• Backend: Node.js, Express, Django, Spring Boot
-• Databases: PostgreSQL, MongoDB, Redis
-• Tools: Git, Docker, AWS, Jenkins, Jira
-
-**Projects:**
-• E-commerce Platform: Built scalable microservices architecture serving 100k+ users
-• Task Management App: Developed full-stack application with real-time collaboration
-• Data Visualization Dashboard: Created interactive analytics dashboard using D3.js
-
-**Certifications:**
-• AWS Certified Solutions Architect
-• Google Cloud Professional Developer`,
-        lastUpdated: new Date(),
-      };
-      setContext(mockContext);
+        // Process the context to update resume data
+        await processContextToResumeData(contextSummary);
+      }
+    } catch (error) {
+      console.error("Error generating context summary:", error);
     }
-  }, []);
+  };
 
-  const handleSendMessage = useCallback(async (content: string) => {
-    setIsLoading(true);
+  const processContextToResumeData = async (contextContent: string) => {
+    try {
+      const response = await fetch("/api/process-context", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ context: contextContent }),
+      });
 
-    // Add user message
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      type: "user",
-      content,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: "assistant",
-        content: `I understand you mentioned: "${content}". I'll help you incorporate this information into your resume. This is a mock response - in the real implementation, this would process your input and update the resume data accordingly.`,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+      if (response.ok) {
+        const processedData: ResumeData = await response.json();
+        loadFromJSON(processedData);
+      } else {
+        console.error("Failed to process context:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error processing context:", error);
+    }
+  };
 
   const handleClearChat = () => {
     if (
@@ -143,7 +119,14 @@ export default function ChatPage() {
         "Are you sure you want to clear the chat and resume data? This action cannot be undone."
       )
     ) {
-      setMessages([]);
+      setMessages([
+        {
+          id: "welcome",
+          role: "assistant",
+          content:
+            "Welcome to the Resume Builder! I'm here to help you create your professional resume. Tell me about your work experience, education, skills, and any other relevant information, and I'll help organize it into a polished resume.",
+        },
+      ]);
       setContext(null);
       clearAllData();
     }
@@ -222,7 +205,9 @@ export default function ChatPage() {
                 {leftPanelView === "chat" ? (
                   <ChatInterface
                     messages={messages}
-                    onMessageSent={handleSendMessage}
+                    input={input}
+                    handleInputChange={handleInputChange}
+                    handleSubmit={handleSubmit}
                     isLoading={isLoading}
                   />
                 ) : (
