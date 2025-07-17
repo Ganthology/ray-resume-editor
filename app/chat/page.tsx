@@ -9,7 +9,7 @@ import {
   MessageCircle,
   RefreshCw,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/platform/component/ui/button";
 import ChatInterface from "@/modules/chat/view/component/ChatInterface";
@@ -34,14 +34,15 @@ export default function ChatPage() {
   const [rightPanelView, setRightPanelView] = useState<"preview" | "data">(
     "preview"
   );
+  const processedToolInvocationsRef = useRef<Set<string>>(new Set());
 
   const {
     messages,
     input,
     handleInputChange,
     handleSubmit,
-    isLoading,
     setMessages,
+    isLoading,
   } = useChat({
     api: "/api/chat",
     initialMessages: [
@@ -52,66 +53,62 @@ export default function ChatPage() {
           "Welcome to the Resume Builder! I'm here to help you create your professional resume. Tell me about your work experience, education, skills, and any other relevant information, and I'll help organize it into a polished resume.",
       },
     ],
-    onFinish: async (message) => {
-      // Generate context summary after each assistant message
-      if (message.role === "assistant") {
-        await generateContextSummary();
-      }
-    },
   });
 
-  const generateContextSummary = async () => {
-    try {
-      const response = await fetch("/api/generate-context", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: messages.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-        }),
-      });
+  // Handle tool invocations from messages
+  useEffect(() => {
+    // Process all messages for tool invocations
+    messages.forEach((message) => {
+      if (message.role === "assistant" && message.toolInvocations) {
+        message.toolInvocations.forEach((toolInvocation) => {
+          const invocationId = `${message.id}-${toolInvocation.toolCallId}`;
 
-      if (response.ok) {
-        const { contextSummary } = await response.json();
-        const contextData: ConversationContext = {
-          id: `context-${Date.now()}`,
-          content: contextSummary,
-          lastUpdated: new Date(),
-        };
-        setContext(contextData);
+          // Skip if already processed
+          if (processedToolInvocationsRef.current.has(invocationId)) {
+            return;
+          }
 
-        // Process the context to update resume data
-        await processContextToResumeData(contextSummary);
+          console.log("Tool invocation found:", toolInvocation);
+
+          // Check if tool invocation has completed (has result)
+          if (toolInvocation.state === "result" && "result" in toolInvocation) {
+            // Mark as processed
+            processedToolInvocationsRef.current = new Set(
+              processedToolInvocationsRef.current
+            ).add(invocationId);
+
+            if (toolInvocation.toolName === "generateContext") {
+              const result = toolInvocation.result as {
+                contextSummary: string;
+                timestamp: string;
+              };
+              console.log("Context summary generated:", result.contextSummary);
+
+              // Update the context state
+              const contextData: ConversationContext = {
+                id: `context-${Date.now()}`,
+                content: result.contextSummary,
+                lastUpdated: new Date(),
+              };
+              setContext(contextData);
+            } else if (toolInvocation.toolName === "updateResume") {
+              const result = toolInvocation.result as {
+                resumeData: ResumeData;
+                timestamp: string;
+                success: boolean;
+              };
+              console.log("Resume data updated:", result.resumeData);
+
+              // Update the resume data directly
+              if (result.success && result.resumeData) {
+                loadFromJSON(result.resumeData);
+              }
+            }
+          }
+        });
       }
-    } catch (error) {
-      console.error("Error generating context summary:", error);
-    }
-  };
-
-  const processContextToResumeData = async (contextContent: string) => {
-    try {
-      const response = await fetch("/api/process-context", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ context: contextContent }),
-      });
-
-      if (response.ok) {
-        const processedData: ResumeData = await response.json();
-        loadFromJSON(processedData);
-      } else {
-        console.error("Failed to process context:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error processing context:", error);
-    }
-  };
+    });
+  }, [messages, loadFromJSON]);
 
   const handleClearChat = () => {
     if (
@@ -128,6 +125,7 @@ export default function ChatPage() {
         },
       ]);
       setContext(null);
+      processedToolInvocationsRef.current = new Set();
       clearAllData();
     }
   };
