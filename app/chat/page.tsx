@@ -165,7 +165,7 @@ export default function ChatPage() {
             <Button
               variant="default"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:cursor-pointer"
             >
               <Home className="w-4 h-4" />
               <span>Resume Editor</span>

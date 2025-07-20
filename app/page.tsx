@@ -1,5 +1,5 @@
-import ResumeEditorScreen from "@/modules/editor/view/screen/ResumeEditorScreen";
+import LandingScreen from "@/platform/landing/LandingScreen";
 
 export default function Home() {
-  return <ResumeEditorScreen />;
+  return <LandingScreen />;
 }

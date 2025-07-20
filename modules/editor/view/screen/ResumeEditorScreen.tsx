@@ -118,7 +118,7 @@ export default function ResumeEditorScreen() {
           <Button
             variant="default"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:cursor-pointer"
           >
             <MessageCircle className="w-4 h-4" />
             <span>Chat to Build</span>

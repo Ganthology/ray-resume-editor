@@ -6,9 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/platform/component/ui/card";
-import { ClockIcon, FileTextIcon } from "lucide-react";
+import { ClockIcon, FileTextIcon, DownloadIcon } from "lucide-react";
 
 import { Badge } from "@/platform/component/ui/badge";
+import { Button } from "@/platform/component/ui/button";
 import { ConversationContext } from "../../types/ChatTypes";
 import React from "react";
 
@@ -17,15 +18,54 @@ interface ContextDisplayProps {
 }
 
 export default function ContextDisplay({ context }: ContextDisplayProps) {
+  const handleDownloadContext = () => {
+    if (!context || !context.content) return;
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+    const filename = `RESUME_CONTEXT_${timestamp}.md`;
+    
+    const markdownContent = `# Resume Context Export
+Generated on: ${new Date().toLocaleString()}
+
+## Summary
+${context.summary || 'No summary available'}
+
+## Full Context
+${context.content}
+`;
+
+    const blob = new Blob([markdownContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
   return (
     <Card className="h-full border-gray-200/60 shadow-sm">
       <CardHeader className="border-b border-gray-200/60">
-        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <FileTextIcon className="w-5 h-5" />
-          Conversation Context
-          <Badge variant="secondary" className="text-xs">
-            Current
-          </Badge>
+        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileTextIcon className="w-5 h-5" />
+            Conversation Context
+            <Badge variant="secondary" className="text-xs">
+              Current
+            </Badge>
+          </div>
+          {context && context.content && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadContext}
+              className="flex items-center gap-2"
+            >
+              <DownloadIcon className="w-4 h-4" />
+              Download
+            </Button>
+          )}
         </CardTitle>
         <p className="text-sm text-gray-600">
           Summary of our conversation and key information gathered
