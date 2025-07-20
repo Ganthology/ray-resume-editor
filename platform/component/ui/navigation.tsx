@@ -40,7 +40,7 @@ export default function Navigation({
         <div className="flex flex-col sm:flex-row justify-between sm:items-center py-4 sm:py-2 gap-y-2">
           {/* Left side - Logo/Brand */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/editor" className="flex items-center space-x-2">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-x-2 justify-start">
                 <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
                   {title}

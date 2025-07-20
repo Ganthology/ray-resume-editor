@@ -11,8 +11,8 @@ import React, { useEffect, useRef } from "react";
 
 import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
-import { Input } from "@/platform/component/ui/input";
 import { Message } from "ai";
+import { Textarea } from "@/platform/component/ui/textarea";
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -85,7 +85,9 @@ export default function ChatInterface({
                     {message.content}
                   </p>
                   <p className="text-xs opacity-70 mt-1">
-                    {message.createdAt ? new Date(message.createdAt).toLocaleTimeString() : ''}
+                    {message.createdAt
+                      ? new Date(message.createdAt).toLocaleTimeString()
+                      : ""}
                   </p>
                 </div>
               </div>
@@ -110,9 +112,13 @@ export default function ChatInterface({
         <div className="border-t border-gray-200/60 p-4">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <div className="flex-1 relative">
-              <Input
+              <Textarea
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  handleInputChange(
+                    e as unknown as React.ChangeEvent<HTMLInputElement>
+                  );
+                }}
                 placeholder="Tell me about your experience..."
                 disabled={isLoading}
                 className="pr-12"

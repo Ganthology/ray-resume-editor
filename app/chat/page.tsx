@@ -21,7 +21,7 @@ import Navigation from "@/platform/component/ui/navigation";
 import PreviewPanel from "@/modules/editor/view/component/PreviewPanel";
 import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
 import ResumeDataDisplay from "@/modules/chat/view/component/ResumeDataDisplay";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { useResumeStore } from "../store/resumeStore";
 
 export default function ChatPage() {
@@ -50,7 +50,7 @@ export default function ChatPage() {
         id: "welcome",
         role: "assistant",
         content:
-          "Welcome to the Resume Builder! I'm here to help you create your professional resume. Tell me about your work experience, education, skills, and any other relevant information, and I'll help organize it into a polished resume.",
+          "Welcome to the Resume Builder! I'm your dedicated resume building assistant, specialized in helping you create professional resumes and advance your career.\n\n🎯 **I can help you with:**\n• Professional experience and work history\n• Education and academic achievements\n• Skills and certifications\n• Career goals and objectives\n• Resume formatting and best practices\n• Interview preparation related to your resume\n\n📝 **Let's start building your resume!** Tell me about your current or most recent work experience, and I'll help you organize it into a polished, professional format.",
       },
     ],
   });
@@ -82,9 +82,12 @@ export default function ChatPage() {
                 contextSummary: string;
                 timestamp: string;
               };
-              console.log("Context summary generated:", result.contextSummary);
+              console.log(
+                "Context summary updated continuously:",
+                result.contextSummary.substring(0, 200) + "..."
+              );
 
-              // Update the context state
+              // Update the context state with the latest comprehensive information
               const contextData: ConversationContext = {
                 id: `context-${Date.now()}`,
                 content: result.contextSummary,
@@ -121,7 +124,7 @@ export default function ChatPage() {
           id: "welcome",
           role: "assistant",
           content:
-            "Welcome to the Resume Builder! I'm here to help you create your professional resume. Tell me about your work experience, education, skills, and any other relevant information, and I'll help organize it into a polished resume.",
+            "Welcome to the Resume Builder! I'm your dedicated resume building assistant, specialized in helping you create professional resumes and advance your career.\n\n🎯 **I can help you with:**\n• Professional experience and work history\n• Education and academic achievements\n• Skills and certifications\n• Career goals and objectives\n• Resume formatting and best practices\n• Interview preparation related to your resume\n\n📝 **Let's start building your resume!** Tell me about your current or most recent work experience, and I'll help you organize it into a polished, professional format.",
         },
       ]);
       setContext(null);
@@ -158,7 +161,7 @@ export default function ChatPage() {
             <span className="hidden sm:inline">GitHub</span>
           </Link>
 
-          <Link href="/">
+          <Link href="/editor">
             <Button
               variant="default"
               size="sm"
