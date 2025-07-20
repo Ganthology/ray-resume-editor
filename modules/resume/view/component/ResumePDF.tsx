@@ -12,10 +12,20 @@ import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
 import { parseHtmlToPdf } from "../viewModel/ResumePDFViewModel";
 import { pdfStyles } from "../style/pdfStyles";
 
-// Register fonts for better text rendering
+// Register Times New Roman font (this was working before)
 Font.register({
   family: "Times-Roman",
   src: "https://fonts.gstatic.com/s/timesnewroman/v1/Times_New_Roman.ttf",
+});
+
+Font.register({
+  family: "Geist",
+  src: "https://fonts.googleapis.com/css2?family=Geist:wght@100..900",
+});
+
+Font.register({
+  family: "GeistMono",
+  src: "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap",
 });
 
 interface ResumePDFProps {
@@ -45,6 +55,44 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
   const sortedModules = resumeData.modules
     .filter((module) => module.enabled)
     .sort((a, b) => a.order - b.order);
+
+  // Get style preferences
+  const fitMode = resumeData.styles?.fitMode || "normal";
+  const fontFamily = resumeData.styles?.fontFamily || "times-new-roman";
+
+  // Map font family values to PDF font names (using built-in and registered fonts)
+  const getFontFamily = (font: string) => {
+    switch (font) {
+      case "geist-sans":
+        return "Geist"; // Use built-in Helvetica as fallback for sans-serif
+      case "geist-mono":
+        return "GeistMono"; // Use built-in Courier as fallback for monospace
+      case "times-new-roman":
+      default:
+        return "Times-Roman"; // Use registered Times New Roman
+    }
+  };
+
+  // Get the appropriate page size based on fit mode
+  const getPageSize = () => {
+    return fitMode === "compact" ? A4_SIZE["96_PPI"] : A4_SIZE["72_PPI"];
+  };
+
+  // Create dynamic styles based on preferences
+  const getDynamicStyles = () => {
+    const selectedFont = getFontFamily(fontFamily);
+
+    return {
+      ...pdfStyles,
+      page: {
+        ...pdfStyles.page,
+        fontFamily: selectedFont,
+      },
+    };
+  };
+
+  const dynamicStyles = getDynamicStyles();
+  const pageSize = getPageSize();
 
   const includedExperiences = resumeData.experiences.filter(
     (exp) => exp.included
@@ -147,7 +195,7 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
   return (
     <Document>
-      <Page size={A4_SIZE["96_PPI"]} style={pdfStyles.page}>
+      <Page size={pageSize} style={dynamicStyles.page}>
         {/* Personal Information */}
         <View style={pdfStyles.header}>
           <Text style={pdfStyles.name}>

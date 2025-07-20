@@ -29,22 +29,14 @@ export default function EditPanel() {
   return (
     <div className="space-y-6">
       {/* Personal Information */}
-      <Accordion type="multiple" defaultValue={["personal-info"]}>
-        <AccordionItem value="personal-info">
-          <Card className="border-0 py-0">
-            <AccordionTrigger className="px-6 py-4 hover:no-underline">
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                Personal Information
-              </CardTitle>
-            </AccordionTrigger>
-            <AccordionContent className="px-0 pb-0">
-              <CardContent className="p-6 pt-0">
-                <PersonalInfoEditor />
-              </CardContent>
-            </AccordionContent>
-          </Card>
-        </AccordionItem>
-      </Accordion>
+      <Card className="px-6 pb-6 space-y-4">
+        <CardTitle className="text-lg font-semibold text-gray-900">
+          Personal Information
+        </CardTitle>
+        <CardContent className="px-0">
+          <PersonalInfoEditor />
+        </CardContent>
+      </Card>
 
       {/* Resume Sections */}
       <Accordion type="multiple" defaultValue={["resume-sections"]}>

@@ -10,6 +10,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { initialResumeData, useResumeStore } from "../store/resumeStore";
 
 import { Button } from "@/platform/component/ui/button";
 import ChatInterface from "@/modules/chat/view/component/ChatInterface";
@@ -21,8 +22,8 @@ import Navigation from "@/platform/component/ui/navigation";
 import PreviewPanel from "@/modules/editor/view/component/PreviewPanel";
 import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
 import ResumeDataDisplay from "@/modules/chat/view/component/ResumeDataDisplay";
+import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
 import { useChat } from "@ai-sdk/react";
-import { useResumeStore } from "../store/resumeStore";
 
 export default function ChatPage() {
   const resumeData = useResumeStore((state) => state.resumeData);
@@ -95,7 +96,21 @@ export default function ChatPage() {
               };
               setContext(contextData);
             } else if (toolInvocation.toolName === "updateResume") {
-              const result = toolInvocation.result as {
+              const result = {
+                ...toolInvocation.result,
+                resumeData: {
+                  ...toolInvocation.result.resumeData,
+                  modules: initialResumeData.modules.map((initModule) => {
+                    const updatedModule =
+                      toolInvocation.result.resumeData.modules.find(
+                        (module: ResumeModule) =>
+                          module.title === initModule.title
+                      );
+
+                    return updatedModule ? updatedModule : initModule;
+                  }),
+                },
+              } as {
                 resumeData: ResumeData;
                 timestamp: string;
                 success: boolean;

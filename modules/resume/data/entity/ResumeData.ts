@@ -21,4 +21,8 @@ export interface ResumeData {
   portfolio: Portfolio[];
   modules: ResumeModule[];
   spacing: number; // Horizontal spacing in pixels
+  styles?: {
+    fitMode: "compact" | "normal";
+    fontFamily: string;
+  };
 }
