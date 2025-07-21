@@ -1,5 +1,5 @@
-import LandingScreen from "@/platform/landing/LandingScreen";
+import AuthGuard from "@/platform/auth/AuthGuard";
 
 export default function Home() {
-  return <LandingScreen />;
+  return <AuthGuard />;
 }

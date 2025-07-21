@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Download,
-  Github,
-  MessageCircle,
-  RotateCcw,
-  Save,
-  Upload,
-} from "lucide-react";
+import { Download, MessageCircle, RotateCcw, Save, Upload } from "lucide-react";
 
 import { Button } from "@/platform/component/ui/button";
 import Footer from "@/platform/component/ui/footer";
@@ -99,21 +92,11 @@ export default function ResumeEditorScreen() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation
-        title="Resume Builder"
+        title="Resume Editor"
         subtitle="that just works, vibe-coded by Ray"
         showDefaultActions={false}
         actions={navigationActions}
       >
-        <Link
-          href="https://github.com/Ganthology/ray-resume-editor"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          <Github className="w-4 h-4" />
-          <span className="hidden sm:inline">GitHub</span>
-        </Link>
-
         <Link href="/chat">
           <Button
             variant="default"

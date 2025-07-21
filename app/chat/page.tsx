@@ -4,7 +4,6 @@ import {
   BarChart3,
   Eye,
   FileText,
-  Github,
   Home,
   MessageCircle,
   RefreshCw,
@@ -161,21 +160,11 @@ export default function ChatPage() {
     <>
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Navigation
-          title="AI Resume Builder Chat"
+          title="RaysumeAI Consultant"
           subtitle="Build your resume through conversation"
           showDefaultActions={false}
           actions={navigationActions}
         >
-          <Link
-            href="https://github.com/Ganthology/ray-resume-editor"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <Github className="w-4 h-4" />
-            <span className="hidden sm:inline">GitHub</span>
-          </Link>
-
           <Link href="/editor">
             <Button
               variant="default"

@@ -1,4 +1,4 @@
-import { ChevronDown, Github, MessageCircle } from "lucide-react";
+import { ChevronDown, MessageCircle } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 import { Button } from "./button";
@@ -25,7 +25,7 @@ export default function Navigation({
   className,
   children,
   actions = [],
-  title = "Ray Resume Editor",
+  title = "RaysumeAI",
   subtitle,
   showDefaultActions = true,
 }: NavigationProps) {
@@ -40,7 +40,7 @@ export default function Navigation({
         <div className="flex flex-col sm:flex-row justify-between sm:items-center py-4 sm:py-2 gap-y-2">
           {/* Left side - Logo/Brand */}
           <div className="flex items-center">
-            <Link href="/editor" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-x-2 justify-start">
                 <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
                   {title}
@@ -95,16 +95,6 @@ export default function Navigation({
             {/* Default actions */}
             {showDefaultActions && (
               <>
-                <Link
-                  href="https://github.com/Ganthology/ray-resume-editor"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <Github className="w-4 h-4" />
-                  <span className="hidden sm:inline">GitHub</span>
-                </Link>
-
                 <Link href="/chat">
                   <Button
                     variant="default"
