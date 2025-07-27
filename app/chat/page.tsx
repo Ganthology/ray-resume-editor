@@ -1,12 +1,13 @@
 "use client";
 
 import {
-  BarChart3,
-  Eye,
   FileText,
   Home,
   MessageCircle,
   RefreshCw,
+  Eye,
+  Edit3,
+  Monitor,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { initialResumeData, useResumeStore } from "../store/resumeStore";
@@ -15,26 +16,24 @@ import { Button } from "@/platform/component/ui/button";
 import ChatInterface from "@/modules/chat/view/component/ChatInterface";
 import ContextDisplay from "@/modules/chat/view/component/ContextDisplay";
 import { ConversationContext } from "@/modules/chat/types/ChatTypes";
+import FloatingStylesButton from "@/modules/chat/view/component/FloatingStylesButton";
+import ResumePreview from "@/modules/editor/view/component/ResumePreview";
+import { useResumePreview } from "@/modules/editor/view/viewModel/useResumePreview";
+import EditPanel from "@/modules/editor/view/component/EditPanel";
 import Footer from "@/platform/component/ui/footer";
 import Link from "next/link";
 import Navigation from "@/platform/component/ui/navigation";
-import PreviewPanel from "@/modules/editor/view/component/PreviewPanel";
 import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
-import ResumeDataDisplay from "@/modules/chat/view/component/ResumeDataDisplay";
 import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
 import { useChat } from "@ai-sdk/react";
 
 export default function ChatPage() {
-  const resumeData = useResumeStore((state) => state.resumeData);
-  const { clearAllData, loadFromJSON } = useResumeStore();
+  const { clearAllData, loadFromJSON, resumeData } = useResumeStore();
   const [context, setContext] = useState<ConversationContext | null>(null);
-  const [leftPanelView, setLeftPanelView] = useState<"chat" | "context">(
-    "chat"
-  );
-  const [rightPanelView, setRightPanelView] = useState<"preview" | "data">(
-    "preview"
-  );
+  const [activeView, setActiveView] = useState<"chat" | "context" | "preview" | "edit">("chat");
+  const [mobileTab, setMobileTab] = useState<"preview" | "edit">("preview");
   const processedToolInvocationsRef = useRef<Set<string>>(new Set());
+  const { isLoading: previewLoading, error: previewError, pdfUrl, generatePDF } = useResumePreview();
 
   const {
     messages,
@@ -54,6 +53,11 @@ export default function ChatPage() {
       },
     ],
   });
+
+  // Generate PDF when resume data changes
+  useEffect(() => {
+    generatePDF();
+  }, [generatePDF, resumeData]);
 
   // Handle tool invocations from messages
   useEffect(() => {
@@ -165,49 +169,161 @@ export default function ChatPage() {
           showDefaultActions={false}
           actions={navigationActions}
         >
-          <Link href="/editor">
-            <Button
-              variant="default"
-              size="sm"
-              className="flex items-center gap-2 hover:cursor-pointer"
-            >
-              <Home className="w-4 h-4" />
-              <span>Resume Editor</span>
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 hover:cursor-pointer"
+              >
+                <Home className="w-4 h-4" />
+                <span>Dashboard</span>
+              </Button>
+            </Link>
+            <Link href="/editor">
+              <Button
+                variant="default"
+                size="sm"
+                className="flex items-center gap-2 hover:cursor-pointer"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Resume Editor</span>
+              </Button>
+            </Link>
+          </div>
         </Navigation>
 
-        <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Left Panel - Chat Interface / Context */}
-            <div className="flex flex-col">
-              <div className="flex items-center justify-end mb-4">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant={leftPanelView === "chat" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setLeftPanelView("chat")}
-                    className="flex items-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    Chat
-                  </Button>
-                  <Button
-                    variant={
-                      leftPanelView === "context" ? "default" : "outline"
-                    }
-                    size="sm"
-                    onClick={() => setLeftPanelView("context")}
-                    className="flex items-center gap-2"
-                  >
-                    <FileText className="w-4 h-4" />
-                    Context
-                  </Button>
+        <div className="flex-1 overflow-hidden">
+          {/* Mobile Layout */}
+          <div className="md:hidden">
+            {/* Mobile Navigation */}
+            <div className="flex items-center justify-center px-6 py-4 bg-gray-50 border-b">
+              <div className="bg-white rounded-full p-1 shadow-sm border">
+                <Button
+                  variant={activeView === "chat" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("chat")}
+                  className="rounded-full px-4"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Chat
+                </Button>
+                <Button
+                  variant={activeView === "context" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("context")}
+                  className="rounded-full px-4"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Context
+                </Button>
+                <Button
+                  variant={activeView === "preview" || activeView === "edit" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveView("preview")}
+                  className="rounded-full px-4"
+                >
+                  <Monitor className="w-4 h-4 mr-2" />
+                  Resume
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile Content */}
+            <div className="h-[calc(100vh-140px)]">
+              {activeView === "chat" ? (
+                <ChatInterface
+                  messages={messages}
+                  input={input}
+                  handleInputChange={handleInputChange}
+                  handleSubmit={handleSubmit}
+                  isLoading={isLoading}
+                />
+              ) : activeView === "context" ? (
+                <ContextDisplay context={context} />
+              ) : (
+                <div className="h-full flex flex-col bg-white">
+                  {/* Mobile Resume Tab Navigation */}
+                  <div className="flex border-b border-gray-200 bg-gray-50">
+                    <button
+                      onClick={() => setMobileTab("preview")}
+                      className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 ${
+                        mobileTab === "preview"
+                          ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      <Eye className="w-4 h-4" />
+                      Preview
+                    </button>
+                    <button
+                      onClick={() => setMobileTab("edit")}
+                      className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 ${
+                        mobileTab === "edit"
+                          ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      Edit
+                    </button>
+                  </div>
+
+                  {/* Mobile Tab Content */}
+                  <div className="flex-1 overflow-hidden">
+                    {mobileTab === "preview" ? (
+                      <div className="h-full p-4">
+                        <ResumePreview
+                          isLoading={previewLoading}
+                          error={previewError}
+                          pdfUrl={pdfUrl}
+                          generatePDF={generatePDF}
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-full overflow-y-auto p-4">
+                        <EditPanel />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden md:flex h-[calc(100vh-80px)]">
+            {/* Left Panel - Chat */}
+            <div className="w-1/2 border-r border-gray-200 flex flex-col">
+              {/* Chat Header */}
+              <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant={activeView === "chat" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setActiveView("chat")}
+                      className="flex items-center gap-2"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      Chat
+                    </Button>
+                    <Button
+                      variant={activeView === "context" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setActiveView("context")}
+                      className="flex items-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Context
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden">
-                {leftPanelView === "chat" ? (
+              {/* Chat Content */}
+              <div className="flex-1 overflow-hidden bg-white">
+                {activeView === "chat" ? (
                   <ChatInterface
                     messages={messages}
                     input={input}
@@ -221,43 +337,68 @@ export default function ChatPage() {
               </div>
             </div>
 
-            {/* Right Panel - Resume Preview / Data */}
-            <div className="flex flex-col">
-              <div className="flex items-center justify-end mb-4">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant={
-                      rightPanelView === "preview" ? "default" : "outline"
-                    }
-                    size="sm"
-                    onClick={() => setRightPanelView("preview")}
-                    className="flex items-center gap-2"
+            {/* Right Panel - Resume */}
+            <div className="w-1/2 flex flex-col">
+              {/* Resume Header with Tabs */}
+              <div className="border-b border-gray-200 bg-gray-50">
+                <div className="flex">
+                  <button
+                    onClick={() => setActiveView("preview")}
+                    className={`px-6 py-4 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
+                      activeView === "preview"
+                        ? "border-blue-500 text-blue-600 bg-white"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
+                    }`}
                   >
                     <Eye className="w-4 h-4" />
                     Preview
-                  </Button>
-                  <Button
-                    variant={rightPanelView === "data" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setRightPanelView("data")}
-                    className="flex items-center gap-2"
+                  </button>
+                  <button
+                    onClick={() => setActiveView("edit")}
+                    className={`px-6 py-4 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
+                      activeView === "edit"
+                        ? "border-blue-500 text-blue-600 bg-white"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
+                    }`}
                   >
-                    <BarChart3 className="w-4 h-4" />
-                    Data
-                  </Button>
+                    <Edit3 className="w-4 h-4" />
+                    Edit
+                  </button>
                 </div>
               </div>
 
-              <div className="flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden">
-                {rightPanelView === "preview" ? (
-                  <PreviewPanel />
+              {/* Resume Content */}
+              <div className="flex-1 overflow-hidden bg-white">
+                {activeView === "preview" ? (
+                  <div className="h-full p-6">
+                    <ResumePreview
+                      isLoading={previewLoading}
+                      error={previewError}
+                      pdfUrl={pdfUrl}
+                      generatePDF={generatePDF}
+                    />
+                  </div>
+                ) : activeView === "edit" ? (
+                  <div className="h-full overflow-y-auto p-6">
+                    <EditPanel />
+                  </div>
                 ) : (
-                  <ResumeDataDisplay resumeData={resumeData} />
+                  <div className="h-full p-6">
+                    <ResumePreview
+                      isLoading={previewLoading}
+                      error={previewError}
+                      pdfUrl={pdfUrl}
+                      generatePDF={generatePDF}
+                    />
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Floating Action Buttons */}
+        <FloatingStylesButton />
       </div>
       <Footer />
     </>

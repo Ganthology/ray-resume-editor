@@ -19,12 +19,27 @@ import React from "react";
 import ResearchExperienceEditor from "./internal/ResearchExperienceEditor";
 import SkillsEditor from "./internal/SkillsEditor";
 import SummaryEditor from "./internal/SummaryEditor";
+import StylesPanel from "./StylesPanel";
 import { useResumeStore } from "../../../../app/store/resumeStore";
 
 export default function EditPanel() {
-  const resumeData = useResumeStore((state) => state.resumeData);
+  const { resumeData, updateStyles } = useResumeStore();
 
   const sortedModules = resumeData.modules.sort((a, b) => a.order - b.order);
+
+  const handleFitModeChange = (mode: "compact" | "normal") => {
+    updateStyles({
+      fitMode: mode,
+      spacing: resumeData.styles?.spacing || { horizontal: 30, vertical: 30 },
+    });
+  };
+
+  const handleSpacingChange = (spacing: { horizontal: number; vertical: number }) => {
+    updateStyles({
+      fitMode: resumeData.styles?.fitMode || "normal",
+      spacing,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -37,6 +52,14 @@ export default function EditPanel() {
           <PersonalInfoEditor />
         </CardContent>
       </Card>
+
+      {/* Styles Section */}
+      <StylesPanel
+        fitMode={resumeData.styles?.fitMode || "normal"}
+        spacing={resumeData.styles?.spacing || { horizontal: 30, vertical: 30 }}
+        onFitModeChange={handleFitModeChange}
+        onSpacingChange={handleSpacingChange}
+      />
 
       {/* Resume Sections */}
       <Accordion type="multiple" defaultValue={["resume-sections"]}>

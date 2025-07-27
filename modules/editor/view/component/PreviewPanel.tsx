@@ -14,6 +14,8 @@ import StylesPanel from "./StylesPanel";
 import { useResumePreview } from "../viewModel/useResumePreview";
 import { useResumeStore } from "@/app/store/resumeStore";
 
+const DEFAULT_SPACING = { horizontal: 30, vertical: 30 };
+
 export default function PreviewPanel() {
   const { isLoading, error, pdfUrl, generatePDF } = useResumePreview();
   const { resumeData, updateStyles } = useResumeStore();
@@ -21,16 +23,15 @@ export default function PreviewPanel() {
   const handleFitModeChange = (mode: "compact" | "normal") => {
     updateStyles({
       ...resumeData.styles,
-      fontFamily: resumeData.styles?.fontFamily || "times-new-roman",
       fitMode: mode,
     });
   };
 
-  const handleFontFamilyChange = (fontFamily: string) => {
+  const handleSpacingChange = (spacing: { horizontal: number; vertical: number }) => {
     updateStyles({
       ...resumeData.styles,
       fitMode: resumeData.styles?.fitMode || "normal",
-      fontFamily,
+      spacing,
     });
   };
 
@@ -43,9 +44,9 @@ export default function PreviewPanel() {
     <div className="space-y-4">
       <StylesPanel
         fitMode={resumeData.styles?.fitMode || "normal"}
-        fontFamily={resumeData.styles?.fontFamily || "times-new-roman"}
+        spacing={resumeData.styles?.spacing || DEFAULT_SPACING}
         onFitModeChange={handleFitModeChange}
-        onFontFamilyChange={handleFontFamilyChange}
+        onSpacingChange={handleSpacingChange}
       />
 
       <Card className="border-gray-200/60 shadow-sm bg-gray-50">

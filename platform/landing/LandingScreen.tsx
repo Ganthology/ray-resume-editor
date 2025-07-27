@@ -38,8 +38,31 @@ import {
 import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
 import Link from "next/link";
+import { useAuth } from "@/platform/auth/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    // For now, simulate login to bypass landing
+    login({ email: "demo@raysumeai.com", name: "Demo User" });
+  };
+
+  const handleSignIn = () => {
+    // For now, simulate login to bypass landing
+    login({ email: "demo@raysumeai.com", name: "Demo User" });
+  };
+
+  const handlePricingPlan = () => {
+    // First authenticate, then redirect to billing
+    login({ email: "demo@raysumeai.com", name: "Demo User" });
+    // Small delay to ensure auth state is updated
+    setTimeout(() => {
+      router.push('/billing');
+    }, 100);
+  };
   const pricingPlans = [
     {
       name: "Basic",
@@ -169,15 +192,22 @@ export default function LandingPage() {
             <Button
               variant="outline"
               className="border-stone-300 text-stone-700 hover:bg-stone-50 bg-transparent"
+              onClick={handleSignIn}
             >
               Sign In
             </Button>
-            <Button className="bg-stone-900 hover:bg-stone-800 text-white">
+            <Button 
+              className="bg-stone-900 hover:bg-stone-800 text-white"
+              onClick={handleGetStarted}
+            >
               Get Started Free
             </Button>
           </nav>
           <div className="md:hidden">
-            <Button className="bg-stone-900 hover:bg-stone-800 text-white text-sm px-4 py-2">
+            <Button 
+              className="bg-stone-900 hover:bg-stone-800 text-white text-sm px-4 py-2"
+              onClick={handleGetStarted}
+            >
               Get Started
             </Button>
           </div>
@@ -445,6 +475,7 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 className="bg-stone-900 hover:bg-stone-800 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4"
+                onClick={handleGetStarted}
               >
                 Start Building Free - No Credit Card
               </Button>
@@ -452,6 +483,7 @@ export default function LandingPage() {
                 size="lg"
                 variant="outline"
                 className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-stone-300 hover:bg-stone-50 bg-transparent"
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 See How It Works
               </Button>
@@ -840,7 +872,10 @@ export default function LandingPage() {
                   </ul>
                 </CardContent>
                 <CardFooter className="mt-auto">
-                  <Button className={`w-full ${plan.buttonStyle}`}>
+                  <Button 
+                    className={`w-full ${plan.buttonStyle}`}
+                    onClick={plan.name === "Basic" ? handleGetStarted : handlePricingPlan}
+                  >
                     {plan.buttonText}
                   </Button>
                 </CardFooter>
@@ -910,7 +945,10 @@ export default function LandingPage() {
                             )
                           )}
                         </ul>
-                        <Button className={`w-full ${plan.buttonStyle}`}>
+                        <Button 
+                          className={`w-full ${plan.buttonStyle}`}
+                          onClick={plan.name === "Basic" ? handleGetStarted : handlePricingPlan}
+                        >
                           {plan.buttonText}
                         </Button>
                       </CardContent>
@@ -1079,6 +1117,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="bg-white text-stone-900 hover:bg-stone-100 px-6 sm:px-8 py-3 sm:py-4"
+              onClick={handleGetStarted}
             >
               Start Free - No Credit Card Required
             </Button>
@@ -1086,6 +1125,7 @@ export default function LandingPage() {
               size="lg"
               variant="outline"
               className="border-stone-600 text-white hover:bg-stone-800 px-6 sm:px-8 py-3 sm:py-4 bg-transparent"
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
             >
               See All Features
             </Button>
@@ -1115,24 +1155,36 @@ export default function LandingPage() {
               </h4>
               <ul className="space-y-2 text-stone-400 text-xs sm:text-sm">
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <button 
+                    onClick={handleGetStarted}
+                    className="hover:text-white transition-colors text-left"
+                  >
                     Resume Builder
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <button 
+                    onClick={() => document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="hover:text-white transition-colors text-left"
+                  >
                     Templates
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <button 
+                    onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="hover:text-white transition-colors text-left"
+                  >
                     Pricing
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <button 
+                    onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="hover:text-white transition-colors text-left"
+                  >
                     AI Features
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -1142,22 +1194,22 @@ export default function LandingPage() {
               </h4>
               <ul className="space-y-2 text-stone-400 text-xs sm:text-sm">
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/chat" className="hover:text-white transition-colors">
                     Resume Tips
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/chat" className="hover:text-white transition-colors">
                     ATS Guide
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/chat" className="hover:text-white transition-colors">
                     Career Blog
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/chat" className="hover:text-white transition-colors">
                     Help Center
                   </Link>
                 </li>
@@ -1169,22 +1221,22 @@ export default function LandingPage() {
               </h4>
               <ul className="space-y-2 text-stone-400 text-xs sm:text-sm">
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/dashboard" className="hover:text-white transition-colors">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <span className="text-stone-500 cursor-not-allowed">
                     Privacy Policy
-                  </Link>
+                  </span>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <span className="text-stone-500 cursor-not-allowed">
                     Terms of Service
-                  </Link>
+                  </span>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/chat" className="hover:text-white transition-colors">
                     Contact
                   </Link>
                 </li>

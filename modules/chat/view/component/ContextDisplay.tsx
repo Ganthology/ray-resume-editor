@@ -45,34 +45,36 @@ ${context.content}
     URL.revokeObjectURL(url);
   };
   return (
-    <Card className="h-full border-gray-200/60 shadow-sm">
-      <CardHeader className="border-b border-gray-200/60">
-        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FileTextIcon className="w-5 h-5" />
-            Conversation Context
-            <Badge variant="secondary" className="text-xs">
-              Current
-            </Badge>
+    <div className="h-full flex flex-col">
+      {/* Minimal Header */}
+      <div className="px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+              <FileTextIcon className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">Conversation Context</h1>
+              <p className="text-sm text-gray-500">
+                Summary of our conversation and key information gathered
+              </p>
+            </div>
           </div>
           {context && context.content && (
             <Button
               variant="outline"
               size="sm"
               onClick={handleDownloadContext}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 rounded-xl"
             >
               <DownloadIcon className="w-4 h-4" />
               Download
             </Button>
           )}
-        </CardTitle>
-        <p className="text-sm text-gray-600">
-          Summary of our conversation and key information gathered
-        </p>
-      </CardHeader>
+        </div>
+      </div>
 
-      <CardContent className="p-4">
+      <div className="flex-1 p-6">
         {!context ? (
           <div className="text-center text-gray-500 py-8">
             <FileTextIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -85,22 +87,22 @@ ${context.content}
           <div className="space-y-4">
             {/* Context Summary */}
             {context.summary && (
-              <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-blue-900 mb-2">Summary</h4>
-                <p className="text-sm text-blue-800">{context.summary}</p>
+              <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
+                <h4 className="font-medium text-purple-900 mb-2">Summary</h4>
+                <p className="text-sm text-purple-800">{context.summary}</p>
               </div>
             )}
 
             {/* Full Context */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-gray-900">Full Context</h4>
                 <div className="flex items-center gap-1 text-xs text-gray-500">
                   <ClockIcon className="w-3 h-3" />
                   Updated {context.lastUpdated.toLocaleTimeString()}
                 </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 max-h-[300px] overflow-y-auto">
+              <div className="bg-gray-50 p-4 rounded-xl border-0 max-h-[400px] overflow-y-auto">
                 <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
                   {context.content}
                 </p>
@@ -108,7 +110,7 @@ ${context.content}
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

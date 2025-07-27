@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/platform/component/ui/card";
-import { MessageCircleIcon, SendIcon } from "lucide-react";
+import { MessageCircleIcon, SendIcon, FileText, Brain, CheckCircle, Sparkles } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 
 import { Badge } from "@/platform/component/ui/badge";
@@ -39,22 +39,109 @@ export default function ChatInterface({
     scrollToBottom();
   }, [messages]);
 
-  return (
-    <Card className="h-full flex flex-col border-gray-200/60 shadow-sm">
-      <CardHeader className="border-b border-gray-200/60">
-        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <MessageCircleIcon className="w-5 h-5" />
-          Chat Interface
-          <Badge variant="secondary" className="text-xs">
-            AI Assistant
-          </Badge>
-        </CardTitle>
-        <p className="text-sm text-gray-600">
-          Tell me about your experience and I&apos;ll help build your resume
-        </p>
-      </CardHeader>
+  // Helper function to render tool invocation notifications
+  const renderToolInvocation = (toolInvocation: any) => {
+    if (toolInvocation.state !== "result") {
+      // Show loading state for in-progress tool invocations
+      if (toolInvocation.state === "call") {
+        const toolName = toolInvocation.toolName;
+        if (toolName === "generateContext") {
+          return (
+            <div className="flex items-center gap-2 p-3 bg-purple-50 border border-purple-200 rounded-xl mb-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+              <span className="text-sm text-purple-800">
+                Analyzing conversation and updating context...
+              </span>
+            </div>
+          );
+        }
+        if (toolName === "updateResume") {
+          return (
+            <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl mb-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+              <span className="text-sm text-green-800">
+                Updating your resume with new information...
+              </span>
+            </div>
+          );
+        }
+      }
+      return null;
+    }
 
-      <CardContent className="flex-1 flex flex-col p-0">
+    const toolName = toolInvocation.toolName;
+    const isSuccess = toolInvocation.result && toolInvocation.result.success !== false;
+
+    if (toolName === "generateContext") {
+      return (
+        <div className="flex items-center gap-2 p-3 bg-purple-50 border border-purple-200 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
+          <Brain className="w-4 h-4 text-purple-600" />
+          <div className="flex-1">
+            <span className="text-sm text-purple-800">
+              <strong>Context Updated:</strong> I've analyzed our conversation and updated the context summary.
+            </span>
+            <div className="text-xs text-purple-600 mt-1">
+              Switch to the Context tab to view the updated summary.
+            </div>
+          </div>
+          <CheckCircle className="w-4 h-4 text-green-600" />
+        </div>
+      );
+    }
+
+    if (toolName === "updateResume") {
+      return (
+        <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
+          <FileText className="w-4 h-4 text-green-600" />
+          <div className="flex-1">
+            <span className="text-sm text-green-800">
+              <strong>Resume Updated:</strong> I've updated your resume with the new information you provided.
+            </span>
+            <div className="text-xs text-green-600 mt-1">
+              Switch to the Preview tab to see your updated resume.
+            </div>
+          </div>
+          <CheckCircle className="w-4 h-4 text-green-600" />
+        </div>
+      );
+    }
+
+    // Fallback for other tool invocations
+    if (isSuccess) {
+      return (
+        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
+          <Sparkles className="w-4 h-4 text-blue-600" />
+          <div className="flex-1">
+            <span className="text-sm text-blue-800">
+              <strong>Task Completed:</strong> I've processed your request successfully.
+            </span>
+          </div>
+          <CheckCircle className="w-4 h-4 text-green-600" />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Minimal Header */}
+      <div className="md:hidden px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+            <MessageCircleIcon className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">AI Resume Assistant</h1>
+            <p className="text-sm text-gray-500">
+              Tell me about your experience and I'll help build your resume
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 flex flex-col">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
           {messages.length === 0 ? (
@@ -73,22 +160,51 @@ export default function ChatInterface({
                 }`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-blue-500 text-white rounded-br-sm"
-                      : message.role === "assistant"
-                      ? "bg-gray-100 text-gray-900 rounded-bl-sm"
-                      : "bg-yellow-50 text-yellow-800 text-sm border border-yellow-200"
+                  className={`max-w-[80%] ${
+                    message.role === "user" ? "" : "w-full"
                   }`}
                 >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.createdAt
-                      ? new Date(message.createdAt).toLocaleTimeString()
-                      : ""}
-                  </p>
+                  {/* Tool Invocation Notifications for Assistant Messages */}
+                  {message.role === "assistant" && message.toolInvocations && message.toolInvocations.length > 0 && (
+                    <div className="mb-2">
+                      {message.toolInvocations.map((toolInvocation, index) => (
+                        <div key={index}>
+                          {renderToolInvocation(toolInvocation)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Regular Message Content (only show if not empty or has meaningful content) */}
+                  {message.content && message.content.trim() ? (
+                    <div
+                      className={`p-3 rounded-lg ${
+                        message.role === "user"
+                          ? "bg-blue-500 text-white rounded-br-sm"
+                          : message.role === "assistant"
+                          ? "bg-gray-100 text-gray-900 rounded-bl-sm"
+                          : "bg-yellow-50 text-yellow-800 text-sm border border-yellow-200"
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {message.content}
+                      </p>
+                      <p className="text-xs opacity-70 mt-1">
+                        {message.createdAt
+                          ? new Date(message.createdAt).toLocaleTimeString()
+                          : ""}
+                      </p>
+                    </div>
+                  ) : (
+                    // Show timestamp for messages that only have tool invocations
+                    message.role === "assistant" && message.toolInvocations && message.toolInvocations.length > 0 && (
+                      <div className="text-xs text-gray-400 text-right mt-1">
+                        {message.createdAt
+                          ? new Date(message.createdAt).toLocaleTimeString()
+                          : ""}
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
             ))
@@ -109,8 +225,8 @@ export default function ChatInterface({
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200/60 p-4">
-          <form onSubmit={handleSubmit} className="flex gap-2">
+        <div className="border-t border-gray-100 p-6 bg-gray-50/50">
+          <form onSubmit={handleSubmit} className="flex gap-3">
             <div className="flex-1 relative">
               <Textarea
                 value={input}
@@ -121,20 +237,21 @@ export default function ChatInterface({
                 }}
                 placeholder="Tell me about your experience..."
                 disabled={isLoading}
-                className="pr-12"
+                className="border-0 bg-white shadow-sm rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows={3}
               />
             </div>
             <Button
               type="submit"
               disabled={!input.trim() || isLoading}
-              size="icon"
-              className="shrink-0"
+              size="lg"
+              className="shrink-0 h-auto px-6 rounded-xl bg-blue-600 hover:bg-blue-700"
             >
-              <SendIcon className="w-4 h-4" />
+              <SendIcon className="w-5 h-5" />
             </Button>
           </form>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

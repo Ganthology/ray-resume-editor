@@ -14,6 +14,8 @@ import { Skill } from "@/modules/resume/data/entity/Skill";
 import { Summary } from "@/modules/resume/data/entity/Summary";
 import { create } from "zustand";
 
+const DEFAULT_SPACING = { horizontal: 30, vertical: 30 };
+
 export const initialResumeData: ResumeData = {
   personalInfo: {
     name: "",
@@ -95,7 +97,7 @@ export const initialResumeData: ResumeData = {
   spacing: 25,
   styles: {
     fitMode: "normal",
-    fontFamily: "times-new-roman",
+    spacing: DEFAULT_SPACING,
   },
 };
 

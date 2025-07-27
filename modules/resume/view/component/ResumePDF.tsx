@@ -12,20 +12,12 @@ import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
 import { parseHtmlToPdf } from "../viewModel/ResumePDFViewModel";
 import { pdfStyles } from "../style/pdfStyles";
 
-// Register Times New Roman font (this was working before)
+const DEFAULT_SPACING = { horizontal: 30, vertical: 30 };
+
+// Register Times New Roman font
 Font.register({
   family: "Times-Roman",
   src: "https://fonts.gstatic.com/s/timesnewroman/v1/Times_New_Roman.ttf",
-});
-
-Font.register({
-  family: "Geist",
-  src: "https://fonts.googleapis.com/css2?family=Geist:wght@100..900",
-});
-
-Font.register({
-  family: "GeistMono",
-  src: "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap",
 });
 
 interface ResumePDFProps {
@@ -58,20 +50,6 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
   // Get style preferences
   const fitMode = resumeData.styles?.fitMode || "normal";
-  const fontFamily = resumeData.styles?.fontFamily || "times-new-roman";
-
-  // Map font family values to PDF font names (using built-in and registered fonts)
-  const getFontFamily = (font: string) => {
-    switch (font) {
-      case "geist-sans":
-        return "Geist"; // Use built-in Helvetica as fallback for sans-serif
-      case "geist-mono":
-        return "GeistMono"; // Use built-in Courier as fallback for monospace
-      case "times-new-roman":
-      default:
-        return "Times-Roman"; // Use registered Times New Roman
-    }
-  };
 
   // Get the appropriate page size based on fit mode
   const getPageSize = () => {
@@ -80,13 +58,17 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
   // Create dynamic styles based on preferences
   const getDynamicStyles = () => {
-    const selectedFont = getFontFamily(fontFamily);
+    const spacing = resumeData.styles?.spacing || DEFAULT_SPACING;
 
     return {
       ...pdfStyles,
       page: {
         ...pdfStyles.page,
-        fontFamily: selectedFont,
+        fontFamily: "Times-Roman",
+        paddingLeft: spacing.horizontal,
+        paddingRight: spacing.horizontal,
+        paddingTop: spacing.vertical,
+        paddingBottom: spacing.vertical,
       },
     };
   };

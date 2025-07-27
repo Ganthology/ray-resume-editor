@@ -3,10 +3,11 @@
 import React from "react";
 import { useAuth } from "./AuthContext";
 import LandingScreen from "../landing/LandingScreen";
-import DashboardScreen from "../dashboard/DashboardScreen";
+import { useRouter } from "next/navigation";
 
 export default function AuthGuard() {
   const { isAuthenticated, loading } = useAuth();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -21,5 +22,10 @@ export default function AuthGuard() {
     );
   }
 
-  return isAuthenticated ? <DashboardScreen /> : <LandingScreen />;
+  if (isAuthenticated) {
+    router.push('/dashboard');
+    return null;
+  }
+  
+  return <LandingScreen />;
 }

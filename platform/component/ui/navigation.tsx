@@ -8,7 +8,8 @@ import { cn } from "@/platform/style/utils";
 interface NavigationAction {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  href?: string;
   variant?: "default" | "destructive";
 }
 
@@ -70,6 +71,26 @@ export default function Navigation({
                   <div className="space-y-1">
                     {actions.map((action, index) => {
                       const IconComponent = action.icon;
+                      
+                      if (action.href) {
+                        return (
+                          <Link key={index} href={action.href}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn(
+                                "w-full justify-start gap-2",
+                                action.variant === "destructive" &&
+                                  "text-red-600 hover:text-red-700 hover:bg-red-50"
+                              )}
+                            >
+                              <IconComponent className="w-4 h-4" />
+                              {action.label}
+                            </Button>
+                          </Link>
+                        );
+                      }
+                      
                       return (
                         <Button
                           key={index}
