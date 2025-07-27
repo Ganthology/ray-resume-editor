@@ -9,7 +9,7 @@ import {
 import React, { useEffect } from "react";
 
 import { Badge } from "@/platform/component/ui/badge";
-import ResumePreview from "./ResumePreview";
+import ResponsivePDFPreview from "./ResponsivePDFPreview";
 import StylesPanel from "./StylesPanel";
 import { useResumePreview } from "../viewModel/useResumePreview";
 import { useResumeStore } from "@/app/store/resumeStore";
@@ -65,11 +65,12 @@ export default function PreviewPanel() {
         </CardHeader>
 
         <CardContent className="p-6 border-t border-gray-200">
-          <ResumePreview
+          <ResponsivePDFPreview
             isLoading={isLoading}
             error={error}
             pdfUrl={pdfUrl}
             generatePDF={generatePDF}
+            resumeData={resumeData}
           />
         </CardContent>
       </Card>
