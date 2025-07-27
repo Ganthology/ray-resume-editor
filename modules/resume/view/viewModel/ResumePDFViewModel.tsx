@@ -15,7 +15,7 @@ export function parseHtmlToPdf(
     return [];
   }
 
-  const { fontSize = 11, lineHeight = 1.4 } = options;
+  const { fontSize = 12, lineHeight = 1.15 } = options;
 
   // Parse HTML string into DOM
   const parser = new DOMParser();

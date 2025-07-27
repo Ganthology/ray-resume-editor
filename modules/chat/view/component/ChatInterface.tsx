@@ -226,7 +226,7 @@ export default function ChatInterface({
 
         {/* Input Area */}
         <div className="border-t border-gray-100 p-6 bg-gray-50/50">
-          <form onSubmit={handleSubmit} className="flex gap-3">
+          <form onSubmit={handleSubmit} className="flex gap-3 items-end">
             <div className="flex-1 relative">
               <Textarea
                 value={input}
@@ -244,8 +244,7 @@ export default function ChatInterface({
             <Button
               type="submit"
               disabled={!input.trim() || isLoading}
-              size="lg"
-              className="shrink-0 h-auto px-6 rounded-xl bg-blue-600 hover:bg-blue-700"
+              className="shrink-0 h-12 w-12 rounded-xl bg-blue-600 hover:bg-blue-700"
             >
               <SendIcon className="w-5 h-5" />
             </Button>

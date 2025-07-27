@@ -59,7 +59,7 @@
   --muted-foreground: rgb(141, 142, 148);
   --accent: rgb(247, 247, 248);
   --accent-foreground: rgb(55, 56, 62);
-  --destructive: rgb(147, 75, 75);
+  --destructive: rgb(255, 48, 48);
   --border: rgb(235, 235, 237);
   --input: rgb(235, 235, 237);
   --ring: rgb(181, 182, 188);
@@ -93,7 +93,7 @@
   --muted-foreground: rgb(181, 182, 188);
   --accent: rgb(68, 69, 75);
   --accent-foreground: rgb(251, 251, 252);
-  --destructive: rgb(179, 122, 122);
+  --destructive: rgb(255, 48, 48);
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
   --ring: rgb(141, 142, 148);
@@ -157,7 +157,7 @@
     color-adjust: exact;
     print-color-adjust: exact;
   }
-  
+
   .ignore-pdf {
     display: none !important;
   }

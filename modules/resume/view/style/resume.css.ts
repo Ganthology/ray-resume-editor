@@ -21,7 +21,7 @@ export const styleValues = {
     sectionBottom: "4px",
     sectionTitlePaddingBottom: "4px",
     sectionTitleMarginBottom: "6px",
-    itemBottom: "-4px",
+    itemBottom: "4px",
     itemSubSpacing: "4px",
     descriptionTop: "4px",
     skillsBottom: "4px",

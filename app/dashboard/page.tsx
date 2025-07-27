@@ -26,29 +26,13 @@ import React, { useState } from "react";
 
 import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
-import Footer from "@/platform/component/ui/footer";
 import Link from "next/link";
-import Navigation from "@/platform/component/ui/navigation";
 import ProfileSection from "@/modules/profile/view/component/ProfileSection";
 import ContextSection from "@/modules/profile/view/component/ContextSection";
+import { AppLayout } from "@/platform/component/layout/AppLayout";
 
 export default function DashboardPage() {
   const [activeSection, setActiveSection] = useState<"overview" | "profile" | "context">("overview");
-
-  const navigationActions = [
-    {
-      icon: CreditCard,
-      label: "Billing",
-      href: "/billing",
-    },
-    {
-      icon: Settings,
-      label: "Settings",
-      onClick: () => {
-        setActiveSection("profile");
-      },
-    },
-  ];
 
   const renderContent = () => {
     switch (activeSection) {
@@ -269,14 +253,10 @@ export default function DashboardPage() {
   };
 
   return (
-    <>
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navigation
-          title="RaysumeAI"
-          subtitle="Dashboard"
-          showDefaultActions={false}
-          actions={navigationActions}
-        >
+    <AppLayout>
+      <div className="flex flex-col h-full bg-gray-50">
+        {/* Section Navigation */}
+        <div className="border-b bg-white px-6 py-4">
           <div className="flex items-center gap-2">
             <Button
               variant={activeSection === "overview" ? "default" : "outline"}
@@ -306,15 +286,15 @@ export default function DashboardPage() {
               Context
             </Button>
           </div>
-        </Navigation>
+        </div>
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto px-6 py-8">
           <div className="max-w-7xl mx-auto">
             {renderContent()}
           </div>
         </main>
       </div>
-      <Footer />
-    </>
+    </AppLayout>
   );
 }

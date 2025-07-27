@@ -1,58 +1,87 @@
 "use client";
 
 import {
-  FileText,
-  Home,
-  MessageCircle,
-  RefreshCw,
-  Eye,
   Edit3,
+  Eye,
+  FileText,
+  MessageCircle,
   Monitor,
+  Palette,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import {
+  calculateResumeCompletion,
+  getCompletionStatus,
+} from "@/modules/resume/utils/completion";
 import { initialResumeData, useResumeStore } from "../store/resumeStore";
 
+import { AppLayout } from "@/platform/component/layout/AppLayout";
 import { Button } from "@/platform/component/ui/button";
 import ChatInterface from "@/modules/chat/view/component/ChatInterface";
 import ContextDisplay from "@/modules/chat/view/component/ContextDisplay";
 import { ConversationContext } from "@/modules/chat/types/ChatTypes";
-import FloatingStylesButton from "@/modules/chat/view/component/FloatingStylesButton";
-import ResumePreview from "@/modules/editor/view/component/ResumePreview";
-import { useResumePreview } from "@/modules/editor/view/viewModel/useResumePreview";
 import EditPanel from "@/modules/editor/view/component/EditPanel";
-import Footer from "@/platform/component/ui/footer";
-import Link from "next/link";
-import Navigation from "@/platform/component/ui/navigation";
+import FloatingStylesButton from "@/modules/chat/view/component/FloatingStylesButton";
+import { Progress } from "@/platform/component/ui/progress";
 import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
 import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
+import ResumePreview from "@/modules/editor/view/component/ResumePreview";
+import StylesPanel from "@/modules/editor/view/component/StylesPanel";
 import { useChat } from "@ai-sdk/react";
+import { useResumePreview } from "@/modules/editor/view/viewModel/useResumePreview";
 
 export default function ChatPage() {
-  const { clearAllData, loadFromJSON, resumeData } = useResumeStore();
+  const { loadFromJSON, resumeData, updateStyles } = useResumeStore();
   const [context, setContext] = useState<ConversationContext | null>(null);
-  const [activeView, setActiveView] = useState<"chat" | "context" | "preview" | "edit">("chat");
-  const [mobileTab, setMobileTab] = useState<"preview" | "edit">("preview");
+  const [activeView, setActiveView] = useState<
+    "chat" | "context" | "preview" | "edit" | "styles"
+  >("chat");
+  const [rightPanelTab, setRightPanelTab] = useState<
+    "preview" | "edit" | "context" | "styles"
+  >("preview");
   const processedToolInvocationsRef = useRef<Set<string>>(new Set());
-  const { isLoading: previewLoading, error: previewError, pdfUrl, generatePDF } = useResumePreview();
-
   const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    setMessages,
-    isLoading,
-  } = useChat({
-    api: "/api/chat",
-    initialMessages: [
-      {
-        id: "welcome",
-        role: "assistant",
-        content:
-          "Welcome to the Resume Builder! I'm your dedicated resume building assistant, specialized in helping you create professional resumes and advance your career.\n\n🎯 **I can help you with:**\n• Professional experience and work history\n• Education and academic achievements\n• Skills and certifications\n• Career goals and objectives\n• Resume formatting and best practices\n• Interview preparation related to your resume\n\n📝 **Let's start building your resume!** Tell me about your current or most recent work experience, and I'll help you organize it into a polished, professional format.",
-      },
-    ],
-  });
+    isLoading: previewLoading,
+    error: previewError,
+    pdfUrl,
+    generatePDF,
+  } = useResumePreview();
+
+  // Calculate resume completion
+  const completionPercentage = calculateResumeCompletion(resumeData);
+  const completionStatus = getCompletionStatus(completionPercentage);
+
+  // Styles handlers
+  const handleFitModeChange = (mode: "compact" | "normal") => {
+    updateStyles({
+      ...resumeData.styles,
+      fitMode: mode,
+    });
+  };
+
+  const handleSpacingChange = (spacing: {
+    horizontal: number;
+    vertical: number;
+  }) => {
+    updateStyles({
+      ...resumeData.styles,
+      fitMode: resumeData.styles?.fitMode || "normal",
+      spacing,
+    });
+  };
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
+      api: "/api/chat",
+      initialMessages: [
+        {
+          id: "welcome",
+          role: "assistant",
+          content:
+            "Welcome to the Resume Builder! I'm your dedicated resume building assistant, specialized in helping you create professional resumes and advance your career.\n\n🎯 **I can help you with:**\n• Professional experience and work history\n• Education and academic achievements\n• Skills and certifications\n• Career goals and objectives\n• Resume formatting and best practices\n• Interview preparation related to your resume\n\n📝 **Let's start building your resume!** Tell me about your current or most recent work experience, and I'll help you organize it into a polished, professional format.",
+        },
+      ],
+    });
 
   // Generate PDF when resume data changes
   useEffect(() => {
@@ -131,68 +160,33 @@ export default function ChatPage() {
     });
   }, [messages, loadFromJSON]);
 
-  const handleClearChat = () => {
-    if (
-      confirm(
-        "Are you sure you want to clear the chat and resume data? This action cannot be undone."
-      )
-    ) {
-      setMessages([
-        {
-          id: "welcome",
-          role: "assistant",
-          content:
-            "Welcome to the Resume Builder! I'm your dedicated resume building assistant, specialized in helping you create professional resumes and advance your career.\n\n🎯 **I can help you with:**\n• Professional experience and work history\n• Education and academic achievements\n• Skills and certifications\n• Career goals and objectives\n• Resume formatting and best practices\n• Interview preparation related to your resume\n\n📝 **Let's start building your resume!** Tell me about your current or most recent work experience, and I'll help you organize it into a polished, professional format.",
-        },
-      ]);
-      setContext(null);
-      processedToolInvocationsRef.current = new Set();
-      clearAllData();
-    }
-  };
-
-  const navigationActions = [
-    {
-      icon: RefreshCw,
-      label: "Clear Chat",
-      onClick: handleClearChat,
-      variant: "destructive" as const,
-    },
-  ];
-
   return (
-    <>
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navigation
-          title="RaysumeAI Consultant"
-          subtitle="Build your resume through conversation"
-          showDefaultActions={false}
-          actions={navigationActions}
-        >
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2 hover:cursor-pointer"
-              >
-                <Home className="w-4 h-4" />
-                <span>Dashboard</span>
-              </Button>
-            </Link>
-            <Link href="/editor">
-              <Button
-                variant="default"
-                size="sm"
-                className="flex items-center gap-2 hover:cursor-pointer"
-              >
-                <FileText className="w-4 h-4" />
-                <span>Resume Editor</span>
-              </Button>
-            </Link>
+    <AppLayout>
+      <div className="flex flex-col h-full bg-gray-50">
+        {/* Header with Clear Chat Button */}
+        {/* <div className="border-b bg-white px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900">
+                AI Chat Assistant
+              </h1>
+              <p className="text-sm text-gray-600">
+                Build your resume through conversation
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleClearChat}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Clear Chat
+            </Button>
           </div>
-        </Navigation>
+        </div> */}
 
+        {/* Main Content */}
         <div className="flex-1 overflow-hidden">
           {/* Mobile Layout */}
           <div className="md:hidden">
@@ -209,16 +203,14 @@ export default function ChatPage() {
                   Chat
                 </Button>
                 <Button
-                  variant={activeView === "context" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setActiveView("context")}
-                  className="rounded-full px-4"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Context
-                </Button>
-                <Button
-                  variant={activeView === "preview" || activeView === "edit" ? "default" : "ghost"}
+                  variant={
+                    activeView === "preview" ||
+                    activeView === "edit" ||
+                    activeView === "context" ||
+                    activeView === "styles"
+                      ? "default"
+                      : "ghost"
+                  }
                   size="sm"
                   onClick={() => setActiveView("preview")}
                   className="rounded-full px-4"
@@ -230,7 +222,7 @@ export default function ChatPage() {
             </div>
 
             {/* Mobile Content */}
-            <div className="h-[calc(100vh-140px)]">
+            <div className="h-[calc(100vh-200px)]">
               {activeView === "chat" ? (
                 <ChatInterface
                   messages={messages}
@@ -239,40 +231,89 @@ export default function ChatPage() {
                   handleSubmit={handleSubmit}
                   isLoading={isLoading}
                 />
-              ) : activeView === "context" ? (
-                <ContextDisplay context={context} />
               ) : (
                 <div className="h-full flex flex-col bg-white">
                   {/* Mobile Resume Tab Navigation */}
                   <div className="flex border-b border-gray-200 bg-gray-50">
                     <button
-                      onClick={() => setMobileTab("preview")}
-                      className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 ${
-                        mobileTab === "preview"
-                          ? "bg-white border-b-2 border-blue-500 text-blue-600"
-                          : "text-gray-500 hover:text-gray-700"
+                      onClick={() => {
+                        setActiveView("preview");
+                        setRightPanelTab("preview");
+                      }}
+                      className={`flex-1 px-3 py-3 text-xs font-medium flex items-center justify-center gap-1 ${
+                        activeView === "preview"
+                          ? "bg-white text-blue-600 shadow-sm border-b-2 border-blue-500"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                       }`}
                     >
                       <Eye className="w-4 h-4" />
                       Preview
                     </button>
                     <button
-                      onClick={() => setMobileTab("edit")}
-                      className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 ${
-                        mobileTab === "edit"
-                          ? "bg-white border-b-2 border-blue-500 text-blue-600"
-                          : "text-gray-500 hover:text-gray-700"
+                      onClick={() => {
+                        setActiveView("edit");
+                        setRightPanelTab("edit");
+                      }}
+                      className={`flex-1 px-3 py-3 text-xs font-medium flex items-center justify-center gap-1 ${
+                        activeView === "edit"
+                          ? "bg-white text-blue-600 shadow-sm border-b-2 border-blue-500"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                       }`}
                     >
                       <Edit3 className="w-4 h-4" />
                       Edit
                     </button>
+                    <button
+                      onClick={() => {
+                        setActiveView("context");
+                        setRightPanelTab("context");
+                      }}
+                      className={`flex-1 px-3 py-3 text-xs font-medium flex items-center justify-center gap-1 ${
+                        activeView === "context"
+                          ? "bg-white text-blue-600 shadow-sm border-b-2 border-blue-500"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <FileText className="w-4 h-4" />
+                      Context
+                    </button>
+                    <button
+                      onClick={() => {
+                        setActiveView("styles");
+                        setRightPanelTab("styles");
+                      }}
+                      className={`flex-1 px-3 py-3 text-xs font-medium flex items-center justify-center gap-1 ${
+                        activeView === "styles"
+                          ? "bg-white text-blue-600 shadow-sm border-b-2 border-blue-500"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <Palette className="w-4 h-4" />
+                      Styles
+                    </button>
                   </div>
+
+                  {/* Progress Bar for Mobile */}
+                  {(activeView === "preview" || activeView === "edit") && (
+                    <div className="px-4 py-3 bg-gray-50 border-b">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-gray-700">
+                          Resume Completion
+                        </span>
+                        <span
+                          className={`text-xs font-medium ${completionStatus.color}`}
+                        >
+                          {completionPercentage}% - {completionStatus.label}
+                        </span>
+                      </div>
+                      <Progress value={completionPercentage} className="h-2" />
+                    </div>
+                  )}
 
                   {/* Mobile Tab Content */}
                   <div className="flex-1 overflow-hidden">
-                    {mobileTab === "preview" ? (
-                      <div className="h-full p-4">
+                    {activeView === "preview" ? (
+                      <div className="h-full">
                         <ResumePreview
                           isLoading={previewLoading}
                           error={previewError}
@@ -280,11 +321,29 @@ export default function ChatPage() {
                           generatePDF={generatePDF}
                         />
                       </div>
-                    ) : (
+                    ) : activeView === "edit" ? (
                       <div className="h-full overflow-y-auto p-4">
                         <EditPanel />
                       </div>
-                    )}
+                    ) : activeView === "context" ? (
+                      <div className="h-full overflow-y-auto p-4">
+                        <ContextDisplay context={context} />
+                      </div>
+                    ) : activeView === "styles" ? (
+                      <div className="h-full overflow-y-auto p-4">
+                        <StylesPanel
+                          fitMode={resumeData.styles?.fitMode || "normal"}
+                          spacing={
+                            resumeData.styles?.spacing || {
+                              horizontal: 30,
+                              vertical: 30,
+                            }
+                          }
+                          onFitModeChange={handleFitModeChange}
+                          onSpacingChange={handleSpacingChange}
+                        />
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               )}
@@ -292,85 +351,111 @@ export default function ChatPage() {
           </div>
 
           {/* Desktop Layout */}
-          <div className="hidden md:flex h-[calc(100vh-80px)]">
-            {/* Left Panel - Chat */}
-            <div className="w-1/2 border-r border-gray-200 flex flex-col">
-              {/* Chat Header */}
-              <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant={activeView === "chat" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setActiveView("chat")}
-                      className="flex items-center gap-2"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      Chat
-                    </Button>
-                    <Button
-                      variant={activeView === "context" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setActiveView("context")}
-                      className="flex items-center gap-2"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Context
-                    </Button>
+          <div className="hidden md:flex h-full">
+            {/* Left Panel - Chat Only (50%) */}
+            <div className="w-1/2 border-r border-gray-200/60 flex flex-col bg-white shadow-sm">
+              {/* Simple Chat Header */}
+              <div className="px-4 py-3 border-b border-gray-100 bg-slate-50/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <MessageCircle className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-semibold text-gray-900">
+                      AI Chat
+                    </h2>
+                    <p className="text-xs text-gray-600">
+                      Build your resume through conversation
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Chat Content */}
-              <div className="flex-1 overflow-hidden bg-white">
-                {activeView === "chat" ? (
-                  <ChatInterface
-                    messages={messages}
-                    input={input}
-                    handleInputChange={handleInputChange}
-                    handleSubmit={handleSubmit}
-                    isLoading={isLoading}
-                  />
-                ) : (
-                  <ContextDisplay context={context} />
-                )}
+              <div className="flex-1 overflow-hidden">
+                <ChatInterface
+                  messages={messages}
+                  input={input}
+                  handleInputChange={handleInputChange}
+                  handleSubmit={handleSubmit}
+                  isLoading={isLoading}
+                />
               </div>
             </div>
 
-            {/* Right Panel - Resume */}
-            <div className="w-1/2 flex flex-col">
+            {/* Right Panel - Resume with all tabs (50%) */}
+            <div className="w-1/2 flex flex-col bg-gray-50">
+              {/* Progress Bar */}
+              <div className="px-4 py-3 bg-white border-b border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">
+                    Resume Completion
+                  </span>
+                  <span
+                    className={`text-sm font-medium ${completionStatus.color}`}
+                  >
+                    {completionPercentage}% - {completionStatus.label}
+                  </span>
+                </div>
+                <Progress value={completionPercentage} className="h-2" />
+              </div>
+
               {/* Resume Header with Tabs */}
-              <div className="border-b border-gray-200 bg-gray-50">
-                <div className="flex">
-                  <button
-                    onClick={() => setActiveView("preview")}
-                    className={`px-6 py-4 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
-                      activeView === "preview"
-                        ? "border-blue-500 text-blue-600 bg-white"
-                        : "border-transparent text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    <Eye className="w-4 h-4" />
-                    Preview
-                  </button>
-                  <button
-                    onClick={() => setActiveView("edit")}
-                    className={`px-6 py-4 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
-                      activeView === "edit"
-                        ? "border-blue-500 text-blue-600 bg-white"
-                        : "border-transparent text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    Edit
-                  </button>
+              <div className="border-b border-gray-200 bg-white shadow-sm">
+                <div className="flex items-center px-4 py-3">
+                  <div className="flex items-center bg-gray-50 rounded-lg p-0.5 border border-gray-200">
+                    <button
+                      onClick={() => setRightPanelTab("preview")}
+                      className={`px-4 py-2 text-sm font-medium flex items-center gap-2 rounded-md ${
+                        rightPanelTab === "preview"
+                          ? "bg-white text-blue-600 shadow-sm border border-gray-200"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <Eye className="w-4 h-4" />
+                      Preview
+                    </button>
+                    <button
+                      onClick={() => setRightPanelTab("edit")}
+                      className={`px-4 py-2 text-sm font-medium flex items-center gap-2 rounded-md ${
+                        rightPanelTab === "edit"
+                          ? "bg-white text-blue-600 shadow-sm border border-gray-200"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setRightPanelTab("context")}
+                      className={`px-4 py-2 text-sm font-medium flex items-center gap-2 rounded-md ${
+                        rightPanelTab === "context"
+                          ? "bg-white text-blue-600 shadow-sm border border-gray-200"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <FileText className="w-4 h-4" />
+                      Context
+                    </button>
+                    <button
+                      onClick={() => setRightPanelTab("styles")}
+                      className={`px-4 py-2 text-sm font-medium flex items-center gap-2 rounded-md ${
+                        rightPanelTab === "styles"
+                          ? "bg-white text-blue-600 shadow-sm border border-gray-200"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <Palette className="w-4 h-4" />
+                      Styles
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Resume Content */}
-              <div className="flex-1 overflow-hidden bg-white">
-                {activeView === "preview" ? (
-                  <div className="h-full p-6">
+              {/* Resume Content - Full Height */}
+              <div className="flex-1 overflow-hidden">
+                {rightPanelTab === "preview" ? (
+                  <div className="h-full">
                     <ResumePreview
                       isLoading={previewLoading}
                       error={previewError}
@@ -378,20 +463,35 @@ export default function ChatPage() {
                       generatePDF={generatePDF}
                     />
                   </div>
-                ) : activeView === "edit" ? (
-                  <div className="h-full overflow-y-auto p-6">
-                    <EditPanel />
+                ) : rightPanelTab === "edit" ? (
+                  <div className="h-full overflow-y-auto p-4">
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                      <EditPanel />
+                    </div>
                   </div>
-                ) : (
-                  <div className="h-full p-6">
-                    <ResumePreview
-                      isLoading={previewLoading}
-                      error={previewError}
-                      pdfUrl={pdfUrl}
-                      generatePDF={generatePDF}
-                    />
+                ) : rightPanelTab === "context" ? (
+                  <div className="h-full overflow-y-auto p-4">
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                      <ContextDisplay context={context} />
+                    </div>
                   </div>
-                )}
+                ) : rightPanelTab === "styles" ? (
+                  <div className="h-full overflow-y-auto p-4">
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                      <StylesPanel
+                        fitMode={resumeData.styles?.fitMode || "normal"}
+                        spacing={
+                          resumeData.styles?.spacing || {
+                            horizontal: 30,
+                            vertical: 30,
+                          }
+                        }
+                        onFitModeChange={handleFitModeChange}
+                        onSpacingChange={handleSpacingChange}
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -400,7 +500,6 @@ export default function ChatPage() {
         {/* Floating Action Buttons */}
         <FloatingStylesButton />
       </div>
-      <Footer />
-    </>
+    </AppLayout>
   );
 }

@@ -5,18 +5,22 @@ import PreviewPanel from "./PreviewPanel";
 
 export default function ResumeBuilder() {
   return (
-    <div className="min-h-screen bg-gray-50/30">
-      {/* Main Content - Three Panel Layout */}
-      <div className="mx-auto px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Middle Panel - Edit Panel */}
-          <div className="lg:col-span-1">
+    <div className="h-full bg-gray-50">
+      {/* Main Content - Split Panel Layout */}
+      <div className="h-full flex flex-col lg:flex-row">
+        {/* Left Panel - Edit Panel (40%) */}
+        <div className="lg:w-3/5 h-full bg-white border-r border-gray-200 shadow-sm">
+          <div className="h-full overflow-y-auto p-6">
             <EditPanel />
           </div>
+        </div>
 
-          {/* Right Panel - Preview */}
-          <div className="lg:col-span-1">
-            <PreviewPanel />
+        {/* Right Panel - Preview (40%) */}
+        <div className="lg:w-2/5 h-full bg-gray-50">
+          <div className="h-full p-6">
+            <div className="h-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <PreviewPanel />
+            </div>
           </div>
         </div>
       </div>

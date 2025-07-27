@@ -1,23 +1,13 @@
 "use client";
 
-import { Download, MessageCircle, RotateCcw, Save, Upload } from "lucide-react";
+import { Download, RotateCcw, Save, Upload } from "lucide-react";
 
 import { Button } from "@/platform/component/ui/button";
-import Footer from "@/platform/component/ui/footer";
-import Link from "next/link";
-import type { Metadata } from "next";
-import Navigation from "@/platform/component/ui/navigation";
 import ResumeBuilder from "@/modules/editor/view/component/ResumeBuilder";
 import { exportToPDFUseCase } from "../../domain/useCase/exportToPDFUseCase";
 import { saveDraftUseCase } from "../../domain/useCase/saveDraftUseCase";
 import { useResumeStore } from "@/app/store/resumeStore";
 import { useState } from "react";
-
-export const metadata: Metadata = {
-  title: "Ray Resume Editor - Free Professional Resume Builder",
-  description:
-    "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, drag-and-drop functionality, and clean formatting. Build your perfect resume in minutes.",
-};
 
 export default function ResumeEditorScreen() {
   const { clearAllData, loadFromJSON, resumeData } = useResumeStore();
@@ -65,55 +55,61 @@ export default function ResumeEditorScreen() {
     setIsExporting(false);
   };
 
-  const navigationActions = [
-    {
-      icon: Save,
-      label: "Save Draft",
-      onClick: onSaveDraft,
-    },
-    {
-      icon: Upload,
-      label: "Load Draft",
-      onClick: loadDraft,
-    },
-    {
-      icon: RotateCcw,
-      label: "Clear All",
-      onClick: clearData,
-      variant: "destructive" as const,
-    },
-    {
-      icon: Download,
-      label: isExporting ? "Exporting..." : "Export PDF",
-      onClick: exportToPDF,
-    },
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation
-        title="Resume Editor"
-        subtitle="that just works, vibe-coded by Ray"
-        showDefaultActions={false}
-        actions={navigationActions}
-      >
-        <Link href="/chat">
-          <Button
-            variant="default"
-            size="sm"
-            className="flex items-center gap-2 hover:cursor-pointer"
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>Chat to Build</span>
-          </Button>
-        </Link>
-      </Navigation>
+    <div className="flex flex-col h-full">
+      {/* Editor Actions Header */}
+      <div className="border-b bg-white px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Resume Editor</h1>
+            <p className="text-sm text-gray-600">Create and customize your professional resume</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onSaveDraft}
+              className="flex items-center gap-2"
+            >
+              <Save className="w-4 h-4" />
+              Save Draft
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={loadDraft}
+              className="flex items-center gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              Load Draft
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={clearData}
+              className="flex items-center gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Clear All
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={exportToPDF}
+              disabled={isExporting}
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              {isExporting ? "Exporting..." : "Export PDF"}
+            </Button>
+          </div>
+        </div>
+      </div>
 
-      <main className="flex-1">
+      {/* Main Editor Content */}
+      <main className="flex-1 overflow-hidden">
         <ResumeBuilder />
       </main>
-
-      <Footer />
     </div>
   );
 }

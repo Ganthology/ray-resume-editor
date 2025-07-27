@@ -27,5 +27,9 @@ export interface ResumeData {
       horizontal: number; // Left/right page margins in pixels
       vertical: number;   // Top/bottom page margins in pixels
     };
+    fonts?: {
+      headers: string;    // Font family for section headers
+      content: string;    // Font family for body content
+    };
   };
 }
