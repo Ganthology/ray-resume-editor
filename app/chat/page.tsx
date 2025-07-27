@@ -8,6 +8,7 @@ import {
   Monitor,
   Palette,
 } from "lucide-react";
+import { PDFViewer } from "@react-pdf/renderer";
 import React, { useEffect, useRef, useState } from "react";
 import {
   calculateResumeCompletion,
@@ -22,13 +23,13 @@ import ContextDisplay from "@/modules/chat/view/component/ContextDisplay";
 import { ConversationContext } from "@/modules/chat/types/ChatTypes";
 import EditPanel from "@/modules/editor/view/component/EditPanel";
 import FloatingStylesButton from "@/modules/chat/view/component/FloatingStylesButton";
+import MobilePDFEmbed from "@/modules/editor/view/component/MobilePDFEmbed";
 import { Progress } from "@/platform/component/ui/progress";
 import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
 import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
-import ResumePreview from "@/modules/editor/view/component/ResumePreview";
+import ResumePDF from "@/modules/resume/view/component/ResumePDF";
 import StylesPanel from "@/modules/editor/view/component/StylesPanel";
 import { useChat } from "@ai-sdk/react";
-import { useResumePreview } from "@/modules/editor/view/viewModel/useResumePreview";
 
 export default function ChatPage() {
   const { loadFromJSON, resumeData, updateStyles } = useResumeStore();
@@ -40,12 +41,6 @@ export default function ChatPage() {
     "preview" | "edit" | "context" | "styles"
   >("preview");
   const processedToolInvocationsRef = useRef<Set<string>>(new Set());
-  const {
-    isLoading: previewLoading,
-    error: previewError,
-    pdfUrl,
-    generatePDF,
-  } = useResumePreview();
 
   // Calculate resume completion
   const completionPercentage = calculateResumeCompletion(resumeData);
@@ -82,11 +77,6 @@ export default function ChatPage() {
         },
       ],
     });
-
-  // Generate PDF when resume data changes
-  useEffect(() => {
-    generatePDF();
-  }, [generatePDF, resumeData]);
 
   // Handle tool invocations from messages
   useEffect(() => {
@@ -187,9 +177,9 @@ export default function ChatPage() {
         </div> */}
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1">
           {/* Mobile Layout */}
-          <div className="md:hidden">
+          <div className="md:hidden h-full flex flex-col">
             {/* Mobile Navigation */}
             <div className="flex items-center justify-center px-6 py-4 bg-gray-50 border-b">
               <div className="bg-white rounded-full p-1 shadow-sm border">
@@ -222,7 +212,7 @@ export default function ChatPage() {
             </div>
 
             {/* Mobile Content */}
-            <div className="h-[calc(100vh-200px)]">
+            <div className="h-full">
               {activeView === "chat" ? (
                 <ChatInterface
                   messages={messages}
@@ -314,12 +304,7 @@ export default function ChatPage() {
                   <div className="flex-1 overflow-hidden">
                     {activeView === "preview" ? (
                       <div className="h-full">
-                        <ResumePreview
-                          isLoading={previewLoading}
-                          error={previewError}
-                          pdfUrl={pdfUrl}
-                          generatePDF={generatePDF}
-                        />
+                        <MobilePDFEmbed resumeData={resumeData} />
                       </div>
                     ) : activeView === "edit" ? (
                       <div className="h-full overflow-y-auto p-4">
@@ -353,9 +338,9 @@ export default function ChatPage() {
           {/* Desktop Layout */}
           <div className="hidden md:flex h-full">
             {/* Left Panel - Chat Only (50%) */}
-            <div className="w-1/2 border-r border-gray-200/60 flex flex-col bg-white shadow-sm">
+            <div className="w-1/2 flex flex-col bg-white">
               {/* Simple Chat Header */}
-              <div className="px-4 py-3 border-b border-gray-100 bg-slate-50/50">
+              {/* <div className="px-4 py-3 border-b border-gray-100 bg-slate-50/50">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                     <MessageCircle className="w-4 h-4 text-blue-600" />
@@ -369,7 +354,7 @@ export default function ChatPage() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Chat Content */}
               <div className="flex-1 overflow-hidden">
@@ -456,12 +441,9 @@ export default function ChatPage() {
               <div className="flex-1 overflow-hidden">
                 {rightPanelTab === "preview" ? (
                   <div className="h-full">
-                    <ResumePreview
-                      isLoading={previewLoading}
-                      error={previewError}
-                      pdfUrl={pdfUrl}
-                      generatePDF={generatePDF}
-                    />
+                    <PDFViewer showToolbar={false} className="h-full w-full">
+                      <ResumePDF resumeData={resumeData} />
+                    </PDFViewer>
                   </div>
                 ) : rightPanelTab === "edit" ? (
                   <div className="h-full overflow-y-auto p-4">
