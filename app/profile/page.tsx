@@ -26,7 +26,7 @@ interface ConversationStats {
 }
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState("");
@@ -77,25 +77,9 @@ export default function ProfilePage() {
     URL.revokeObjectURL(url);
   };
 
-  // Load saved contexts from localStorage
+  // Load contexts from API and profile fields from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("profile-contexts");
-    if (saved) {
-      try {
-        const contexts = JSON.parse(saved);
-        const processedContexts = contexts.map((ctx: SavedContext & { timestamp: string }) => ({
-          ...ctx,
-          timestamp: new Date(ctx.timestamp),
-          messageCount: ctx.messageCount || Math.floor(Math.random() * 20) + 5, // Mock data for existing contexts
-        }));
-        setSavedContexts(processedContexts);
-        setConversationStats(calculateStats(processedContexts));
-      } catch (error) {
-        console.error("Failed to load saved contexts:", error);
-      }
-    }
-
-    // Load profile fields from localStorage
+    // load profile fields
     const savedProfile = localStorage.getItem("profile-data");
     if (savedProfile) {
       try {
@@ -110,18 +94,30 @@ export default function ProfilePage() {
     }
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/chat/context", { method: "GET" });
+        if (res.ok) {
+          const data = await res.json();
+          const list = (data?.history || []).map((c: any) => ({
+            id: c.id,
+            title: "Context",
+            content: c.content,
+            timestamp: new Date(c.updatedAt || c.createdAt),
+          }));
+          setSavedContexts(list);
+          setConversationStats(calculateStats(list));
+        }
+      } catch (e) {
+        console.error("Failed to fetch contexts:", e);
+      }
+    })();
+  }, []);
+
   const handleSaveProfile = async () => {
     setIsSaving(true);
     try {
-      // Update user info
-      if (updateUser) {
-        updateUser({
-          name,
-          email,
-          avatar: user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
-        });
-      }
-      
       // Save profile data to localStorage
       const profileData = {
         phone,
