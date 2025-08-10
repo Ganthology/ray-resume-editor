@@ -14,7 +14,7 @@ export default function ResumePreview({
   generatePDF,
 }: ResumePreviewProps) {
   return (
-    <div className="w-full h-[800px] border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <div className="w-full h-[800px] rounded-lg overflow-hidden bg-white">
       {isLoading && (
         <div className="flex items-center justify-center h-full">
           <div className="text-center">

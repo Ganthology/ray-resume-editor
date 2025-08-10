@@ -19,7 +19,8 @@ import {
 import { Button } from "@/platform/component/ui/button";
 import { Settings } from "lucide-react";
 import StylesPanel from "@/modules/editor/view/component/StylesPanel";
-import { useResumeStore } from "@/app/store/resumeStore";
+import { useChatStore } from "@/app/store/chatStore";
+import { ResumeData } from "@/modules/resume/data/entity/ResumeData";
 
 const DEFAULT_SPACING = { horizontal: 30, vertical: 30 };
 const DEFAULT_FONTS = { headers: "Times-Roman", content: "Times-Roman" };
@@ -35,7 +36,15 @@ const FONT_OPTIONS = [
 
 export default function FloatingStylesButton() {
   const [open, setOpen] = useState(false);
-  const { resumeData, updateStyles } = useResumeStore();
+  const { chatResumeData: resumeData, updateChatResume } = useChatStore();
+  
+  // Style update function for chat resume
+  const updateStyles = (styles: ResumeData["styles"]) => {
+    updateChatResume({
+      ...resumeData,
+      styles
+    });
+  };
 
   const handleFitModeChange = (mode: "compact" | "normal") => {
     updateStyles({

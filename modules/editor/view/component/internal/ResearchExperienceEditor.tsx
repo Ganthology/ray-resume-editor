@@ -87,7 +87,7 @@ export default function ResearchExperienceEditor() {
                   <AccordionItem
                     key={exp.id}
                     value={exp.id}
-                    className="border border-gray-200/40 rounded-lg shadow-sm"
+                    className="rounded-lg"
                   >
                     <div className="flex items-center">
                       <div className="flex items-center gap-3 px-4 py-3">

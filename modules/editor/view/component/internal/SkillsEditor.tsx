@@ -89,7 +89,7 @@ const SkillSection = memo(
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <Checkbox
                   checked={item.included}

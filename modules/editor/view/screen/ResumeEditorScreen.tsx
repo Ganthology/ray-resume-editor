@@ -58,7 +58,7 @@ export default function ResumeEditorScreen() {
   return (
     <div className="flex flex-col h-full">
       {/* Editor Actions Header */}
-      <div className="border-b bg-white px-6 py-4">
+      <div className="bg-white px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-gray-900">Resume Editor</h1>

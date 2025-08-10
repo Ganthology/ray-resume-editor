@@ -7,8 +7,8 @@ import {
 } from "@/platform/component/ui/avatar";
 import {
   Building,
+  CreditCard,
   FileText,
-  Home,
   LogOut,
   Mail,
   MessageCircle,
@@ -16,6 +16,7 @@ import {
   Sparkles,
   User,
 } from "lucide-react";
+// Keep Card usage for auth/login UI (borders are fine here)
 import {
   Card,
   CardContent,
@@ -45,6 +46,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  useSidebar,
 } from "@/platform/component/ui/sidebar";
 
 import { Button } from "@/platform/component/ui/button";
@@ -61,20 +63,19 @@ interface AppLayoutProps {
 
 // Simple login form for demo purposes
 function LoginForm() {
-  const { login } = useAuth();
+  const { signInWithEmail, signUpWithEmail } = useAuth();
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [mode, setMode] = React.useState<"signin" | "signup">("signin");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && email) {
-      login({
-        name,
-        email,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          name
-        )}&background=random`,
-      });
+    if (!email || !password) return;
+    if (mode === "signup") {
+      await signUpWithEmail(email, password, name);
+    } else {
+      await signInWithEmail(email, password);
     }
   };
 
@@ -93,22 +94,24 @@ function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="pl-10"
-                  required
-                />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === "signup" && (
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="pl-10"
+                    required
+                  />
+                </div>
               </div>
-            </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -124,12 +127,36 @@ function LoginForm() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Sign In
-            </Button>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button type="submit" className="w-full">
+                {mode === "signup" ? "Create account" : "Sign in"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
+              >
+                {mode === "signup"
+                  ? "Have an account? Sign in"
+                  : "Create account"}
+              </Button>
+            </div>
           </form>
           <div className="mt-4 text-center text-sm text-muted-foreground">
-            Demo app - Enter any name and email to continue
+            Use email/password to continue
           </div>
         </CardContent>
       </Card>
@@ -153,12 +180,6 @@ function LoadingScreen() {
 
 const navigationItems = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-    description: "Overview and quick actions",
-  },
-  {
     title: "AI Chat",
     href: "/chat",
     icon: MessageCircle,
@@ -169,6 +190,21 @@ const navigationItems = [
     href: "/editor",
     icon: FileText,
     description: "Manual resume creation and editing",
+  },
+];
+
+const settingsItems = [
+  {
+    title: "Profile",
+    href: "/profile",
+    icon: User,
+    description: "Manage your profile and saved contexts",
+  },
+  {
+    title: "Billing",
+    href: "/billing",
+    icon: CreditCard,
+    description: "Subscription and billing settings",
   },
 ];
 
@@ -192,22 +228,25 @@ function AppSidebar({
 }) {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <FileText className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">RaysumeAI</span>
-                  <span className="truncate text-xs">AI Resume Builder</span>
-                </div>
-              </Link>
+            <SidebarMenuButton
+              size="lg"
+              onClick={toggleSidebar}
+              className="cursor-pointer"
+            >
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <FileText className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">RaysumeAI</span>
+                <span className="truncate text-xs">AI Resume Builder</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -251,6 +290,28 @@ function AppSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {settingsItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    tooltip={item.description}
+                  >
+                    <Link href={item.href}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       {user && (
@@ -288,9 +349,17 @@ function AppSidebar({
                   align="end"
                   sideOffset={4}
                 >
-                  <DropdownMenuItem className="gap-2">
-                    <User className="size-4" />
-                    <span>Account</span>
+                  <DropdownMenuItem asChild className="gap-2">
+                    <Link href="/profile">
+                      <User className="size-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="gap-2">
+                    <Link href="/billing">
+                      <CreditCard className="size-4" />
+                      <span>Billing</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem

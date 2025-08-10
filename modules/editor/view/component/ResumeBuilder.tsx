@@ -9,7 +9,7 @@ export default function ResumeBuilder() {
       {/* Main Content - Split Panel Layout */}
       <div className="h-full flex flex-col lg:flex-row">
         {/* Left Panel - Edit Panel (40%) */}
-        <div className="lg:w-3/5 h-full bg-white shadow-sm">
+        <div className="lg:w-3/5 h-full bg-white">
           <div className="h-full overflow-y-auto p-6">
             <EditPanel />
           </div>
@@ -18,7 +18,7 @@ export default function ResumeBuilder() {
         {/* Right Panel - Preview (40%) */}
         <div className="lg:w-2/5 h-full bg-gray-50">
           <div className="h-full p-6">
-            <div className="h-full bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="h-full bg-white rounded-lg overflow-hidden">
               <PreviewPanel />
             </div>
           </div>

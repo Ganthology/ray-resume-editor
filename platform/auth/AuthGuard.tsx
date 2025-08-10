@@ -23,7 +23,7 @@ export default function AuthGuard() {
   }
 
   if (isAuthenticated) {
-    router.push('/dashboard');
+    router.push('/chat');
     return null;
   }
   

@@ -49,7 +49,7 @@ export default function PreviewPanel() {
         onSpacingChange={handleSpacingChange}
       />
 
-      <Card className="border-gray-200/60 shadow-sm bg-gray-50">
+      <Card className="bg-gray-50 border-0">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function PreviewPanel() {
           </p>
         </CardHeader>
 
-        <CardContent className="p-6 border-t border-gray-200">
+        <CardContent className="p-6">
           <ResponsivePDFPreview
             isLoading={isLoading}
             error={error}

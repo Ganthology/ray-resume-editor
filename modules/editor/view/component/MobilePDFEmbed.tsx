@@ -66,7 +66,7 @@ export default function MobilePDFEmbed({ resumeData }: MobilePDFEmbedProps) {
 
   if (isLoading) {
     return (
-      <div className="w-full h-full border border-gray-200 rounded-lg overflow-hidden bg-white">
+      <div className="w-full h-full rounded-lg overflow-hidden bg-white">
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
@@ -79,7 +79,7 @@ export default function MobilePDFEmbed({ resumeData }: MobilePDFEmbedProps) {
 
   if (error) {
     return (
-      <div className="w-full h-full border border-gray-200 rounded-lg overflow-hidden bg-white">
+      <div className="w-full h-full rounded-lg overflow-hidden bg-white">
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <p className="text-sm text-red-600 mb-2">{error}</p>
@@ -97,7 +97,7 @@ export default function MobilePDFEmbed({ resumeData }: MobilePDFEmbedProps) {
 
   if (!pdfUrl) {
     return (
-      <div className="w-full h-full border border-gray-200 rounded-lg overflow-hidden bg-white">
+      <div className="w-full h-full rounded-lg overflow-hidden bg-white">
         <div className="flex items-center justify-center h-full">
           <p className="text-sm text-gray-600">No PDF generated</p>
         </div>
@@ -106,7 +106,7 @@ export default function MobilePDFEmbed({ resumeData }: MobilePDFEmbedProps) {
   }
 
   return (
-    <div className="w-full h-full border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <div className="w-full h-full rounded-lg overflow-hidden bg-white">
       {/* Mobile-optimized PDF embed */}
       <embed
         src={pdfUrl}

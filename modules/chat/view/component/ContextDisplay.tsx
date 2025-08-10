@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/platform/component/ui/card";
+// No Card components used here; removed import
 import { ClockIcon, FileTextIcon, DownloadIcon } from "lucide-react";
 
 import { Badge } from "@/platform/component/ui/badge";

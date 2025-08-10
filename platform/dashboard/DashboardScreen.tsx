@@ -1,25 +1,19 @@
 "use client";
 
 import {
-  FileText,
-  MessageSquare,
-  Plus,
-  Settings,
-  User,
-} from "lucide-react";
-import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/platform/component/ui/card";
+import { FileText, MessageSquare, Plus, Settings, User } from "lucide-react";
 
 import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
 import Link from "next/link";
 import Navigation from "@/platform/component/ui/navigation";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "@/platform/auth/AuthContext";
 
 export default function DashboardScreen() {
   const { user, logout } = useAuth();
@@ -57,7 +51,8 @@ export default function DashboardScreen() {
               Welcome back{user?.name ? `, ${user.name}` : ""}!
             </h1>
             <p className="text-gray-600">
-              Manage your resumes and continue building your career with AI assistance.
+              Manage your resumes and continue building your career with AI
+              assistance.
             </p>
           </div>
 
@@ -111,7 +106,9 @@ export default function DashboardScreen() {
           {/* Recent Resumes Section */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Recent Resumes</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Recent Resumes
+              </h2>
               <Link href="/editor">
                 <Button variant="outline" size="sm">
                   View All
@@ -125,7 +122,8 @@ export default function DashboardScreen() {
                 No resumes yet
               </h3>
               <p className="text-gray-600 mb-4">
-                Get started by creating your first resume or using our AI Resume Coach
+                Get started by creating your first resume or using our AI Resume
+                Coach
               </p>
               <div className="flex gap-3 justify-center">
                 <Link href="/editor">
@@ -164,7 +162,9 @@ export default function DashboardScreen() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-gray-900">0/0</div>
-                <p className="text-sm text-gray-600">Upgrade to use AI features</p>
+                <p className="text-sm text-gray-600">
+                  Upgrade to use AI features
+                </p>
               </CardContent>
             </Card>
 

@@ -15,12 +15,7 @@ import {
   UserIcon,
   WrenchIcon,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/platform/component/ui/card";
+// Replace Card components with divs for minimal layout
 
 import { Badge } from "@/platform/component/ui/badge";
 import React from "react";
@@ -72,21 +67,21 @@ export default function ResumeDataDisplay({
   };
 
   return (
-    <Card className="h-full border-gray-200/60 shadow-sm">
-      <CardHeader className="border-b border-gray-200/60">
-        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+    <div className="h-full">
+      <div className="px-3 py-3">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
           <BriefcaseIcon className="w-5 h-5" />
           Resume Data
           <Badge variant="secondary" className="text-xs">
             Structured
           </Badge>
-        </CardTitle>
+        </h3>
         <p className="text-sm text-gray-600">
           Information organized and ready for PDF generation
         </p>
-      </CardHeader>
+      </div>
 
-      <CardContent className="p-4">
+      <div className="p-3">
         <div className="max-h-[400px] overflow-y-auto">
           <Accordion type="multiple" className="w-full">
             {/* Personal Information */}
@@ -299,7 +294,7 @@ export default function ResumeDataDisplay({
             </AccordionItem>
           </Accordion>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

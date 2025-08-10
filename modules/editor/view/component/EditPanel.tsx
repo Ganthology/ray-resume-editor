@@ -44,7 +44,7 @@ export default function EditPanel() {
   return (
     <div className="space-y-6">
       {/* Personal Information */}
-      <Card className="px-6 pb-6 space-y-4">
+      <Card className="px-6 pb-6 space-y-4 border-0">
         <CardTitle className="text-lg font-semibold text-gray-900">
           Personal Information
         </CardTitle>

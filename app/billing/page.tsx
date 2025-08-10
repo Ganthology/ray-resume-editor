@@ -22,8 +22,7 @@ import {
 import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
 import { Progress } from "@/platform/component/ui/progress";
-import Navigation from "@/platform/component/ui/navigation";
-import Footer from "@/platform/component/ui/footer";
+import { AppLayout } from "@/platform/component/layout/AppLayout";
 
 export default function BillingPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "plans" | "history">("overview");
@@ -364,12 +363,18 @@ export default function BillingPage() {
   };
 
   return (
-    <>
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navigation
-          title="RaysumeAI"
-          subtitle="Billing"
-        >
+    <AppLayout>
+      <div className="flex-1 space-y-6 p-6">
+        {/* Header */}
+        <div className="space-y-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Billing & Subscription</h1>
+            <p className="text-muted-foreground">
+              Manage your subscription plans and payment history
+            </p>
+          </div>
+          
+          {/* Tab Navigation */}
           <div className="flex items-center gap-2">
             <Button
               variant={activeTab === "overview" ? "default" : "outline"}
@@ -393,15 +398,11 @@ export default function BillingPage() {
               History
             </Button>
           </div>
-        </Navigation>
+        </div>
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
-          <div className="max-w-7xl mx-auto">
-            {renderContent()}
-          </div>
-        </main>
+        {/* Content */}
+        {renderContent()}
       </div>
-      <Footer />
-    </>
+    </AppLayout>
   );
 }

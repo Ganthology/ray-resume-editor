@@ -12,6 +12,7 @@ import { Message, ToolInvocation } from "ai";
 import React, { useEffect, useRef } from "react";
 
 import { Button } from "@/platform/component/ui/button";
+import MarkdownMessage from "@/modules/chat/view/component/MarkdownMessage";
 import { Textarea } from "@/platform/component/ui/textarea";
 
 interface ChatInterfaceProps {
@@ -47,7 +48,7 @@ export default function ChatInterface({
         const toolName = toolInvocation.toolName;
         if (toolName === "generateContext") {
           return (
-            <div className="flex items-center gap-2 p-3 bg-purple-50 border border-purple-200 rounded-xl mb-2">
+            <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-xl mb-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
               <span className="text-sm text-purple-800">
                 Analyzing conversation and updating context...
@@ -57,7 +58,7 @@ export default function ChatInterface({
         }
         if (toolName === "updateResume") {
           return (
-            <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl mb-2">
+            <div className="flex items-center gap-2 p-3 bg-green-50 rounded-xl mb-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
               <span className="text-sm text-green-800">
                 Updating your resume with new information...
@@ -75,7 +76,7 @@ export default function ChatInterface({
 
     if (toolName === "generateContext") {
       return (
-        <div className="flex items-center gap-2 p-3 bg-purple-50 border border-purple-200 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
+        <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
           <Brain className="w-4 h-4 text-purple-600" />
           <div className="flex-1">
             <span className="text-sm text-purple-800">
@@ -93,7 +94,7 @@ export default function ChatInterface({
 
     if (toolName === "updateResume") {
       return (
-        <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
+        <div className="flex items-center gap-2 p-3 bg-green-50 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
           <FileText className="w-4 h-4 text-green-600" />
           <div className="flex-1">
             <span className="text-sm text-green-800">
@@ -112,7 +113,7 @@ export default function ChatInterface({
     // Fallback for other tool invocations
     if (isSuccess) {
       return (
-        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
+        <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-xl mb-2 animate-in slide-in-from-bottom-2 duration-300">
           <Sparkles className="w-4 h-4 text-blue-600" />
           <div className="flex-1">
             <span className="text-sm text-blue-800">
@@ -170,13 +171,11 @@ export default function ChatInterface({
                       message.role === "user"
                         ? "bg-blue-500 text-white rounded-br-sm"
                         : message.role === "assistant"
-                        ? "bg-gray-100 text-gray-900 rounded-bl-sm"
-                        : "bg-yellow-50 text-yellow-800 text-sm border border-yellow-200"
+                          ? "bg-gray-100 text-gray-900 rounded-bl-sm"
+                          : "bg-yellow-50 text-yellow-800 text-sm"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                      {message.content}
-                    </p>
+                    <MarkdownMessage content={message.content} />
                     <p className="text-xs opacity-70 mt-1">
                       {message.createdAt
                         ? new Date(message.createdAt).toLocaleTimeString()
@@ -227,7 +226,7 @@ export default function ChatInterface({
               }}
               placeholder="Tell me about your experience..."
               disabled={isLoading}
-              className="border-0 bg-white shadow-sm rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border border-gray-200 bg-white rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               rows={1}
               maxLength={5}
             />
