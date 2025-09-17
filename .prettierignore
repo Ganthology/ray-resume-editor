@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+coverage
+
+# Generated
+*.tsbuildinfo
+*.map
+
+# Assets
+public/**/*.svg
+public/**/*.png
+public/**/*.jpg
+public/**/*.jpeg
+public/**/*.gif
+public/**/*.ico
+
+# Misc
+package-lock.json
+
+# Serverless / vercel
+.vercel

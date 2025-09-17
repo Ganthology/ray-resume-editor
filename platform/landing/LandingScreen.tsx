@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertCircle,
@@ -20,7 +20,7 @@ import {
   Users,
   X,
   Zap,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -28,93 +28,77 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/platform/component/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/platform/component/ui/carousel";
+} from '@/platform/component/ui/card';
+import { Carousel, CarouselContent, CarouselItem } from '@/platform/component/ui/carousel';
 
-import { Badge } from "@/platform/component/ui/badge";
-import { Button } from "@/platform/component/ui/button";
-import Link from "next/link";
-import { useAuth } from "@/platform/auth/AuthContext";
-import { useRouter } from "next/navigation";
+import { Badge } from '@/platform/component/ui/badge';
+import { Button } from '@/platform/component/ui/button';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LandingPage() {
-  const { login } = useAuth();
   const router = useRouter();
 
-  const handleGetStarted = () => {
-    // For now, simulate login to bypass landing
-    login({ email: "demo@raysumeai.com", name: "Demo User" });
-  };
+  const handleGetStarted = () => router.push('/editor');
 
-  const handleSignIn = () => {
-    // For now, simulate login to bypass landing
-    login({ email: "demo@raysumeai.com", name: "Demo User" });
-  };
+  const handleSignIn = () => router.push('/editor');
 
   const handlePricingPlan = () => {
     // First authenticate, then redirect to billing
-    login({ email: "demo@raysumeai.com", name: "Demo User" });
-    // Small delay to ensure auth state is updated
-    setTimeout(() => {
-      router.push('/billing');
-    }, 100);
+    router.push('/billing');
   };
   const pricingPlans = [
     {
-      name: "Basic",
-      price: "Free",
-      description: "End the formatting struggle forever",
+      name: 'Basic',
+      price: 'Free',
+      description: 'End the formatting struggle forever',
       features: [
-        "Professional templates (no more Word/Docs)",
-        "Cloud-based saving & sync",
-        "Real-time editing & preview",
-        "ATS keyword extraction",
-        "PDF export",
-        "3 AI Message Credits",
+        'Professional templates (no more Word/Docs)',
+        'Cloud-based saving & sync',
+        'Real-time editing & preview',
+        'ATS keyword extraction',
+        'PDF export',
+        '3 AI Message Credits',
       ],
-      buttonText: "Get Started Free",
-      buttonStyle: "bg-emerald-600 hover:bg-emerald-700",
+      buttonText: 'Get Started Free',
+      buttonStyle: 'bg-emerald-600 hover:bg-emerald-700',
     },
     {
-      name: "Lite",
-      price: "$10",
-      priceSubtext: " one-time",
-      badge: "Most Popular",
-      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-      description: "AI consultant for one perfect resume",
+      name: 'Lite',
+      price: '$10',
+      priceSubtext: ' one-time',
+      badge: 'Most Popular',
+      badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      description: 'AI consultant for one perfect resume',
       features: [
-        "50 AI Message Credits",
-        "AI Resume Consultant (replaces $300+ writers)",
-        "Generate 1 AI-optimized resume",
-        "Upload existing resume for enhancement",
+        '50 AI Message Credits',
+        'AI Resume Consultant (replaces $300+ writers)',
+        'Generate 1 AI-optimized resume',
+        'Upload existing resume for enhancement',
       ],
-      excludedFeatures: ["Multiple job targeting"],
-      buttonText: "Get Lite - $10",
-      buttonStyle: "bg-stone-900 hover:bg-stone-800",
+      excludedFeatures: ['Multiple job targeting'],
+      buttonText: 'Get Lite - $10',
+      buttonStyle: 'bg-stone-900 hover:bg-stone-800',
     },
     {
-      name: "Pro",
-      price: "$30",
-      priceSubtext: " one-time",
-      description: "Unlimited AI-powered job targeting",
-      badge: "Best Value",
-      badgeColor: "bg-stone-900 text-white",
+      name: 'Pro',
+      price: '$30',
+      priceSubtext: ' one-time',
+      description: 'Unlimited AI-powered job targeting',
+      badge: 'Best Value',
+      badgeColor: 'bg-stone-900 text-white',
       icon: <Crown className="h-5 w-5 text-stone-700 mr-2" />,
       features: [
-        "200 AI Message Credits",
-        "AI Resume Consultant (replaces $300+ writers)",
-        "Unlimited tailored resumes",
-        "Job library for tailored resumes",
-        "Upload existing resume for enhancement",
-        "More features on the roadmap",
-        "Priority support",
+        '200 AI Message Credits',
+        'AI Resume Consultant (replaces $300+ writers)',
+        'Unlimited tailored resumes',
+        'Job library for tailored resumes',
+        'Upload existing resume for enhancement',
+        'More features on the roadmap',
+        'Priority support',
       ],
-      buttonText: "Get Pro - $30",
-      buttonStyle: "bg-stone-900 hover:bg-stone-800",
+      buttonText: 'Get Pro - $30',
+      buttonStyle: 'bg-stone-900 hover:bg-stone-800',
       highlighted: true,
     },
   ];
@@ -122,38 +106,38 @@ export default function LandingPage() {
   const testimonials = [
     {
       rating: 5,
-      text: "Saved me $500 and weeks of frustration! The Pro plan helped me create 8 different resumes for different roles. Got 3 interviews in the first week - something that never happened with my old Word resume.",
-      author: "Alex Martinez",
-      role: "Software Engineer",
-      initials: "AM",
+      text: 'Saved me $500 and weeks of frustration! The Pro plan helped me create 8 different resumes for different roles. Got 3 interviews in the first week - something that never happened with my old Word resume.',
+      author: 'Alex Martinez',
+      role: 'Software Engineer',
+      initials: 'AM',
     },
     {
       rating: 5,
-      text: "I was spending hours every week fixing formatting in Google Docs. The free version alone eliminated all that headache. The templates just work perfectly every time.",
-      author: "Jessica Liu",
-      role: "Marketing Manager",
-      initials: "JL",
+      text: 'I was spending hours every week fixing formatting in Google Docs. The free version alone eliminated all that headache. The templates just work perfectly every time.',
+      author: 'Jessica Liu',
+      role: 'Marketing Manager',
+      initials: 'JL',
     },
     {
       rating: 5,
-      text: "The Lite plan was perfect for my job search. Instead of paying $400 for a resume writer, I spent $10 and got my resume enhanced by AI. Landed my first job out of college!",
-      author: "David Kim",
-      role: "Recent Graduate",
-      initials: "DK",
+      text: 'The Lite plan was perfect for my job search. Instead of paying $400 for a resume writer, I spent $10 and got my resume enhanced by AI. Landed my first job out of college!',
+      author: 'David Kim',
+      role: 'Recent Graduate',
+      initials: 'DK',
     },
     {
       rating: 5,
       text: "The AI chat feature is incredible. It's like having a professional resume writer available 24/7. My interview rate increased by 300% after using Raysume AI.",
-      author: "Sarah Chen",
-      role: "Product Manager",
-      initials: "SC",
+      author: 'Sarah Chen',
+      role: 'Product Manager',
+      initials: 'SC',
     },
     {
       rating: 5,
-      text: "Finally, a resume builder that actually understands ATS systems. My resumes now pass through every screening system. Worth every penny!",
-      author: "Michael Rodriguez",
-      role: "Data Scientist",
-      initials: "MR",
+      text: 'Finally, a resume builder that actually understands ATS systems. My resumes now pass through every screening system. Worth every penny!',
+      author: 'Michael Rodriguez',
+      role: 'Data Scientist',
+      initials: 'MR',
     },
   ];
 
@@ -166,9 +150,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">R</span>
             </div>
-            <span className="text-xl sm:text-2xl font-bold text-stone-900">
-              Raysume AI
-            </span>
+            <span className="text-xl sm:text-2xl font-bold text-stone-900">Raysume AI</span>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
             <Link
@@ -196,7 +178,7 @@ export default function LandingPage() {
             >
               Sign In
             </Button>
-            <Button 
+            <Button
               className="bg-stone-900 hover:bg-stone-800 text-white"
               onClick={handleGetStarted}
             >
@@ -204,7 +186,7 @@ export default function LandingPage() {
             </Button>
           </nav>
           <div className="md:hidden">
-            <Button 
+            <Button
               className="bg-stone-900 hover:bg-stone-800 text-white text-sm px-4 py-2"
               onClick={handleGetStarted}
             >
@@ -224,19 +206,15 @@ export default function LandingPage() {
               Stop Struggling with Resume Creation
             </Badge>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 mb-4 sm:mb-6 leading-tight">
-              No More Google Docs.{" "}
-              <span className="text-stone-600">
-                No More Expensive Consultants.
-              </span>
+              No More Google Docs.{' '}
+              <span className="text-stone-600">No More Expensive Consultants.</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-stone-600 mb-6 sm:mb-8 leading-relaxed max-w-4xl mx-auto px-4">
-              Stop wasting hours fighting with Word layouts and paying $500+ for
-              resume writers.
+              Stop wasting hours fighting with Word layouts and paying $500+ for resume writers.
               <strong className="text-stone-900">
-                {" "}
-                Raysume AI creates professional, ATS-optimized resumes in
-                minutes
-              </strong>{" "}
+                {' '}
+                Raysume AI creates professional, ATS-optimized resumes in minutes
+              </strong>{' '}
               — tailored for every job you apply to.
             </p>
           </div>
@@ -259,8 +237,8 @@ export default function LandingPage() {
                       Hours of Manual Formatting
                     </p>
                     <p className="text-xs sm:text-sm text-red-600">
-                      Fighting with Google Docs and Word to align text, fix
-                      spacing, and make it look professional
+                      Fighting with Google Docs and Word to align text, fix spacing, and make it
+                      look professional
                     </p>
                   </div>
                 </div>
@@ -271,8 +249,7 @@ export default function LandingPage() {
                       Expensive Resume Writers
                     </p>
                     <p className="text-xs sm:text-sm text-red-600">
-                      Paying $300-$800 for consultants who take days to deliver
-                      generic resumes
+                      Paying $300-$800 for consultants who take days to deliver generic resumes
                     </p>
                   </div>
                 </div>
@@ -283,20 +260,17 @@ export default function LandingPage() {
                       One-Size-Fits-All Approach
                     </p>
                     <p className="text-xs sm:text-sm text-red-600">
-                      Using the same resume for every job application, missing
-                      out on opportunities
+                      Using the same resume for every job application, missing out on opportunities
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <X className="h-4 sm:h-5 w-4 sm:w-5 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-red-800 text-sm sm:text-base">
-                      ATS Rejection
-                    </p>
+                    <p className="font-medium text-red-800 text-sm sm:text-base">ATS Rejection</p>
                     <p className="text-xs sm:text-sm text-red-600">
-                      Resumes getting filtered out by Applicant Tracking Systems
-                      before humans see them
+                      Resumes getting filtered out by Applicant Tracking Systems before humans see
+                      them
                     </p>
                   </div>
                 </div>
@@ -319,8 +293,8 @@ export default function LandingPage() {
                       Professional Templates Ready
                     </p>
                     <p className="text-xs sm:text-sm text-emerald-600">
-                      Pre-designed, ATS-optimized templates that look perfect
-                      without any manual formatting
+                      Pre-designed, ATS-optimized templates that look perfect without any manual
+                      formatting
                     </p>
                   </div>
                 </div>
@@ -331,8 +305,7 @@ export default function LandingPage() {
                       AI Resume Consultant for $10-20
                     </p>
                     <p className="text-xs sm:text-sm text-emerald-600">
-                      Get expert-level resume optimization and career advice at
-                      95% less cost
+                      Get expert-level resume optimization and career advice at 95% less cost
                     </p>
                   </div>
                 </div>
@@ -343,8 +316,7 @@ export default function LandingPage() {
                       Unlimited Tailored Resumes
                     </p>
                     <p className="text-xs sm:text-sm text-emerald-600">
-                      Create unique, job-specific resumes for every application
-                      in minutes
+                      Create unique, job-specific resumes for every application in minutes
                     </p>
                   </div>
                 </div>
@@ -355,8 +327,7 @@ export default function LandingPage() {
                       ATS-Optimized by Default
                     </p>
                     <p className="text-xs sm:text-sm text-emerald-600">
-                      Every resume passes ATS filters and reaches human
-                      recruiters
+                      Every resume passes ATS filters and reaches human recruiters
                     </p>
                   </div>
                 </div>
@@ -370,21 +341,21 @@ export default function LandingPage() {
             {[
               {
                 icon: Clock,
-                iconColor: "bg-blue-100 text-blue-600",
-                title: "Save 10+ Hours",
-                desc: "Create professional resumes in minutes, not hours of formatting frustration",
+                iconColor: 'bg-blue-100 text-blue-600',
+                title: 'Save 10+ Hours',
+                desc: 'Create professional resumes in minutes, not hours of formatting frustration',
               },
               {
                 icon: DollarSign,
-                iconColor: "bg-green-100 text-green-600",
-                title: "Save $500+",
-                desc: "Get expert-level resume consulting for a fraction of traditional consultant costs",
+                iconColor: 'bg-green-100 text-green-600',
+                title: 'Save $500+',
+                desc: 'Get expert-level resume consulting for a fraction of traditional consultant costs',
               },
               {
                 icon: Zap,
-                iconColor: "bg-purple-100 text-purple-600",
-                title: "3x More Interviews",
-                desc: "Tailored, ATS-optimized resumes that actually get you noticed by recruiters",
+                iconColor: 'bg-purple-100 text-purple-600',
+                title: '3x More Interviews',
+                desc: 'Tailored, ATS-optimized resumes that actually get you noticed by recruiters',
               },
             ].map((benefit, index) => (
               <Card
@@ -394,13 +365,11 @@ export default function LandingPage() {
                 <CardHeader className="pb-4">
                   <div
                     className={`w-10 sm:w-12 h-10 sm:h-12 ${
-                      benefit.iconColor.split(" ")[0]
+                      benefit.iconColor.split(' ')[0]
                     } rounded-lg flex items-center justify-center mb-3 mx-auto`}
                   >
                     <benefit.icon
-                      className={`h-5 sm:h-6 w-5 sm:w-6 ${
-                        benefit.iconColor.split(" ")[1]
-                      }`}
+                      className={`h-5 sm:h-6 w-5 sm:w-6 ${benefit.iconColor.split(' ')[1]}`}
                     />
                   </div>
                   <CardTitle className="text-base sm:text-lg text-stone-900">
@@ -422,21 +391,21 @@ export default function LandingPage() {
                   {[
                     {
                       icon: Clock,
-                      iconColor: "bg-blue-100 text-blue-600",
-                      title: "Save 10+ Hours",
-                      desc: "Create professional resumes in minutes, not hours of formatting frustration",
+                      iconColor: 'bg-blue-100 text-blue-600',
+                      title: 'Save 10+ Hours',
+                      desc: 'Create professional resumes in minutes, not hours of formatting frustration',
                     },
                     {
                       icon: DollarSign,
-                      iconColor: "bg-green-100 text-green-600",
-                      title: "Save $500+",
-                      desc: "Get expert-level resume consulting for a fraction of traditional consultant costs",
+                      iconColor: 'bg-green-100 text-green-600',
+                      title: 'Save $500+',
+                      desc: 'Get expert-level resume consulting for a fraction of traditional consultant costs',
                     },
                     {
                       icon: Zap,
-                      iconColor: "bg-purple-100 text-purple-600",
-                      title: "3x More Interviews",
-                      desc: "Tailored, ATS-optimized resumes that actually get you noticed by recruiters",
+                      iconColor: 'bg-purple-100 text-purple-600',
+                      title: '3x More Interviews',
+                      desc: 'Tailored, ATS-optimized resumes that actually get you noticed by recruiters',
                     },
                   ].map((benefit, index) => (
                     <Card
@@ -446,18 +415,12 @@ export default function LandingPage() {
                       <CardHeader className="pb-4">
                         <div
                           className={`w-12 h-12 ${
-                            benefit.iconColor.split(" ")[0]
+                            benefit.iconColor.split(' ')[0]
                           } rounded-lg flex items-center justify-center mb-3 mx-auto`}
                         >
-                          <benefit.icon
-                            className={`h-6 w-6 ${
-                              benefit.iconColor.split(" ")[1]
-                            }`}
-                          />
+                          <benefit.icon className={`h-6 w-6 ${benefit.iconColor.split(' ')[1]}`} />
                         </div>
-                        <CardTitle className="text-lg text-stone-900">
-                          {benefit.title}
-                        </CardTitle>
+                        <CardTitle className="text-lg text-stone-900">{benefit.title}</CardTitle>
                         <CardDescription className="text-sm text-stone-600">
                           {benefit.desc}
                         </CardDescription>
@@ -483,7 +446,9 @@ export default function LandingPage() {
                 size="lg"
                 variant="outline"
                 className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-stone-300 hover:bg-stone-50 bg-transparent"
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+                }
               >
                 See How It Works
               </Button>
@@ -515,16 +480,11 @@ export default function LandingPage() {
 
           {/* Desktop Grid */}
           <div className="hidden md:grid md:grid-cols-5 gap-4 sm:gap-8 items-center opacity-60">
-            {["Google", "Microsoft", "Amazon", "Apple", "Meta"].map(
-              (company) => (
-                <div
-                  key={company}
-                  className="text-stone-400 font-semibold text-sm sm:text-lg"
-                >
-                  {company}
-                </div>
-              )
-            )}
+            {['Google', 'Microsoft', 'Amazon', 'Apple', 'Meta'].map((company) => (
+              <div key={company} className="text-stone-400 font-semibold text-sm sm:text-lg">
+                {company}
+              </div>
+            ))}
           </div>
 
           {/* Mobile Carousel */}
@@ -533,14 +493,14 @@ export default function LandingPage() {
               {[...Array(3)].map((_, setIndex) => (
                 <div key={setIndex} className="flex">
                   {[
-                    "Google",
-                    "Microsoft",
-                    "Amazon",
-                    "Apple",
-                    "Meta",
-                    "Netflix",
-                    "Spotify",
-                    "Uber",
+                    'Google',
+                    'Microsoft',
+                    'Amazon',
+                    'Apple',
+                    'Meta',
+                    'Netflix',
+                    'Spotify',
+                    'Uber',
                   ].map((company, index) => (
                     <div
                       key={`${setIndex}-${index}`}
@@ -590,23 +550,23 @@ export default function LandingPage() {
               {[
                 {
                   icon: FileText,
-                  title: "Smart Editor",
-                  desc: "Real-time editing with perfect formatting automatically",
+                  title: 'Smart Editor',
+                  desc: 'Real-time editing with perfect formatting automatically',
                 },
                 {
                   icon: Cloud,
-                  title: "Cloud Saving",
-                  desc: "Never lose your work - access anywhere, anytime",
+                  title: 'Cloud Saving',
+                  desc: 'Never lose your work - access anywhere, anytime',
                 },
                 {
                   icon: Search,
-                  title: "ATS Keywords",
-                  desc: "Automatically extract and optimize for job requirements",
+                  title: 'ATS Keywords',
+                  desc: 'Automatically extract and optimize for job requirements',
                 },
                 {
                   icon: Eye,
-                  title: "Live Preview",
-                  desc: "See exactly how your resume will look to employers",
+                  title: 'Live Preview',
+                  desc: 'See exactly how your resume will look to employers',
                 },
               ].map((feature, index) => (
                 <Card
@@ -615,12 +575,8 @@ export default function LandingPage() {
                 >
                   <CardHeader className="text-center pb-4">
                     <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-stone-700 mb-2 mx-auto" />
-                    <CardTitle className="text-sm sm:text-base">
-                      {feature.title}
-                    </CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">
-                      {feature.desc}
-                    </CardDescription>
+                    <CardTitle className="text-sm sm:text-base">{feature.title}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">{feature.desc}</CardDescription>
                   </CardHeader>
                 </Card>
               ))}
@@ -634,23 +590,23 @@ export default function LandingPage() {
                     {[
                       {
                         icon: FileText,
-                        title: "Smart Editor",
-                        desc: "Real-time editing with perfect formatting automatically",
+                        title: 'Smart Editor',
+                        desc: 'Real-time editing with perfect formatting automatically',
                       },
                       {
                         icon: Cloud,
-                        title: "Cloud Saving",
-                        desc: "Never lose your work - access anywhere, anytime",
+                        title: 'Cloud Saving',
+                        desc: 'Never lose your work - access anywhere, anytime',
                       },
                       {
                         icon: Search,
-                        title: "ATS Keywords",
-                        desc: "Automatically extract and optimize for job requirements",
+                        title: 'ATS Keywords',
+                        desc: 'Automatically extract and optimize for job requirements',
                       },
                       {
                         icon: Eye,
-                        title: "Live Preview",
-                        desc: "See exactly how your resume will look to employers",
+                        title: 'Live Preview',
+                        desc: 'See exactly how your resume will look to employers',
                       },
                     ].map((feature, index) => (
                       <Card
@@ -659,12 +615,8 @@ export default function LandingPage() {
                       >
                         <CardHeader className="text-center pb-4">
                           <feature.icon className="h-8 w-8 text-stone-700 mb-2 mx-auto" />
-                          <CardTitle className="text-base">
-                            {feature.title}
-                          </CardTitle>
-                          <CardDescription className="text-sm">
-                            {feature.desc}
-                          </CardDescription>
+                          <CardTitle className="text-base">{feature.title}</CardTitle>
+                          <CardDescription className="text-sm">{feature.desc}</CardDescription>
                         </CardHeader>
                       </Card>
                     ))}
@@ -693,33 +645,33 @@ export default function LandingPage() {
               {[
                 {
                   icon: Target,
-                  title: "ATS Optimization",
-                  desc: "AI ensures 95%+ ATS pass rate - no more black hole applications",
+                  title: 'ATS Optimization',
+                  desc: 'AI ensures 95%+ ATS pass rate - no more black hole applications',
                 },
                 {
                   icon: MessageSquare,
-                  title: "AI Chat Consultant",
-                  desc: "Chat with AI to craft perfect resume content and get career advice",
+                  title: 'AI Chat Consultant',
+                  desc: 'Chat with AI to craft perfect resume content and get career advice',
                 },
                 {
                   icon: Briefcase,
-                  title: "Job-Specific Tailoring",
-                  desc: "Create unique resumes for every job - maximize your chances",
+                  title: 'Job-Specific Tailoring',
+                  desc: 'Create unique resumes for every job - maximize your chances',
                 },
                 {
                   icon: Brain,
-                  title: "Interview Preparation",
-                  desc: "Get personalized interview questions and company research",
+                  title: 'Interview Preparation',
+                  desc: 'Get personalized interview questions and company research',
                 },
                 {
                   icon: Filter,
-                  title: "Content Analysis",
-                  desc: "Identify weak content and get suggestions for improvement",
+                  title: 'Content Analysis',
+                  desc: 'Identify weak content and get suggestions for improvement',
                 },
                 {
                   icon: TrendingUp,
-                  title: "Career Enhancement",
-                  desc: "Continuous improvement based on industry best practices",
+                  title: 'Career Enhancement',
+                  desc: 'Continuous improvement based on industry best practices',
                 },
               ].map((feature, index) => (
                 <Card
@@ -728,12 +680,8 @@ export default function LandingPage() {
                 >
                   <CardHeader className="pb-4">
                     <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-stone-700 mb-2" />
-                    <CardTitle className="text-sm sm:text-base">
-                      {feature.title}
-                    </CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">
-                      {feature.desc}
-                    </CardDescription>
+                    <CardTitle className="text-sm sm:text-base">{feature.title}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">{feature.desc}</CardDescription>
                   </CardHeader>
                 </Card>
               ))}
@@ -747,33 +695,33 @@ export default function LandingPage() {
                     {[
                       {
                         icon: Target,
-                        title: "ATS Optimization",
-                        desc: "AI ensures 95%+ ATS pass rate - no more black hole applications",
+                        title: 'ATS Optimization',
+                        desc: 'AI ensures 95%+ ATS pass rate - no more black hole applications',
                       },
                       {
                         icon: MessageSquare,
-                        title: "AI Chat Consultant",
-                        desc: "Chat with AI to craft perfect resume content and get career advice",
+                        title: 'AI Chat Consultant',
+                        desc: 'Chat with AI to craft perfect resume content and get career advice',
                       },
                       {
                         icon: Briefcase,
-                        title: "Job-Specific Tailoring",
-                        desc: "Create unique resumes for every job - maximize your chances",
+                        title: 'Job-Specific Tailoring',
+                        desc: 'Create unique resumes for every job - maximize your chances',
                       },
                       {
                         icon: Brain,
-                        title: "Interview Preparation",
-                        desc: "Get personalized interview questions and company research",
+                        title: 'Interview Preparation',
+                        desc: 'Get personalized interview questions and company research',
                       },
                       {
                         icon: Filter,
-                        title: "Content Analysis",
-                        desc: "Identify weak content and get suggestions for improvement",
+                        title: 'Content Analysis',
+                        desc: 'Identify weak content and get suggestions for improvement',
                       },
                       {
                         icon: TrendingUp,
-                        title: "Career Enhancement",
-                        desc: "Continuous improvement based on industry best practices",
+                        title: 'Career Enhancement',
+                        desc: 'Continuous improvement based on industry best practices',
                       },
                     ].map((feature, index) => (
                       <Card
@@ -782,12 +730,8 @@ export default function LandingPage() {
                       >
                         <CardHeader className="pb-4">
                           <feature.icon className="h-8 w-8 text-stone-700 mb-2" />
-                          <CardTitle className="text-base">
-                            {feature.title}
-                          </CardTitle>
-                          <CardDescription className="text-sm">
-                            {feature.desc}
-                          </CardDescription>
+                          <CardTitle className="text-base">{feature.title}</CardTitle>
+                          <CardDescription className="text-sm">{feature.desc}</CardDescription>
                         </CardHeader>
                       </Card>
                     ))}
@@ -821,15 +765,13 @@ export default function LandingPage() {
                 key={index}
                 className={`border ${
                   plan.highlighted
-                    ? "border-2 border-stone-900"
-                    : "border-stone-200 hover:border-stone-300"
+                    ? 'border-2 border-stone-900'
+                    : 'border-stone-200 hover:border-stone-300'
                 } transition-colors relative`}
               >
                 {plan.badge && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className={plan.badgeColor + " px-3 py-1"}>
-                      {plan.badge}
-                    </Badge>
+                    <Badge className={plan.badgeColor + ' px-3 py-1'}>{plan.badge}</Badge>
                   </div>
                 )}
                 <CardHeader className="text-center pb-6">
@@ -845,26 +787,18 @@ export default function LandingPage() {
                       </span>
                     )}
                   </div>
-                  <CardDescription className="mt-2">
-                    {plan.description}
-                  </CardDescription>
+                  <CardDescription className="mt-2">{plan.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <ul className="space-y-3 mb-6">
                     {plan.features.map((feature, featureIndex) => (
-                      <li
-                        key={featureIndex}
-                        className="flex items-center text-sm"
-                      >
+                      <li key={featureIndex} className="flex items-center text-sm">
                         <CheckCircle className="h-4 w-4 text-emerald-500 mr-3 flex-shrink-0" />
                         <span dangerouslySetInnerHTML={{ __html: feature }} />
                       </li>
                     ))}
                     {plan.excludedFeatures?.map((feature, featureIndex) => (
-                      <li
-                        key={featureIndex}
-                        className="flex items-center text-sm text-stone-400"
-                      >
+                      <li key={featureIndex} className="flex items-center text-sm text-stone-400">
                         <X className="h-4 w-4 mr-3 flex-shrink-0" />
                         {feature}
                       </li>
@@ -872,9 +806,9 @@ export default function LandingPage() {
                   </ul>
                 </CardContent>
                 <CardFooter className="mt-auto">
-                  <Button 
+                  <Button
                     className={`w-full ${plan.buttonStyle}`}
-                    onClick={plan.name === "Basic" ? handleGetStarted : handlePricingPlan}
+                    onClick={plan.name === 'Basic' ? handleGetStarted : handlePricingPlan}
                   >
                     {plan.buttonText}
                   </Button>
@@ -891,16 +825,12 @@ export default function LandingPage() {
                   <CarouselItem key={index}>
                     <Card
                       className={`border ${
-                        plan.highlighted
-                          ? "border-2 border-stone-900"
-                          : "border-stone-200"
+                        plan.highlighted ? 'border-2 border-stone-900' : 'border-stone-200'
                       } transition-colors relative`}
                     >
                       {plan.badge && (
                         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <Badge className={plan.badgeColor + " px-3 py-1"}>
-                            {plan.badge}
-                          </Badge>
+                          <Badge className={plan.badgeColor + ' px-3 py-1'}>{plan.badge}</Badge>
                         </div>
                       )}
                       <CardHeader className="text-center pb-6">
@@ -916,38 +846,29 @@ export default function LandingPage() {
                             </span>
                           )}
                         </div>
-                        <CardDescription className="mt-2">
-                          {plan.description}
-                        </CardDescription>
+                        <CardDescription className="mt-2">{plan.description}</CardDescription>
                       </CardHeader>
                       <CardContent className="pt-0">
                         <ul className="space-y-3 mb-6">
                           {plan.features.map((feature, featureIndex) => (
-                            <li
-                              key={featureIndex}
-                              className="flex items-center text-sm"
-                            >
+                            <li key={featureIndex} className="flex items-center text-sm">
                               <CheckCircle className="h-4 w-4 text-emerald-500 mr-3 flex-shrink-0" />
-                              <span
-                                dangerouslySetInnerHTML={{ __html: feature }}
-                              />
+                              <span dangerouslySetInnerHTML={{ __html: feature }} />
                             </li>
                           ))}
-                          {plan.excludedFeatures?.map(
-                            (feature, featureIndex) => (
-                              <li
-                                key={featureIndex}
-                                className="flex items-center text-sm text-stone-400"
-                              >
-                                <X className="h-4 w-4 mr-3 flex-shrink-0" />
-                                {feature}
-                              </li>
-                            )
-                          )}
+                          {plan.excludedFeatures?.map((feature, featureIndex) => (
+                            <li
+                              key={featureIndex}
+                              className="flex items-center text-sm text-stone-400"
+                            >
+                              <X className="h-4 w-4 mr-3 flex-shrink-0" />
+                              {feature}
+                            </li>
+                          ))}
                         </ul>
-                        <Button 
+                        <Button
                           className={`w-full ${plan.buttonStyle}`}
-                          onClick={plan.name === "Basic" ? handleGetStarted : handlePricingPlan}
+                          onClick={plan.name === 'Basic' ? handleGetStarted : handlePricingPlan}
                         >
                           {plan.buttonText}
                         </Button>
@@ -972,8 +893,8 @@ export default function LandingPage() {
               Professional Templates That Actually Work
             </h2>
             <p className="text-base sm:text-lg text-stone-600">
-              No more fighting with layouts - these templates are ATS-optimized
-              and recruiter-approved
+              No more fighting with layouts - these templates are ATS-optimized and
+              recruiter-approved
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -991,8 +912,7 @@ export default function LandingPage() {
                       Professional Template {template}
                     </h3>
                     <p className="text-xs sm:text-sm text-stone-600">
-                      Clean, ATS-friendly design that passes all screening
-                      systems
+                      Clean, ATS-friendly design that passes all screening systems
                     </p>
                   </div>
                 </CardContent>
@@ -1011,12 +931,9 @@ export default function LandingPage() {
       <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-t border-stone-200">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-4">
-              Success Stories
-            </h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-4">Success Stories</h2>
             <p className="text-base sm:text-lg text-stone-600">
-              See how Raysume AI helped professionals save time and money while
-              landing better jobs
+              See how Raysume AI helped professionals save time and money while landing better jobs
             </p>
           </div>
 
@@ -1027,15 +944,10 @@ export default function LandingPage() {
                 <CardContent className="pt-6">
                   <div className="flex items-center mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-4 w-4 text-amber-500 fill-current"
-                      />
+                      <Star key={i} className="h-4 w-4 text-amber-500 fill-current" />
                     ))}
                   </div>
-                  <p className="text-stone-600 mb-4 text-sm">
-                    {testimonial.text}
-                  </p>
+                  <p className="text-stone-600 mb-4 text-sm">{testimonial.text}</p>
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center mr-3">
                       <span className="text-stone-600 font-semibold text-sm">
@@ -1043,12 +955,8 @@ export default function LandingPage() {
                       </span>
                     </div>
                     <div>
-                      <p className="font-semibold text-sm text-stone-900">
-                        {testimonial.author}
-                      </p>
-                      <p className="text-xs text-stone-500">
-                        {testimonial.role}
-                      </p>
+                      <p className="font-semibold text-sm text-stone-900">{testimonial.author}</p>
+                      <p className="text-xs text-stone-500">{testimonial.role}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -1069,15 +977,10 @@ export default function LandingPage() {
                       <CardContent className="pt-6">
                         <div className="flex items-center mb-4">
                           {[...Array(testimonial.rating)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="h-4 w-4 text-amber-500 fill-current"
-                            />
+                            <Star key={i} className="h-4 w-4 text-amber-500 fill-current" />
                           ))}
                         </div>
-                        <p className="text-stone-600 mb-4 text-sm">
-                          {testimonial.text}
-                        </p>
+                        <p className="text-stone-600 mb-4 text-sm">{testimonial.text}</p>
                         <div className="flex items-center">
                           <div className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center mr-3">
                             <span className="text-stone-600 font-semibold text-sm">
@@ -1088,9 +991,7 @@ export default function LandingPage() {
                             <p className="font-semibold text-sm text-stone-900">
                               {testimonial.author}
                             </p>
-                            <p className="text-xs text-stone-500">
-                              {testimonial.role}
-                            </p>
+                            <p className="text-xs text-stone-500">{testimonial.role}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -1110,8 +1011,8 @@ export default function LandingPage() {
             Stop Wasting Time and Money on Resume Creation
           </h2>
           <p className="text-base sm:text-lg text-stone-300 mb-6 sm:mb-8 max-w-2xl mx-auto">
-            Join thousands of professionals who&apos;ve eliminated formatting
-            headaches and expensive consultants
+            Join thousands of professionals who&apos;ve eliminated formatting headaches and
+            expensive consultants
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -1125,7 +1026,9 @@ export default function LandingPage() {
               size="lg"
               variant="outline"
               className="border-stone-600 text-white hover:bg-stone-800 px-6 sm:px-8 py-3 sm:py-4 bg-transparent"
-              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() =>
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+              }
             >
               See All Features
             </Button>
@@ -1145,17 +1048,15 @@ export default function LandingPage() {
                 <span className="text-lg sm:text-xl font-bold">Raysume AI</span>
               </div>
               <p className="text-stone-400 text-xs sm:text-sm">
-                The smart resume builder that eliminates formatting headaches
-                and replaces expensive consultants.
+                The smart resume builder that eliminates formatting headaches and replaces expensive
+                consultants.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-sm sm:text-base">
-                Product
-              </h4>
+              <h4 className="font-semibold mb-4 text-sm sm:text-base">Product</h4>
               <ul className="space-y-2 text-stone-400 text-xs sm:text-sm">
                 <li>
-                  <button 
+                  <button
                     onClick={handleGetStarted}
                     className="hover:text-white transition-colors text-left"
                   >
@@ -1163,24 +1064,30 @@ export default function LandingPage() {
                   </button>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' })}
+                  <button
+                    onClick={() =>
+                      document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' })
+                    }
                     className="hover:text-white transition-colors text-left"
                   >
                     Templates
                   </button>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  <button
+                    onClick={() =>
+                      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })
+                    }
                     className="hover:text-white transition-colors text-left"
                   >
                     Pricing
                   </button>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                  <button
+                    onClick={() =>
+                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+                    }
                     className="hover:text-white transition-colors text-left"
                   >
                     AI Features
@@ -1189,36 +1096,32 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-sm sm:text-base">
-                Resources
-              </h4>
+              <h4 className="font-semibold mb-4 text-sm sm:text-base">Resources</h4>
               <ul className="space-y-2 text-stone-400 text-xs sm:text-sm">
                 <li>
-                  <Link href="/chat" className="hover:text-white transition-colors">
+                  <button className="hover:text-white transition-colors text-left">
                     Resume Tips
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href="/chat" className="hover:text-white transition-colors">
+                  <button className="hover:text-white transition-colors text-left">
                     ATS Guide
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href="/chat" className="hover:text-white transition-colors">
+                  <button className="hover:text-white transition-colors text-left">
                     Career Blog
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href="/chat" className="hover:text-white transition-colors">
+                  <button className="hover:text-white transition-colors text-left">
                     Help Center
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-sm sm:text-base">
-                Company
-              </h4>
+              <h4 className="font-semibold mb-4 text-sm sm:text-base">Company</h4>
               <ul className="space-y-2 text-stone-400 text-xs sm:text-sm">
                 <li>
                   <Link href="/dashboard" className="hover:text-white transition-colors">
@@ -1226,17 +1129,13 @@ export default function LandingPage() {
                   </Link>
                 </li>
                 <li>
-                  <span className="text-stone-500 cursor-not-allowed">
-                    Privacy Policy
-                  </span>
+                  <span className="text-stone-500 cursor-not-allowed">Privacy Policy</span>
                 </li>
                 <li>
-                  <span className="text-stone-500 cursor-not-allowed">
-                    Terms of Service
-                  </span>
+                  <span className="text-stone-500 cursor-not-allowed">Terms of Service</span>
                 </li>
                 <li>
-                  <Link href="/chat" className="hover:text-white transition-colors">
+                  <Link href="/dashboard" className="hover:text-white transition-colors">
                     Contact
                   </Link>
                 </li>

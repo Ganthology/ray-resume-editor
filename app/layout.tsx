@@ -2,7 +2,6 @@ import "./globals.css";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { AuthProvider } from "@/platform/auth/AuthContext";
 import { CookiesWrapper } from "@/platform/component/provider/CookiesWrapper";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
@@ -158,10 +157,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <CookiesWrapper>
-          <AuthProvider>
-            {children}
-            <Toaster richColors position="top-right" />
-          </AuthProvider>
+          {children}
+          <Toaster richColors position="top-right" />
         </CookiesWrapper>
       </body>
     </html>

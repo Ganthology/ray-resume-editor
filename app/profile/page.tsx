@@ -6,7 +6,6 @@ import { Button } from "@/platform/component/ui/button";
 import { Input } from "@/platform/component/ui/input";
 import { Label } from "@/platform/component/ui/label";
 import { AppLayout } from "@/platform/component/layout/AppLayout";
-import { useAuth } from "@/platform/auth/AuthContext";
 import { User, Mail, Bot, Save, Phone, MapPin, Linkedin, Globe, Download, MessageSquare } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
@@ -26,9 +25,8 @@ interface ConversationStats {
 }
 
 export default function ProfilePage() {
-  const { user } = useAuth();
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [personalSiteUrl, setPersonalSiteUrl] = useState("");

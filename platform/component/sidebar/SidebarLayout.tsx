@@ -5,17 +5,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/platform/component/ui/avatar";
-import {
-  Building,
-  CreditCard,
-  FileText,
-  LogOut,
-  Mail,
-  MessageCircle,
-  MoreHorizontal,
-  Sparkles,
-  User,
-} from "lucide-react";
+import { Building, CreditCard, FileText, LogOut, Mail, MoreHorizontal, Sparkles, User } from "lucide-react";
 // Keep Card usage for auth/login UI (borders are fine here)
 import {
   Card,
@@ -54,7 +44,7 @@ import { Input } from "@/platform/component/ui/input";
 import { Label } from "@/platform/component/ui/label";
 import Link from "next/link";
 import React from "react";
-import { useAuth } from "@/platform/auth/AuthContext";
+// Auth removed
 import { usePathname } from "next/navigation";
 
 interface AppLayoutProps {
@@ -63,7 +53,7 @@ interface AppLayoutProps {
 
 // Simple login form for demo purposes
 function LoginForm() {
-  const { signInWithEmail, signUpWithEmail } = useAuth();
+  // No-op auth
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -71,12 +61,7 @@ function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
-    if (mode === "signup") {
-      await signUpWithEmail(email, password, name);
-    } else {
-      await signInWithEmail(email, password);
-    }
+    // No auth logic
   };
 
   return (
@@ -180,12 +165,6 @@ function LoadingScreen() {
 
 const navigationItems = [
   {
-    title: "AI Chat",
-    href: "/chat",
-    icon: MessageCircle,
-    description: "Build resume through conversation",
-  },
-  {
     title: "Resume Builder",
     href: "/editor",
     icon: FileText,
@@ -227,7 +206,6 @@ function AppSidebar({
   user?: { name: string; email: string; avatar?: string };
 }) {
   const pathname = usePathname();
-  const { logout } = useAuth();
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -314,67 +292,7 @@ function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      {user && (
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                  >
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className="rounded-lg">
-                        {user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {user.name}
-                      </span>
-                      <span className="truncate text-xs">{user.email}</span>
-                    </div>
-                    <MoreHorizontal className="size-4" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                  side="bottom"
-                  align="end"
-                  sideOffset={4}
-                >
-                  <DropdownMenuItem asChild className="gap-2">
-                    <Link href="/profile">
-                      <User className="size-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="gap-2">
-                    <Link href="/billing">
-                      <CreditCard className="size-4" />
-                      <span>Billing</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="gap-2 text-red-600 focus:text-red-600 focus:bg-red-50"
-                    onClick={logout}
-                  >
-                    <LogOut className="size-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      )}
+      {/* Footer with user actions removed (no auth) */}
 
       <SidebarRail />
     </Sidebar>
@@ -408,19 +326,9 @@ function AppLayoutContent({
 }
 
 export function SidebarLayout({ children }: AppLayoutProps) {
-  const { isAuthenticated, user, loading } = useAuth();
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (!isAuthenticated) {
-    return <LoginForm />;
-  }
-
   return (
     <SidebarProvider>
-      <AppLayoutContent user={user}>{children}</AppLayoutContent>
+      <AppLayoutContent>{children}</AppLayoutContent>
     </SidebarProvider>
   );
 }

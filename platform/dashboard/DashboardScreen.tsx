@@ -13,11 +13,8 @@ import { Badge } from "@/platform/component/ui/badge";
 import { Button } from "@/platform/component/ui/button";
 import Link from "next/link";
 import Navigation from "@/platform/component/ui/navigation";
-import { useAuth } from "@/platform/auth/AuthContext";
 
 export default function DashboardScreen() {
-  const { user, logout } = useAuth();
-
   const navigationActions = [
     {
       icon: Settings,
@@ -29,7 +26,7 @@ export default function DashboardScreen() {
     {
       icon: User,
       label: "Sign Out",
-      onClick: logout,
+      onClick: () => {},
       variant: "destructive" as const,
     },
   ];
@@ -47,9 +44,7 @@ export default function DashboardScreen() {
         <div className="max-w-7xl mx-auto">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome back{user?.name ? `, ${user.name}` : ""}!
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome!</h1>
             <p className="text-gray-600">
               Manage your resumes and continue building your career with AI
               assistance.
@@ -70,22 +65,7 @@ export default function DashboardScreen() {
               </Card>
             </Link>
 
-            <Link href="/chat">
-              <Card className="bg-blue-50 border-blue-200 hover:border-blue-300 transition-colors cursor-pointer">
-                <CardHeader className="text-center py-8">
-                  <MessageSquare className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <CardTitle className="text-lg text-blue-900">
-                    AI Resume Coach
-                  </CardTitle>
-                  <CardDescription className="text-blue-700">
-                    Build your resume through conversation
-                  </CardDescription>
-                  <Badge className="mt-2 bg-blue-100 text-blue-800">
-                    AI-Powered
-                  </Badge>
-                </CardHeader>
-              </Card>
-            </Link>
+            {/* Chat entry removed */}
 
             <Card className="bg-gray-50 border-gray-200">
               <CardHeader className="text-center py-8">
@@ -129,9 +109,7 @@ export default function DashboardScreen() {
                 <Link href="/editor">
                   <Button>Create Resume</Button>
                 </Link>
-                <Link href="/chat">
-                  <Button variant="outline">Try AI Coach</Button>
-                </Link>
+                {/* Chat CTA removed */}
               </div>
             </div>
           </div>

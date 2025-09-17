@@ -44,7 +44,7 @@ export default function EditPanel() {
   return (
     <div className="space-y-6">
       {/* Personal Information */}
-      <Card className="px-6 pb-6 space-y-4 border-0">
+      <Card id="section-personal" className="px-6 pb-6 space-y-4 border-0">
         <CardTitle className="text-lg font-semibold text-gray-900">
           Personal Information
         </CardTitle>
@@ -99,7 +99,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-summary" value={sectionKey}>
                   <SummaryEditor />
                 </AccordionItem>
               </Accordion>
@@ -111,7 +111,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-experience" value={sectionKey}>
                   <ExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -123,7 +123,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-leadership" value={sectionKey}>
                   <LeadershipExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -135,7 +135,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-project" value={sectionKey}>
                   <ProjectExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -147,7 +147,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-research" value={sectionKey}>
                   <ResearchExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -159,7 +159,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-education" value={sectionKey}>
                   <EducationEditor />
                 </AccordionItem>
               </Accordion>
@@ -171,7 +171,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-skills" value={sectionKey}>
                   <SkillsEditor />
                 </AccordionItem>
               </Accordion>
@@ -183,7 +183,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-portfolio" value={sectionKey}>
                   <PortfolioEditor />
                 </AccordionItem>
               </Accordion>

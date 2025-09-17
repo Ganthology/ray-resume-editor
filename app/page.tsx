@@ -7,8 +7,8 @@ export default function Home() {
   const router = useRouter();
   
   useEffect(() => {
-    // Redirect to chat as the default entry point
-    router.push('/chat');
+    // Redirect to editor as the default entry point
+    router.push('/editor');
   }, [router]);
 
   return (
