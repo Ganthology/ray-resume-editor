@@ -90,7 +90,7 @@ export default function PortfolioEditor() {
                   <AccordionItem
                     key={item.id}
                     value={item.id}
-                    className="border border-gray-200/40 rounded-lg shadow-sm"
+                    className="rounded-lg"
                   >
                     <div className="flex items-center">
                       <div className="flex items-center gap-3 px-4 py-3">
@@ -177,11 +177,11 @@ export default function PortfolioEditor() {
                             <Label className="text-sm font-medium text-gray-700">
                               QR Code Preview
                             </Label>
-                            <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border">
+                            <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                               <Image
                                 src={item.qrCode}
                                 alt={`QR Code for ${item.name}`}
-                                className="w-16 h-16 border border-gray-200 rounded"
+                                className="w-16 h-16 rounded"
                                 width={64}
                                 height={64}
                               />

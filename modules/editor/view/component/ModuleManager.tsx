@@ -43,10 +43,10 @@ function SortableModule({ module }: { module: ResumeModule }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-3 p-3 rounded-lg border-2 border-dashed transition-colors ${
+      className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
         module.enabled
-          ? "bg-gray-50/50 border-gray-200 hover:border-gray-300"
-          : "bg-gray-100/50 border-gray-300 hover:border-gray-400 opacity-60"
+          ? "bg-gray-50/50 hover:bg-gray-100/50"
+          : "bg-gray-100/50 opacity-60"
       }`}
     >
       <button

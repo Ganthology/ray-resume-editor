@@ -1,4 +1,5 @@
 import { MessageCircle, Sparkles } from "lucide-react";
+
 import Link from "next/link";
 
 export default function ChatCTA() {
@@ -6,7 +7,7 @@ export default function ChatCTA() {
     <div className="fixed bottom-6 right-6 z-50">
       <Link
         href="/chat"
-        className="group inline-flex items-center gap-3 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-md shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 border border-primary/20"
+        className="group inline-flex items-center gap-3 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-md shadow-lg hover:shadow-xl  transform hover:scale-105 border border-primary/20 hover:cursor-pointer"
       >
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5" />

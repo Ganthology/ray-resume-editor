@@ -19,32 +19,47 @@ import React from "react";
 import ResearchExperienceEditor from "./internal/ResearchExperienceEditor";
 import SkillsEditor from "./internal/SkillsEditor";
 import SummaryEditor from "./internal/SummaryEditor";
+import StylesPanel from "./StylesPanel";
 import { useResumeStore } from "../../../../app/store/resumeStore";
 
 export default function EditPanel() {
-  const resumeData = useResumeStore((state) => state.resumeData);
+  const { resumeData, updateStyles } = useResumeStore();
 
   const sortedModules = resumeData.modules.sort((a, b) => a.order - b.order);
+
+  const handleFitModeChange = (mode: "compact" | "normal") => {
+    updateStyles({
+      fitMode: mode,
+      spacing: resumeData.styles?.spacing || { horizontal: 30, vertical: 30 },
+    });
+  };
+
+  const handleSpacingChange = (spacing: { horizontal: number; vertical: number }) => {
+    updateStyles({
+      fitMode: resumeData.styles?.fitMode || "normal",
+      spacing,
+    });
+  };
 
   return (
     <div className="space-y-6">
       {/* Personal Information */}
-      <Accordion type="multiple" defaultValue={["personal-info"]}>
-        <AccordionItem value="personal-info">
-          <Card className="border-0 py-0">
-            <AccordionTrigger className="px-6 py-4 hover:no-underline">
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                Personal Information
-              </CardTitle>
-            </AccordionTrigger>
-            <AccordionContent className="px-0 pb-0">
-              <CardContent className="p-6 pt-0">
-                <PersonalInfoEditor />
-              </CardContent>
-            </AccordionContent>
-          </Card>
-        </AccordionItem>
-      </Accordion>
+      <Card id="section-personal" className="px-6 pb-6 space-y-4 border-0">
+        <CardTitle className="text-lg font-semibold text-gray-900">
+          Personal Information
+        </CardTitle>
+        <CardContent className="px-0">
+          <PersonalInfoEditor />
+        </CardContent>
+      </Card>
+
+      {/* Styles Section */}
+      <StylesPanel
+        fitMode={resumeData.styles?.fitMode || "normal"}
+        spacing={resumeData.styles?.spacing || { horizontal: 30, vertical: 30 }}
+        onFitModeChange={handleFitModeChange}
+        onSpacingChange={handleSpacingChange}
+      />
 
       {/* Resume Sections */}
       <Accordion type="multiple" defaultValue={["resume-sections"]}>
@@ -84,7 +99,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-summary" value={sectionKey}>
                   <SummaryEditor />
                 </AccordionItem>
               </Accordion>
@@ -96,7 +111,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-experience" value={sectionKey}>
                   <ExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -108,7 +123,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-leadership" value={sectionKey}>
                   <LeadershipExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -120,7 +135,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-project" value={sectionKey}>
                   <ProjectExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -132,7 +147,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-research" value={sectionKey}>
                   <ResearchExperienceEditor />
                 </AccordionItem>
               </Accordion>
@@ -144,7 +159,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-education" value={sectionKey}>
                   <EducationEditor />
                 </AccordionItem>
               </Accordion>
@@ -156,7 +171,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-skills" value={sectionKey}>
                   <SkillsEditor />
                 </AccordionItem>
               </Accordion>
@@ -168,7 +183,7 @@ export default function EditPanel() {
                 type="multiple"
                 defaultValue={[sectionKey]}
               >
-                <AccordionItem value={sectionKey}>
+                <AccordionItem id="section-portfolio" value={sectionKey}>
                   <PortfolioEditor />
                 </AccordionItem>
               </Accordion>

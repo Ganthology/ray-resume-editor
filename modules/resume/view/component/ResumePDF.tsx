@@ -12,7 +12,9 @@ import { ResumeModule } from "@/modules/resume/data/entity/ResumeModule";
 import { parseHtmlToPdf } from "../viewModel/ResumePDFViewModel";
 import { pdfStyles } from "../style/pdfStyles";
 
-// Register fonts for better text rendering
+const DEFAULT_SPACING = { horizontal: 30, vertical: 30 };
+
+// Register Times New Roman font
 Font.register({
   family: "Times-Roman",
   src: "https://fonts.gstatic.com/s/timesnewroman/v1/Times_New_Roman.ttf",
@@ -45,6 +47,34 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
   const sortedModules = resumeData.modules
     .filter((module) => module.enabled)
     .sort((a, b) => a.order - b.order);
+
+  // Get style preferences
+  const fitMode = resumeData.styles?.fitMode || "normal";
+
+  // Get the appropriate page size based on fit mode
+  const getPageSize = () => {
+    return fitMode === "compact" ? A4_SIZE["96_PPI"] : A4_SIZE["72_PPI"];
+  };
+
+  // Create dynamic styles based on preferences
+  const getDynamicStyles = () => {
+    const spacing = resumeData.styles?.spacing || DEFAULT_SPACING;
+
+    return {
+      ...pdfStyles,
+      page: {
+        ...pdfStyles.page,
+        fontFamily: "Times-Roman",
+        paddingLeft: spacing.horizontal,
+        paddingRight: spacing.horizontal,
+        paddingTop: spacing.vertical,
+        paddingBottom: spacing.vertical,
+      },
+    };
+  };
+
+  const dynamicStyles = getDynamicStyles();
+  const pageSize = getPageSize();
 
   const includedExperiences = resumeData.experiences.filter(
     (exp) => exp.included
@@ -147,7 +177,7 @@ export default function ResumePDF({ resumeData }: ResumePDFProps) {
 
   return (
     <Document>
-      <Page size={A4_SIZE["96_PPI"]} style={pdfStyles.page}>
+      <Page size={pageSize} style={dynamicStyles.page}>
         {/* Personal Information */}
         <View style={pdfStyles.header}>
           <Text style={pdfStyles.name}>

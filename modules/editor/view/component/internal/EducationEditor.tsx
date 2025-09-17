@@ -78,7 +78,7 @@ export default function EducationEditor() {
                   <AccordionItem
                     key={edu.id}
                     value={edu.id}
-                    className="border border-gray-200/40 rounded-lg shadow-sm"
+                    className="rounded-lg"
                   >
                     <div className="flex items-center">
                       <div className="flex items-center gap-3 px-4 py-3">

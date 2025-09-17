@@ -56,9 +56,11 @@ export const pdfStyles = StyleSheet.create({
     marginBottom: parseInt(styleValues.spacing.headerSpacing),
   },
   jobLocation: {
+    fontSize: parseInt(styleValues.fontSize.description),
     alignSelf: "flex-end",
   },
   jobTitle: {
+    fontSize: parseInt(styleValues.fontSize.description),
     fontWeight: "normal",
   },
   company: {
@@ -68,7 +70,10 @@ export const pdfStyles = StyleSheet.create({
     fontSize: parseInt(styleValues.fontSize.date),
     fontStyle: "italic",
   },
-  description: {},
+  description: {
+    fontSize: parseInt(styleValues.fontSize.description),
+    lineHeight: 1,
+  },
   skillsContainer: {
     marginBottom: parseInt(styleValues.spacing.skillsBottom),
   },

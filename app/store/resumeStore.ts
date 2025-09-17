@@ -14,7 +14,9 @@ import { Skill } from "@/modules/resume/data/entity/Skill";
 import { Summary } from "@/modules/resume/data/entity/Summary";
 import { create } from "zustand";
 
-const initialData: ResumeData = {
+const DEFAULT_SPACING = { horizontal: 30, vertical: 30 };
+
+export const initialResumeData: ResumeData = {
   personalInfo: {
     name: "",
     email: "",
@@ -93,6 +95,10 @@ const initialData: ResumeData = {
     },
   ],
   spacing: 25,
+  styles: {
+    fitMode: "normal",
+    spacing: DEFAULT_SPACING,
+  },
 };
 
 interface ResumeStore {
@@ -166,6 +172,9 @@ interface ResumeStore {
   // Module actions
   updateModules: (modules: ResumeData["modules"]) => void;
 
+  // Style actions
+  updateStyles: (styles: ResumeData["styles"]) => void;
+
   // Data management
   loadFromJSON: (jsonData: ResumeData) => void;
   clearAllData: () => void;
@@ -174,7 +183,7 @@ interface ResumeStore {
 export const useResumeStore = create<ResumeStore>()(
   persist(
     (set) => ({
-      resumeData: initialData,
+      resumeData: initialResumeData,
 
       // Personal Info actions
       updatePersonalInfo: (personalInfo) =>
@@ -517,6 +526,12 @@ export const useResumeStore = create<ResumeStore>()(
           resumeData: { ...state.resumeData, modules },
         })),
 
+      // Style actions
+      updateStyles: (styles) =>
+        set((state) => ({
+          resumeData: { ...state.resumeData, styles },
+        })),
+
       // Reorder actions
       reorderExperiences: (newOrder) =>
         set((state) => ({
@@ -574,7 +589,7 @@ export const useResumeStore = create<ResumeStore>()(
 
       clearAllData: () =>
         set(() => ({
-          resumeData: initialData,
+          resumeData: initialResumeData,
         })),
     }),
     {

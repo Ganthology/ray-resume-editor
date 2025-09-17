@@ -20,5 +20,16 @@ export interface ResumeData {
   summary: Summary;
   portfolio: Portfolio[];
   modules: ResumeModule[];
-  spacing: number; // Horizontal spacing in pixels
+  spacing: number; // Horizontal spacing in pixels - deprecated, use styles.spacing instead
+  styles?: {
+    fitMode: "compact" | "normal";
+    spacing?: {
+      horizontal: number; // Left/right page margins in pixels
+      vertical: number;   // Top/bottom page margins in pixels
+    };
+    fonts?: {
+      headers: string;    // Font family for section headers
+      content: string;    // Font family for body content
+    };
+  };
 }

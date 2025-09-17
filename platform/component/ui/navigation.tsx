@@ -1,4 +1,4 @@
-import { ChevronDown, Github, MessageCircle } from "lucide-react";
+import { ChevronDown, MessageCircle } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 import { Button } from "./button";
@@ -8,7 +8,8 @@ import { cn } from "@/platform/style/utils";
 interface NavigationAction {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  href?: string;
   variant?: "default" | "destructive";
 }
 
@@ -25,7 +26,7 @@ export default function Navigation({
   className,
   children,
   actions = [],
-  title = "Ray Resume Editor",
+  title = "RaysumeAI",
   subtitle,
   showDefaultActions = true,
 }: NavigationProps) {
@@ -70,6 +71,26 @@ export default function Navigation({
                   <div className="space-y-1">
                     {actions.map((action, index) => {
                       const IconComponent = action.icon;
+                      
+                      if (action.href) {
+                        return (
+                          <Link key={index} href={action.href}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn(
+                                "w-full justify-start gap-2",
+                                action.variant === "destructive" &&
+                                  "text-red-600 hover:text-red-700 hover:bg-red-50"
+                              )}
+                            >
+                              <IconComponent className="w-4 h-4" />
+                              {action.label}
+                            </Button>
+                          </Link>
+                        );
+                      }
+                      
                       return (
                         <Button
                           key={index}
@@ -95,21 +116,11 @@ export default function Navigation({
             {/* Default actions */}
             {showDefaultActions && (
               <>
-                <Link
-                  href="https://github.com/Ganthology/ray-resume-editor"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <Github className="w-4 h-4" />
-                  <span className="hidden sm:inline">GitHub</span>
-                </Link>
-
                 <Link href="/chat">
                   <Button
                     variant="default"
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 hover:cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4" />
                     <span>Chat to Build</span>

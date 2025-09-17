@@ -2,6 +2,7 @@ import "./globals.css";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { CookiesWrapper } from "@/platform/component/provider/CookiesWrapper";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 
@@ -17,15 +18,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Ray Resume Editor - Free Professional Resume Builder",
-    template: "%s | Ray Resume Editor",
+    default: "RaysumeAI - AI-Powered Professional Resume Builder",
+    template: "%s | RaysumeAI",
   },
   description:
-    "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, drag-and-drop functionality, and clean formatting. Build your perfect resume in minutes.",
+    "Create professional resumes effortlessly with RaysumeAI. AI-powered resume builder with PDF export, multiple sections, drag-and-drop functionality, and intelligent assistance. Build your perfect resume in minutes.",
   keywords: [
     "resume builder",
     "CV maker",
-    "free resume builder",
+    "AI resume builder",
     "professional resume",
     "resume template",
     "PDF resume",
@@ -34,12 +35,12 @@ export const metadata: Metadata = {
     "career tools",
     "resume creator",
     "CV generator",
-    "resume maker online",
-    "Ray Resume Editor",
+    "AI-powered resume",
+    "RaysumeAI",
   ],
   authors: [{ name: "Ray" }],
   creator: "Ray",
-  publisher: "Ray Resume Editor",
+  publisher: "RaysumeAI",
   robots: {
     index: true,
     follow: true,
@@ -54,30 +55,30 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://ray-resume-editor.vercel.app",
-    title: "Ray Resume Editor - Free Professional Resume Builder",
+    url: "https://your-domain.com",
+    title: "RaysumeAI - AI-Powered Professional Resume Builder",
     description:
-      "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, drag-and-drop functionality, and clean formatting. Build your perfect resume in minutes.",
-    siteName: "Ray Resume Editor",
+      "Create professional resumes effortlessly with RaysumeAI. AI-powered resume builder with PDF export, multiple sections, drag-and-drop functionality, and intelligent assistance. Build your perfect resume in minutes.",
+    siteName: "RaysumeAI",
     images: [
       {
-        url: "https://ray-resume-editor.vercel.app/og-image.png",
+        url: "https://your-domain.com/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Ray Resume Editor - Free Professional Resume Builder",
+        alt: "Ray Resume Editor - AI-Powered Professional Resume Builder",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ray Resume Editor - Free Professional Resume Builder",
+    title: "RaysumeAI - AI-Powered Professional Resume Builder",
     description:
-      "Create professional resumes effortlessly with Ray Resume Editor. Free online resume builder with PDF export, multiple sections, drag-and-drop functionality, and clean formatting. Build your perfect resume in minutes.",
-    images: ["https://ray-resume-editor.vercel.app/og-image.png"],
+      "Create professional resumes effortlessly with RaysumeAI. AI-powered resume builder with PDF export, multiple sections, drag-and-drop functionality, and intelligent assistance. Build your perfect resume in minutes.",
+    images: ["https://your-domain.com/og-image.png"],
     creator: "@ray",
   },
   alternates: {
-    canonical: "https://ray-resume-editor.vercel.app",
+    canonical: "https://your-domain.com",
   },
   category: "productivity",
   classification: "Resume Builder",
@@ -97,12 +98,12 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Ray Resume Editor",
+    title: "RaysumeAI",
   },
   formatDetection: {
     telephone: false,
   },
-  metadataBase: new URL("https://ray-resume-editor.vercel.app"),
+  metadataBase: new URL("https://your-domain.com"),
   other: {
     "google-site-verification": "your-google-site-verification-code",
     "msvalidate.01": "your-bing-site-verification-code",
@@ -128,10 +129,10 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              name: "Ray Resume Editor",
+              name: "RaysumeAI",
               description:
-                "Free professional resume builder with PDF export, multiple sections, and clean formatting",
-              url: "https://ray-resume-editor.vercel.app",
+                "AI-powered professional resume builder with PDF export, multiple sections, and intelligent assistance",
+              url: "https://your-domain.com",
               applicationCategory: "ProductivityApplication",
               operatingSystem: "Web Browser",
               offers: {
@@ -147,7 +148,7 @@ export default function RootLayout({
               inLanguage: "en-US",
               isAccessibleForFree: true,
               browserRequirements: "Requires JavaScript. Requires HTML5.",
-              screenshot: "https://ray-resume-editor.vercel.app/og-image.png",
+              screenshot: "https://your-domain.com/og-image.png",
             }),
           }}
         />
@@ -155,8 +156,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
-        <Toaster richColors position="top-right" />
+        <CookiesWrapper>
+          {children}
+          <Toaster richColors position="top-right" />
+        </CookiesWrapper>
       </body>
     </html>
   );

@@ -1,23 +1,14 @@
 # Ray Resume Editor 📄
 
-> **Privacy-First Resume Builder** - Create professional resumes completely offline with no data collection
+> **AI-Powered Professional Resume Builder** - Create stunning resumes with intelligent assistance
 
-A modern, feature-rich resume builder that prioritizes your privacy. Build beautiful resumes with drag-and-drop functionality, multiple sections, and PDF export - all without sending your personal information anywhere.
-
-Disclaimer: AI Assisted coding (Vibe Code) with [Cursor](https://cursor.com/)
+A modern, feature-rich resume builder with AI-powered features to help you create professional resumes that stand out. Build beautiful resumes with drag-and-drop functionality, multiple sections, and PDF export.
 
 ## 📸 App Preview
 
-![Ray Resume Editor Interface](https://raw.githubusercontent.com/Ganthology/ray-resume-editor/refs/heads/main/screenshot.png)
+![Ray Resume Editor Interface](screenshot.png)
 
-_Complete resume builder with real-time PDF preview - all your data stays local_
-
-## 🔒 Privacy First
-
-- **100% Offline** - Works entirely in your browser
-- **No Data Collection** - Zero personal information sent to servers
-- **Local Storage Only** - Your resume data stays on your device
-- **No Registration Required** - Start building immediately
+_Complete resume builder with real-time PDF preview and AI assistance_
 
 ## ✨ Key Features
 
@@ -35,42 +26,35 @@ _Complete resume builder with real-time PDF preview - all your data stays local_
 - **Sort Order Popover** - Bulk reorder items with visual interface to ease your workflow
 - **Module System** - Enable/disable entire sections
 
+### 🤖 **AI-Powered Features**
+
+- **Intelligent Chat Interface** - Build your resume through conversation
+- **Context-Aware Suggestions** - AI-powered content recommendations
+- **Experience Enhancement** - Intelligent description improvements
+- **Smart Content Generation** - Auto-generate professional content
+
 ### 💾 **Smart Data & Export**
 
 - **Save/Load Drafts** - Export/import your resume as JSON with validation
-- **Local Storage** - Automatic saving between sessions, all data stays on your device
-- **PDF Export** - High-quality, print-ready PDFs with clean Times New Roman formatting
+- **Local Storage** - Automatic saving between sessions
+- **PDF Export** - High-quality, print-ready PDFs with customizable styling
 - **Real-time Preview** - See changes instantly as you type with live PDF preview
+- **Multiple Font Options** - Choose from Times New Roman, modern sans-serif, and monospace fonts
+- **Layout Density Control** - Compact or normal spacing for optimal content fit
 - **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-
-## 🛣️ Roadmap
-
-### 🤖 **AI Features (Online Only)**
-
-- **Context-Aware Suggestions** - AI-powered content recommendations
-- **Experience Enhancement** - Intelligent description improvements
-- **Skill Recommendations** - Suggest relevant skills based on experience
-- **Industry Optimization** - Tailor resume for specific industries
-
-### ☁️ **Cloud Features (Online Only)**
-
-- **OAuth Authentication** - Secure login with Google/GitHub
-- **Cloud Resume Storage** - Save multiple resume versions online
-- **Cross-Device Sync** - Access your resumes anywhere
-- **Offline-Online Sync** - Powered by InstantDB for seamless experience
-- **Collaboration** - Share and get feedback on resumes
 
 ## 🚀 Getting Started
 
-### Live Version
+### Prerequisites
 
-Visit [ray-resume-editor.vercel.app](https://ray-resume-editor.vercel.app) to start building your resume immediately.
+- Node.js 18+ 
+- npm or yarn
 
 ### Local Development
 
 ```bash
 # Clone the repository
-git clone https://github.com/ganthology/ray-resume-editor.git
+git clone <repository-url>
 
 # Install dependencies
 npm install
@@ -90,25 +74,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 - **@dnd-kit** - Drag and drop functionality
 - **Zustand** - State management
 - **Tiptap** - Rich text editing
-- **Sonner** - Toast notifications
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- **AI SDK** - AI-powered features
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-## 💖 Support
-
-If you find this tool helpful, please consider:
-
-- ⭐ Starring the repository
-- 🐛 Reporting bugs
-- 💡 Suggesting new features
-- 📢 Sharing with others
+This project is proprietary software. All rights reserved.
 
 ---
 
-**Ray Resume Editor** - Where privacy meets productivity 🚀
+**Ray Resume Editor** - Professional resumes made intelligent 🚀
